@@ -19,7 +19,19 @@ export class LoginService {
     }
 
     logout() {
+        localStorage.clear();
+        sessionStorage.clear();
         this.router.navigate(['/'], { relativeTo: this.route, skipLocationChange: false });
     }
+
+    getToken() {
+        return localStorage.getItem('token');
+    }
+
+    loggedIn() {
+        return !!localStorage.getItem('token');
+    }
+
+
 
 }

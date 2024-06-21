@@ -89,6 +89,15 @@ export class LoginComponent implements OnInit{
         {
           console.log('CONTINUAR LOGIN ADMIN');
           if(this.mensaje.mensaje === 'ok'){
+            localStorage.setItem('token', this.mensaje.token);
+            localStorage.setItem('ip', this.mensaje.ip_adress);
+
+            if(!!localStorage.getItem("redireccionar")){
+              let redi = localStorage.getItem("redireccionar");
+              this.router.navigate([redi], { relativeTo: this.route, skipLocationChange: false });
+              localStorage.removeItem("redireccionar");
+            }
+
             console.log('CONTINUAR LOGIN ADMIN OK');
             this.IniciarSesion(form);
           }

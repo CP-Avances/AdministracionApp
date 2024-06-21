@@ -2,6 +2,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 
+import { ValidacionesService } from 'src/app/servicios/validaciones/validaciones.service';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -16,15 +18,17 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public validar: ValidacionesService,
   ) { }
 
   ngOnInit(): void {
-    this.idEmpleado = localStorage.getItem('empleado');
-    this.BuscarParametro();
+    console.log('home');
+    //this.idEmpleado = localStorage.getItem('empleado');
+    //this.BuscarParametro();
 
-    var min_aleatoria = Math.floor(Math.random() * 10)
-    console.log('ver valor aleatorio ', min_aleatoria)
+    //var min_aleatoria = Math.floor(Math.random() * 10);
+    //console.log('ver valor aleatorio ', min_aleatoria);
   }
 
   /** **************************************************************************************** **

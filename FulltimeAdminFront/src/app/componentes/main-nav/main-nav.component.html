@@ -1,0 +1,99 @@
+<mat-sidenav-container class="sidenav-container">
+
+  <mat-sidenav #drawer class="sidenav mat-elevation-z15" fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false" (mouseenter)="mouseenter()" (mouseleave)="mouseleave()">
+
+    <div class="uno">
+      <img src="../../../assets/imagenes/logo/logoAdmin.png" id="logo">
+    </div>
+
+    <mat-card *ngIf="showMessageLicencia"
+      style="background-color: rgba(240, 56, 56, 0.849); color: white; text-align: center;">
+      <div>
+        <mat-icon style="font-size: 25px; padding-top: 5px;">report_problem</mat-icon>
+      </div>
+      <mat-card-title style="font-size: 18px;">LICENCIA EXPIRARÁ</mat-card-title>
+      <mat-card-subtitle style="color: rgb(221, 221, 221); font-size: 14px;">
+        {{fec_caducidad_licencia | date: 'fullDate' }}
+      </mat-card-subtitle>
+
+      <mat-card-content style="font-size: 15px;">
+        <p>
+          Comunicate con &nbsp;
+          <a href="https://casapazmino.com.ec" target="_blank" style="text-decoration: none;">
+            Casa Pazmiño Import & Export S.A
+          </a>
+          &nbsp; para seguir utilizando tu sistema.
+        </p>
+      </mat-card-content>
+    </mat-card>
+
+  </mat-sidenav>
+
+
+  <mat-sidenav-content class="degradado">
+    <mat-toolbar>
+      <!-- NAV PARA PANTALLAS GRANDES -->
+      <mat-toolbar-row *ngIf="!barraInicial; else ShowNavbar" class="d-flex justify-content-between">
+        <div>
+          <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+            *ngIf="isHandset$ | async">
+            <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+          </button>
+        </div>
+
+        <div>
+          <span class="example-spacer"></span>
+
+          <!-- BOTON HOME -->
+          <button mat-mini-fab style="margin-left: 10px; margin-right: 10px;" (click)="irHome()">
+            <mat-icon id="iconos-navegador" style="margin-left: 8px;" matSuffix matTooltipPosition="right"
+              matTooltip="Ir inicio">home</mat-icon>
+          </button>
+
+          <app-button-opciones></app-button-opciones>
+         
+        </div>
+
+      </mat-toolbar-row>
+
+      <!-- NAV PARA CELULARES O PANTALLA PEQUEÑA -->
+      <ng-template #ShowNavbar>
+
+        <mat-toolbar-row class="d-flex justify-content-between">
+          <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+            *ngIf="isHandset$ | async">
+            <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+          </button>
+
+          
+
+          <div>
+            <span class="example-spacer"></span>
+            <!-- BOTON HOME -->
+            <button mat-mini-fab style="margin: 0 10px" (click)="irHome()">
+              <mat-icon id="iconos-navegador" style="margin-left: 8px;" matSuffix matTooltipPosition="right"
+                matTooltip="Ir inicio">home</mat-icon>
+            </button>
+
+            <!-- BOTON CONFIGURACIONES DE TODO -->
+            <app-button-opciones></app-button-opciones>
+            
+          </div>
+
+
+        </mat-toolbar-row>
+
+        
+      </ng-template>
+
+    </mat-toolbar>
+
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

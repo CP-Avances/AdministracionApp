@@ -15,12 +15,13 @@ class BaseInicialControlador {
     ObtenerDatosBaseInicial(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                res.status(200).jsonp({
+                let datos_base = {
                     base: database_1.dbConfig.database,
                     host: database_1.dbConfig.host,
                     puerto: database_1.dbConfig.port,
                     usuario: database_1.dbConfig.user
-                });
+                };
+                res.status(200).jsonp(datos_base);
             }
             catch (error) {
                 res.status(500).jsonp({ message: 'error' });

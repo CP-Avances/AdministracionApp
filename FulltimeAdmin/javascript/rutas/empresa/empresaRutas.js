@@ -15,6 +15,7 @@ class EmpresaRutas {
         this.router.post('/registro-empresa', empresaControlador_1.default.RegistrarEmpresas);
         this.router.put('/actualizar-empresa', empresaControlador_1.default.ActualizarEmpresa);
         this.router.post('/eliminar-empresa', empresaControlador_1.default.EliminarEmpresa);
+        this.router.get('/verEmpresa/:id', empresaControlador_1.default.ListarEmpresaId);
     }
 }
 const EMPRESA_RUTAS = new EmpresaRutas();

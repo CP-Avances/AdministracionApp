@@ -1,0 +1,46 @@
+<!--  *********************  VER INFORMACION GENERAL DE CONEXION DE LA BASE DE DATOS  *************************  -->
+<div style="padding-bottom: 20px;">
+    <div class="container" style="padding-top: 15px;">
+        <mat-card class="example-card mat-elevation-z8">
+            <div id="titulo">
+                <span>Conexión Actual de Base de Datos</span>
+            </div>
+            <div>
+                <div class="container" style="padding-top: 15px;">
+                    <div class="row">
+                        <!--  ************************* INFORMACION BDD ******************************** -->
+                        <div class="row">
+                            <div class="d-flex justify-content-around ">
+                                <label id="datosF">INFORMACIÓN GENERAL</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="caja1 d-flex justify-content-start" style="width: 100%;">
+                                <label id="datosF">Base de Datos:</label>
+                                <label>{{datosConexion.base}}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="caja1 d-flex justify-content-start" style="width: 100%;">
+                                <label id="datosF">Host:</label>
+                                <label>{{datosConexion.host}}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="caja1 d-flex justify-content-start" style="width: 100%;">
+                                <label id="datosF">Puerto:</label>
+                                <label>{{datosConexion.puerto}}</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="caja1 d-flex justify-content-start" style="width: 100%;">
+                                <label id="datosF">Usuario:</label>
+                                <label>{{datosConexion.usuario}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</div>  

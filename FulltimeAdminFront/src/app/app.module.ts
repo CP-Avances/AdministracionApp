@@ -40,6 +40,11 @@ import { TokenInterceptorService } from './servicios/login/token-interceptor.ser
 import { AuthGuard } from './servicios/guards/auth.guard';
 import { MainNavService } from './componentes/main-nav/main-nav.service';
 import { SettingsComponent } from './componentes/settings/settings.component';
+import { ConexionBaseDatosComponent } from './componentes/conexion-base-datos/conexion-base-datos.component';
+import { RegistroEmpresaComponent } from './componentes/empresa/registro-empresa/registro-empresa.component';
+import { ListaEmpresasComponent } from './componentes/empresa/lista-empresas/lista-empresas.component';
+import { MetodosComponent } from './componentes/metodoEliminar/metodos.component';
+import { VerEmpresaComponent } from './componentes/empresa/ver-empresa/ver-empresa.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +54,12 @@ import { SettingsComponent } from './componentes/settings/settings.component';
     HomeComponent,
     MainNavComponent,
     ButtonOpcionesComponent,
-    SettingsComponent
+    SettingsComponent,
+    ConexionBaseDatosComponent,
+    RegistroEmpresaComponent,
+    ListaEmpresasComponent,
+    MetodosComponent,
+    VerEmpresaComponent
   ],
   imports: [
     BrowserModule,
@@ -64,6 +74,7 @@ import { SettingsComponent } from './componentes/settings/settings.component';
     MatDatepickerModule,
     MatNativeDateModule,
     HttpClientModule,
+    FiltrosModule,
     ToastrModule.forRoot()
   ],
   providers: [

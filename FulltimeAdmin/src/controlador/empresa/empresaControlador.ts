@@ -123,6 +123,21 @@ class EmpresaControlador {
         }
     }
 
+    public async ListarEmpresaId(req: Request, res: Response){
+        const { id } = req.params;
+        const EMPRESA = await pool.query(
+            `
+            SELECT * FROM empresa WHERE empresa_id = $1
+            `
+            , [id]);
+        if (EMPRESA.rowCount != 0) {
+            return res.jsonp(EMPRESA.rows)
+        }
+        else {
+            return res.status(404).jsonp({ text: 'No se encuentran registros.' });
+        }
+    }
+
 }
 
 export const empresaControlador = new EmpresaControlador;

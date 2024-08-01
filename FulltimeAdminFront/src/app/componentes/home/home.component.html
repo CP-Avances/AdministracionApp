@@ -1,7 +1,30 @@
 <div class="container" style="padding-top: 20px; padding-bottom: 25px;">
   <div class="d-flex bd-highlight" id="titulo">
     <div class="w-100 bd-highlight">
-      <h5>ADMINISTRACIÓN</h5>
+      <h5>Bases Disponibles</h5>
+    </div>
+  </div>
+  <br>
+  <div class="row" style="text-align: justify;">
+    <div class="col-md-6">
+      <mat-card *ngFor="let card of cardData" [ngClass]="'mat-elevation-z8 card-base'" style="color: rgb(36, 36, 36);">
+        <mat-card-title style="text-align: center; padding: 3px;">
+          <mat-label class="titulo-base-card">{{card.empresa_bdd_descripcion}}</mat-label>
+        </mat-card-title>
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md">
+              <br>
+              <p style="font-style: italic; font-size: 16px; line-height: 1;">{{card.empresa_descripcion}}</p>
+              <p style="font-style: italic; line-height: 1;">{{card.nombre_bdd}}</p>
+              <p style="font-style: italic; line-height: 1;">Tamaño: {{card.tamano_bdd}}</p>
+            </div>
+            <div class="d-flex justify-content-around text-center">
+              <button id="btn-raised" class="btn btn-sm" (click)="MenuRapido(card.empresa_id)">Abrir</button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
   </div>
 </div>

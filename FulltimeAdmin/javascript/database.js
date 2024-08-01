@@ -7,11 +7,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.dbConfig = exports.pool = void 0;
 const pg_pool_1 = __importDefault(require("pg-pool"));
 const dbConfig = {
-    user: 'postgres', // postgres
-    host: '192.168.0.144',
-    port: 5435,
-    database: 'ft_v4_login',
-    password: 'postgres'
+    user: 'fulltime', // postgres
+    host: '192.168.0.156',
+    port: 5432,
+    database: 'fulltime4_pruebas_empresa',
+    password: 'fulltime'
 };
 exports.dbConfig = dbConfig;
 const pool = new pg_pool_1.default(dbConfig);

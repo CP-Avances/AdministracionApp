@@ -15,6 +15,7 @@ import { LoginService } from 'src/app/servicios/login/login.service';
 
 import { ThemePalette } from '@angular/material/core';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
+import { MenuNode } from 'src/app/model/menu.model';
 
 @Component({
   selector: 'app-main-nav',
@@ -29,6 +30,12 @@ export class MainNavComponent implements OnInit {
     map(result => result.matches),
     shareReplay()
   );
+
+  // CONTROL DE MENU
+  treeControl = new NestedTreeControl<MenuNode>(node => node.children);
+  dataSource = new MatTreeNestedDataSource<MenuNode>();
+  dataSource1 = new MatTreeNestedDataSource<MenuNode>();
+  hasChild = (_: number, node: MenuNode) => !!node.children && node.children.length > 0;
 
   // VARIABLES DE ALMACENAMIENTO
   idEmpresa: number;
@@ -200,6 +207,10 @@ export class MainNavComponent implements OnInit {
   isShowing = false;
   barraInicial = false;
 
+  MetodoSubSelectMenu(nombre: string) {
+    this.dataSource.data = this.menuGeneralUsuarios as MenuNode[];
+  }
+
   // EVENTOS DE SELECCION DE MENU
   mouseenter() {
     if (!this.isExpanded) {
@@ -244,6 +255,66 @@ export class MainNavComponent implements OnInit {
         this.barraInicial = result.matches;
       });
     }
+
+    this.menuGeneralUsuarios = [
+      {
+        name: 'Base de Datos',
+        accion: true,
+        estado: true,
+        subtitulo: false,
+        icono: 'data_usage',
+        children: [
+          {
+            name: 'Información Principal',
+            color: true,
+            ver: true,
+            icono: 'insert_emoticon',
+            url: '/conexionBaseDatos'
+          }
+        ]
+      },
+      {
+        name: 'Empresa',
+        accion: true,
+        estado: true,
+        subtitulo: false,
+        icono: 'work',
+        children: [
+          {
+            name: 'Listado de Empresas',
+            color: true,
+            ver: true,
+            icono: 'note_add',
+            url: '/empresas'
+          }
+        ]
+      },
+      {
+        name: 'Migración',
+        accion: true,
+        estado: true,
+        subtitulo: false,
+        icono: 'send',
+        children: [
+          {
+            name: 'Fulltime Web',
+            color: true,
+            ver: true,
+            icono: 'note_add',
+            url: '/home'
+          },
+          {
+            name: 'DataFlex',
+            color: true,
+            ver: true,
+            icono: 'note_add',
+            url: '/home'
+          }
+        ]
+      }
+    ];
+
+    this.MetodoSubSelectMenu("Casa Pazmino");
   }
 
   // METODO PARA MOSTRAR METODOS

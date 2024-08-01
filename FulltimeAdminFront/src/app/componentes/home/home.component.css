@@ -41,6 +41,15 @@ label {
     font-size: 16px !important;
 }
 
+.titulo-base-card {
+    margin: auto;
+    vertical-align: middle;
+    margin-right: 14px !important;
+    color: rgb(12, 12, 12);
+    font-size: 16px !important;
+    font-weight: bold;
+}
+
 /*Infotmacion Usuario*/
 .card-info {
     height: 100%;
@@ -343,4 +352,21 @@ label {
 .cont_imagen {
     width: min-content;
     margin: auto;
+}
+
+/* BASE DE DATOS */
+.card-base {
+    background: linear-gradient(to right, rgb(163, 166, 168), rgb(188, 195, 204));
+    height: 200px;
+    width: 225px;
+    font-size: 14px;
+    border-radius: 10px;
+    transition: transform 0.3s;
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
+.card-base:hover {
+    cursor: pointer;
+    transform: scale(1.03);
 }

@@ -5,13 +5,16 @@ class BaseInicialControlador {
 
     public async ObtenerDatosBaseInicial(req: Request, res: Response){
         try{
+            let datos_base = 
+            { 
+                base: dbConfig.database,
+                host: dbConfig.host,
+                puerto: dbConfig.port,
+                usuario: dbConfig.user
+            }
+
             res.status(200).jsonp(
-                { 
-                    base: dbConfig.database,
-                    host: dbConfig.host,
-                    puerto: dbConfig.port,
-                    usuario: dbConfig.user
-                }
+                datos_base
             );
         }
         catch(error)

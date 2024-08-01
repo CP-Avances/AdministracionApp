@@ -1,0 +1,39 @@
+<br>
+<mat-tab-group (selectedTabChange)="DetectarEventoTab($event)" #pestana>
+    
+    <!-- INFORMACION OFICIAL DE LA EMPRESA -->
+    <mat-tab label="perfil">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">person_pin</mat-icon>
+            <h6 id="items">Perfil Empresa</h6>
+        </ng-template>
+        <div class="container" *ngFor="let e of empresaUno" style="padding-top: 15px; padding-bottom: 25px;">
+
+        </div>
+    </mat-tab>
+
+    <!-- BASE REGISTRADA -->
+    <mat-tab label="bases">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">account_balance</mat-icon>
+            <h6 id="items">Base de Datos y Licencia</h6>
+        </ng-template>
+    </mat-tab>
+
+    <!-- MODULOS -->
+    <mat-tab label="modulos">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">shop</mat-icon>
+            <h6 id="items">Módulos</h6>
+        </ng-template>
+    </mat-tab>
+
+    <!-- WEB ACCESS -->
+    <mat-tab label="web_access">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">lock_open</mat-icon>
+            <h6 id="items">Acceso Web</h6>
+        </ng-template>
+    </mat-tab>
+
+</mat-tab-group>

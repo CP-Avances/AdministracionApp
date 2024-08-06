@@ -7,17 +7,185 @@
             <mat-icon class="example-tab-icon">person_pin</mat-icon>
             <h6 id="items">Perfil Empresa</h6>
         </ng-template>
-        <div class="container" *ngFor="let e of empresaUno" style="padding-top: 15px; padding-bottom: 25px;">
-
+        <div class="container" style="padding-top: 15px; padding-bottom: 25px;">
+            <div class="row">
+                <div class="col-md">
+                    <mat-card class="mat-elevation-z8">
+                        <div class="d-flex bd-highlight" id="resultados">
+                            <h5 class="w-100 bd-highlight align-self-center">
+                                {{descripcionEmpresa}}
+                            </h5>
+                        </div>
+                        <mat-card-content>
+                            <div class="container" style="padding-top: 15px;">
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Id:</label>
+                                            <label>{{idEmpresa}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Código:</label>
+                                            <label>{{codigoEmpresa}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Dirección:</label>
+                                            <label>{{direccionEmpresa}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <i type="submit" id="edit" (click)="AbirVentanaEditarEmpresa(empresaUno)" matSuffix
+                                    matTooltipPosition="right"
+                                    matTooltip="Modificar los datos generales de este registro" class="fas fa-edit">
+                                    <p>Editar</p>
+                                </i>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+                <br>
+                <div class="col-md">
+                    <mat-card class="mat-elevation-z8">
+                        <mat-grid-list cols="2" rowHeight="3:1">
+                            <mat-grid-tile>
+                                <button type="submit" [routerLink]="['/empresas']"
+                                    class="btn btn-block d-flex align-items-center justify-content-center"
+                                    id="Selector">
+                                    <i class="material-icons">keyboard_backspace</i><span>Atrás</span>
+                                </button>
+                            </mat-grid-tile>
+                            <mat-grid-tile>
+                                <button
+                                    class="btn btn-block d-flex align-items-center justify-content-center"
+                                    id="Selector">
+                                    <i class="material-icons">picture_as_pdf</i><span>Abrir PDF</span>
+                                </button>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    </mat-card>
+                </div>
+            </div>
         </div>
     </mat-tab>
 
-    <!-- BASE REGISTRADA -->
+    <!-- BASE REGISTRADA Y LICENCIAS -->
     <mat-tab label="bases">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">account_balance</mat-icon>
             <h6 id="items">Base de Datos y Licencia</h6>
         </ng-template>
+
+        <div class="container" style="padding-top: 15px; padding-bottom: 25px;">
+            <div style="padding-bottom: 35px;" *ngIf="editar_base">
+                <app-editar-base [base]="base_editar" [pagina]="pagina_base">
+                </app-editar-base>
+            </div>
+            <div style="padding-bottom: 35px;" *ngIf="!btnActualizarBase">
+
+            </div>
+            <div class="row">
+                <div class="col-md" style="padding-bottom: 20px;">
+                    <mat-card class="mat-elevation-z8">
+                        <div class="d-flex bd-highlight" id="titulo">
+                            <div class="w-100 bd-highlight">
+                                <h5>BASE ACTUAL</h5>
+                            </div>
+                            <div class="flex-shrink-1 bd-highlight" style="margin-right: 10px;"
+                                *ngIf="agregar_base_">
+                                <button type="submit" class="btn btn-outline-light btn-sm" style="margin-top: -3px;"
+                                    >
+                                    Añadir
+                                </button>
+                            </div>
+                        </div>
+                        <mat-card-content>
+                            <div class="container" style="padding-top: 15px;">
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Nombre Base de Datos:</label>
+                                            <label>{{empresaBddNombre}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Puerto:</label>
+                                            <label>{{empresaBddDescripcion}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Host:</label>
+                                            <label>{{empresaBddHost}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Puerto:</label>
+                                            <label>{{empresaBddPuerto}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Contraseña:</label>
+                                            <label>{{empresaBddContrasena}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Usuario:</label>
+                                            <label>{{empresaBddUsuario}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="text-align: right; padding-top: 3%;" *ngIf="editar_base_">
+                                    <i type="submit" id="edit" style="margin-right: 20px;"
+                                        (click)="VerBaseEdicion(false); AbrirVentanaEditarBase(baseEmpresa)" matSuffix matTooltipPosition="right"
+                                        matTooltip="Modificar los datos generales de este registro" class="fas fa-edit">
+                                        <p>Editar</p>
+                                    </i>
+                                </div>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+
+                <div class="col-md">
+                    <mat-card class="mat-elevation-z8">
+                        <div class="d-flex bd-highlight" id="titulo">
+                            <div class="w-100 bd-highlight">
+                                <h5>LICENCIA ACTUAL</h5>
+                            </div>
+                            <div class="flex-shrink-1 bd-highlight" style="margin-right: 10px;"
+                                *ngIf="">
+                                <button type="submit" class="btn btn-outline-light btn-sm" style="margin-top: -3px;"
+                                     ></button>
+                            </div>
+                        </div>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
     </mat-tab>
 
     <!-- MODULOS -->

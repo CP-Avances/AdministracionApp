@@ -184,6 +184,45 @@ class BaseEmpresaControlador {
             }
         });
     }
+    BuscarBaseEmpresasPorId(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const EMPRESAS = yield database_1.default.query(`
+                SELECT 
+                    empresa.id_empresa_bdd, 
+                    empresa.id_empresa, 
+                    empresa.empresa_bdd_nombre, 
+                    empresa.empresa_bdd_host, 
+                    empresa.empresa_bdd_puerto,
+                    empresa.empresa_bdd_descripcion, 
+                    empresa.empresa_bdd_contrasena,
+                    empresa.empresa_bdd_usuario
+                FROM empresa_bdd empresa
+                WHERE 
+                    empresa.id_empresa = $1
+                ORDER BY 1
+                `, [id]);
+                if (EMPRESAS.rowCount !== null) {
+                    if (EMPRESAS.rowCount > 0) {
+                        for (const empresa of EMPRESAS.rows) {
+                            empresa.empresa_bdd_contrasena = rsa_keys_service_1.FUNCIONES_LLAVES.desencriptarDatos(empresa.empresa_bdd_contrasena);
+                        }
+                        res.jsonp(EMPRESAS.rows);
+                    }
+                    else {
+                        res.status(404).jsonp({ message: 'vacio' });
+                    }
+                }
+                else {
+                    res.status(500).jsonp({ message: 'error' });
+                }
+            }
+            catch (error) {
+                res.status(500).jsonp({ message: 'error' });
+            }
+        });
+    }
     ActualizarBaseEmpresa(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let id_empresa_bdd_ = req.body.id_empresa_bdd;

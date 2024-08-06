@@ -15,6 +15,7 @@ class BaseEmpresaRutas {
         this.router.get('/base-empresas-informacion', baseEmpresaControlador_1.default.ObtenerBaseEmpresasInformacion);
         this.router.get('/base-empresas', baseEmpresaControlador_1.default.ObtenerBaseEmpresas);
         this.router.post('/buscar-empresas', baseEmpresaControlador_1.default.BuscarBaseEmpresas);
+        this.router.get('/buscar-empresas/:id', baseEmpresaControlador_1.default.BuscarBaseEmpresasPorId);
         this.router.put('/actualizar-empresas', baseEmpresaControlador_1.default.ActualizarBaseEmpresa);
         this.router.post('/eliminar-empresas', baseEmpresaControlador_1.default.EliminarEmpresa);
     }

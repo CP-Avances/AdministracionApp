@@ -128,6 +128,25 @@ class EmpresaControlador {
             }
         });
     }
+    ActualizarEmpresaFormUno(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let empresa_id_ = req.body.empresa_id;
+            let empresa_codigo_ = req.body.empresa_codigo;
+            let empresa_direccion_ = req.body.empresa_direccion;
+            let empresa_descripcion_ = req.body.empresa_descripcion;
+            try {
+                let empresa_codigo_mod = rsa_keys_service_1.default.encriptarLogin(empresa_codigo_);
+                yield database_1.default.query(`
+                UPDATE empresa SET empresa_codigo = $2, empresa_direccion = $3, empresa_descripcion = $4 
+                WHERE empresa_id = $1
+                `, [empresa_id_, empresa_codigo_mod, empresa_direccion_, empresa_descripcion_]);
+                res.jsonp({ message: 'Registro actualizado.' });
+            }
+            catch (error) {
+                return res.jsonp({ message: error });
+            }
+        });
+    }
     EliminarEmpresa(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -149,6 +168,9 @@ class EmpresaControlador {
             SELECT * FROM empresa WHERE empresa_id = $1
             `, [id]);
             if (EMPRESA.rowCount != 0) {
+                for (const empresa of EMPRESA.rows) {
+                    empresa.empresa_codigo = rsa_keys_service_1.FUNCIONES_LLAVES.desencriptarLogin(empresa.empresa_codigo);
+                }
                 return res.jsonp(EMPRESA.rows);
             }
             else {

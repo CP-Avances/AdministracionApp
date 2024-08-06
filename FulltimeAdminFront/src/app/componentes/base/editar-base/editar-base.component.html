@@ -1,0 +1,64 @@
+<div id="titulo">
+    <mat-icon id="movilidad" class="float-left">open_with</mat-icon>
+    <span cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+        MODIFICAR BASE
+    </span>
+    <mat-icon class="float-right" id="cerrar" (click)="Cancelar(1)" matSuffix matTooltipPosition="right"
+        matTooltip="Salir">
+        highlight_off
+    </mat-icon>
+</div>
+<mat-card class="example-card mat-elevation-z8">
+    <!-- FORMULARIO COMPLETO -->
+    <mat-card-content>
+        <div style="text-align: center">
+            <div class="nota" style="text-align: justify;">
+                <span>
+                    NOTA: Por favor llenar todos los campos obligatorios (*) del formulario para activar el botón
+                    Guardar.
+                </span>
+            </div>
+        </div>
+        <br>
+        <form [formGroup]="BaseForm">
+            <div class="row">
+                <div class="col-md">
+                    <div class="d-flex flex-wrap justify-content-around">
+                        <mat-form-field>
+                            <mat-label>Descripción de la Base de Datos</mat-label>
+                            <input matInput placeholder="Ej: Fulltime Web" type="text"
+                                formControlName="baseDescripcionForm" required>
+                            <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                matTooltip="Es obligatorio ingresar la descripción de la base de datos.">
+                                help_outline</mat-icon>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Nombre de la Base de Datos</mat-label>
+                            <input matInput placeholder="Ej: Fulltime Web" type="text"
+                                formControlName="baseNombreForm" required>
+                            <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                matTooltip="Es obligatorio ingresar el nombre de la base de datos.">
+                                help_outline</mat-icon>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Host de la Base de Datos</mat-label>
+                            <input matInput placeholder="Ej: 192.168.0.101" type="text"
+                                formControlName="baseHostForm" required>
+                            <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                matTooltip="Es obligatorio ingresar el host de la base de datos.">
+                                help_outline</mat-icon>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Puerto de la Base de Datos</mat-label>
+                            <input matInput placeholder="Ej: 5433" type="text"
+                                formControlName="basePuertoForm" required>
+                            <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                matTooltip="Es obligatorio ingresar el puerto de la base de datos.">
+                                help_outline</mat-icon>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

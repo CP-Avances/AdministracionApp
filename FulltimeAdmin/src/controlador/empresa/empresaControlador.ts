@@ -106,6 +106,31 @@ class EmpresaControlador {
         }
     }
 
+    public async ActualizarEmpresaFormUno(req: Request, res: Response) {
+        let empresa_id_ = req.body.empresa_id;
+        let empresa_codigo_ = req.body.empresa_codigo;
+        let empresa_direccion_ = req.body.empresa_direccion;
+        let empresa_descripcion_ = req.body.empresa_descripcion;
+
+        try{
+            let empresa_codigo_mod = RsaKeyService.encriptarLogin(empresa_codigo_);
+
+            await pool.query(
+                `
+                UPDATE empresa SET empresa_codigo = $2, empresa_direccion = $3, empresa_descripcion = $4 
+                WHERE empresa_id = $1
+                `,
+                [empresa_id_, empresa_codigo_mod, empresa_direccion_, empresa_descripcion_]
+            );
+
+            res.jsonp({ message: 'Registro actualizado.' });
+        }
+        catch (error)
+        {
+            return res.jsonp({ message: error });
+        }
+    }
+
     public async EliminarEmpresa(req: Request, res: Response) {
         try {
             let empresa_id_ = req.body.empresa_id;
@@ -131,6 +156,9 @@ class EmpresaControlador {
             `
             , [id]);
         if (EMPRESA.rowCount != 0) {
+            for (const empresa of EMPRESA.rows) {
+                empresa.empresa_codigo = FUNCIONES_LLAVES.desencriptarLogin(empresa.empresa_codigo);
+            }
             return res.jsonp(EMPRESA.rows)
         }
         else {

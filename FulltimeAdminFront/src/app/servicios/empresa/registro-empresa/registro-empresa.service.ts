@@ -13,4 +13,8 @@ export class RegistroEmpresaService {
     private http: HttpClient,
     public router: Router
   ) { }
+
+  ActualizarEmpresaFormUno(datos: any){
+    return this.http.put(`${environment.url}/empresa/actualizar-empresa-form-uno`, datos);
+  }
 }

@@ -13,6 +13,7 @@ class EmpresaRutas {
         this.router.get('/empresas', EMPRESA_CONTROLADOR.ObtenerEmpresas);
         this.router.post('/registro-empresa', EMPRESA_CONTROLADOR.RegistrarEmpresas);
         this.router.put('/actualizar-empresa', EMPRESA_CONTROLADOR.ActualizarEmpresa);
+        this.router.put('/actualizar-empresa-form-uno', EMPRESA_CONTROLADOR.ActualizarEmpresaFormUno);
         this.router.post('/eliminar-empresa', EMPRESA_CONTROLADOR.EliminarEmpresa);
         this.router.get('/verEmpresa/:id', EMPRESA_CONTROLADOR.ListarEmpresaId);
     }

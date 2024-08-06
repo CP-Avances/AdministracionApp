@@ -1,0 +1,68 @@
+<div id="titulo">
+    <span>MODIFICAR DATOS DE LA EMPRESA</span>
+    <mat-icon class="float-right" id="cerrar" (click)="Cancelar()">highlight_off</mat-icon>
+</div>
+<div>
+    <mat-horizontal-stepper [linear]="isLinear" #stepper>
+        <mat-step [stepControl]="primeroFormGroup">
+            <ng-template matStepLabel>
+                <mat-icon id="seccion_emple" matSuffix matTooltipPosition="right"
+                    matTooltip="Datos de Conexión">add
+                </mat-icon>
+            </ng-template>
+            <div class="subtitulo">
+                <span>Datos de Conexión</span>
+            </div>
+            <br>
+            <div class="nota">
+                <span>Por favor llenar todos los campos obligatorios (*) del formulario y dar click en Siguiente
+                    para continuar.</span>
+            </div>
+            <form [formGroup]="primeroFormGroup">
+                <div class="row">
+                    <div class="col-md">
+                        <div class="d-flex flex-wrap justify-content-around">
+                            <mat-form-field>
+                                <mat-label>Descripción</mat-label>
+                                <input matInput placeholder="Ej: Casa Pazmiño" type="text"
+                                    formControlName="empresaDescripcionForm" required>
+                                <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                    matTooltip="Es obligatorio ingresar la descripción de la nueva empresa">
+                                    help_outline</mat-icon>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Dirección</mat-label>
+                                <input matInput placeholder="Ej: http://192.168.0.1:3000" type="text"
+                                    formControlName="empresaDireccionForm" required>
+                                <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                    matTooltip="Es obligatorio ingresar la dirección URL de la nueva empresa">
+                                    help_outline
+                                </mat-icon>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="d-flex flex-wrap justify-content-around">
+                            <mat-form-field>
+                                <mat-label>Código</mat-label>
+                                <input matInput type="text" formControlName="empresaCodigoForm" [readonly]="escritura"
+                                    required maxlength="10">
+                                <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                    matTooltip="Ingresar el código de empresa.">
+                                    help_outline
+                                </mat-icon>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button mat-raised-button id="btn-raised" class="float-right"
+                        (click)="ActualizarEmpresa(primeroFormGroup.value);"
+                        type="submit" [disabled]="!primeroFormGroup.valid">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </mat-step>
+    </mat-horizontal-stepper>
+</div>

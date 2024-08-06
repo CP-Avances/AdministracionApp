@@ -162,6 +162,50 @@ class BaseEmpresaControlador {
         }
     }
 
+    public async BuscarBaseEmpresasPorId(req: Request, res: Response){
+        try{
+            const { id } = req.params;
+
+            const EMPRESAS = await pool.query(
+                `
+                SELECT 
+                    empresa.id_empresa_bdd, 
+                    empresa.id_empresa, 
+                    empresa.empresa_bdd_nombre, 
+                    empresa.empresa_bdd_host, 
+                    empresa.empresa_bdd_puerto,
+                    empresa.empresa_bdd_descripcion, 
+                    empresa.empresa_bdd_contrasena,
+                    empresa.empresa_bdd_usuario
+                FROM empresa_bdd empresa
+                WHERE 
+                    empresa.id_empresa = $1
+                ORDER BY 1
+                `,
+                [id]
+            );
+            
+            if (EMPRESAS.rowCount !== null) {
+                if(EMPRESAS.rowCount > 0){
+
+                    for (const empresa of EMPRESAS.rows) {
+                        empresa.empresa_bdd_contrasena = FUNCIONES_LLAVES.desencriptarDatos(empresa.empresa_bdd_contrasena);
+                    }
+
+                    res.jsonp(EMPRESAS.rows);
+                }else{
+                    res.status(404).jsonp({ message: 'vacio' });
+                }
+            }else{
+                res.status(500).jsonp({ message: 'error' });
+            }
+            
+        }
+        catch(error)
+        {
+            res.status(500).jsonp({ message: 'error' });
+        }
+    }
 
     public async ActualizarBaseEmpresa(req: Request, res: Response) {
         let id_empresa_bdd_ = req.body.id_empresa_bdd;

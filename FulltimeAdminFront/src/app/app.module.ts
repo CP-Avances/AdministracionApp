@@ -47,6 +47,9 @@ import { MetodosComponent } from './componentes/metodoEliminar/metodos.component
 import { VerEmpresaComponent } from './componentes/empresa/ver-empresa/ver-empresa.component';
 import { EditarEmpresaComponent } from './componentes/empresa/editar-empresa/editar-empresa.component';
 import { EditarBaseComponent } from './componentes/base/editar-base/editar-base.component';
+import { RegistroBaseComponent } from './componentes/base/registro-base/registro-base.component';
+import { EditarLicenciaComponent } from './componentes/licencia/editar-licencia/editar-licencia.component';
+import { EditarModulosComponent } from './componentes/modulos/editar-modulos/editar-modulos.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +66,10 @@ import { EditarBaseComponent } from './componentes/base/editar-base/editar-base.
     MetodosComponent,
     VerEmpresaComponent,
     EditarEmpresaComponent,
-    EditarBaseComponent
+    EditarBaseComponent,
+    RegistroBaseComponent,
+    EditarLicenciaComponent,
+    EditarModulosComponent
   ],
   imports: [
     BrowserModule,

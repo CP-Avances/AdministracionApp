@@ -423,3 +423,12 @@ td {
     margin-left: 5px;
     padding-top: 9px;
 }
+
+.text-break {
+    overflow-wrap: break-word;
+    word-break: break-all;
+}
+
+#color_fuente {
+    color: rgb(8, 8, 8);
+}

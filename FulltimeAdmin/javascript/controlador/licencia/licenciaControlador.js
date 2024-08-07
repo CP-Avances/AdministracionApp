@@ -150,6 +150,40 @@ class LicenciaControlador {
             }
         });
     }
+    BuscarLicenciaPorId(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const LICENCIAS = yield database_1.default.query(`
+                SELECT 
+                    empresa_licencia.id_empresa_licencia,
+                    empresa_licencia.id_empresa_bdd,
+                    empresa_licencia.llave_publica,
+                    empresa_licencia.fecha_activacion,
+                    empresa_licencia.fecha_desactivacion
+                FROM empresa_licencia empresa_licencia
+                INNER JOIN empresa_bdd empresa_bdd ON empresa_bdd.id_empresa_bdd = empresa_licencia.id_empresa_bdd
+                WHERE 
+                    empresa_bdd.id_empresa = $1
+                ORDER BY 1
+                `, [id]);
+                if (LICENCIAS.rowCount !== null) {
+                    if (LICENCIAS.rowCount > 0) {
+                        res.jsonp(LICENCIAS.rows);
+                    }
+                    else {
+                        res.status(404).jsonp({ message: 'vacio' });
+                    }
+                }
+                else {
+                    res.status(500).jsonp({ message: 'error' });
+                }
+            }
+            catch (error) {
+                res.status(500).jsonp({ message: 'error' });
+            }
+        });
+    }
 }
 exports.licenciaControlador = new LicenciaControlador;
 exports.default = exports.licenciaControlador;

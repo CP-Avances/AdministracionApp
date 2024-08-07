@@ -13,6 +13,7 @@ class LicenciaRutas {
         this.router.post('/registro-licencia', LICENCIA_CONTROLADOR.RegistrarLicencia);
         this.router.get('/licencias', LICENCIA_CONTROLADOR.ObtenerLicencias);
         this.router.get('/licencias-empresas', LICENCIA_CONTROLADOR.ObtenerLicenciasEmpresas);
+        this.router.get('/licencias-empresas/:id', LICENCIA_CONTROLADOR.BuscarLicenciaPorId);
         this.router.put('/actualizar-licencia', LICENCIA_CONTROLADOR.ActualizarLicencia);
         this.router.post('/eliminar-licencia', LICENCIA_CONTROLADOR.EliminarLicencia);
     }

@@ -13,6 +13,9 @@ import { BaseEmpresaService } from 'src/app/servicios/baseEmpresa/baseEmpresa.se
 import { ListaEmpresasService } from 'src/app/servicios/empresa/lista-empresas/lista-empresas.service';
 import { EditarEmpresaComponent } from '../editar-empresa/editar-empresa.component';
 import { BaseService } from 'src/app/servicios/base/base.service';
+import { RegistroBaseComponent } from '../../base/registro-base/registro-base.component';
+import { LicenciaService } from 'src/app/servicios/licencia/licencia.service';
+import { ValidacionesService } from 'src/app/servicios/validaciones/validaciones.service';
 
 @Component({
   selector: 'app-ver-empresa',
@@ -37,6 +40,7 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   discapacidadUser: any = [];
   empleadoLogueado: any = [];
   baseEmpresa: any = [];
+  licenciaEmpresa: any = [];
   tituloEmpleado: any = [];
   idPerVacacion: any = [];
   empresaUno: any = [];
@@ -56,20 +60,48 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   empresaBddContrasena: string;
   empresaBddUsuario: string;
 
+  //VER LICENCIA EMPRESA
+  idEmpresaLicencia: string;
+  idEmpresaLicenciaBdd: string;
+  empresaLicenciaLlavePublica: string;
+  empresaLicenciaFechaActivacion: any;
+  empresaLicenciaFechaDesactivacion: any;
+
+  //VER MODULOS EMPRESA
+  empresaModuloHoraExtra:boolean = false;
+  empresaModuloAccionPersonal:boolean = false;
+  empresaModuloAlimentacion:boolean = false;
+  empresaModuloPermisos:boolean = false;
+  empresaModuloGeolocalizacion:boolean = false;
+  empresaModuloVacaciones:boolean = false;
+  empresaModuloAppMovil:boolean = false;
+  empresaModuloTimbreWeb:boolean = false;
+
   //BASES Y LICENCIAS
   agregar_base_: boolean = false;
   editar_base_:boolean = false;
+  modificar_base_:boolean = false;
 
-  editar_base: boolean = false;
+  modificar_licencia_:boolean = false;
+  editar_licencia_:boolean = false;
+  agregar_licencia_:boolean = false;
+
+  modificar_modulos_:boolean = false;
+  editar_modulos_:boolean = false;
+  agregar_modulos_:boolean = false;
+
   pagina_base: any = '';
   base_editar: any = [];
-  btnActualizarBase: boolean = true;
+  licencia_editar: any = [];
+  modulos_editar: any = [];
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private informacion: ListaEmpresasService,
     private restBase: BaseService,
+    private restLicencia: LicenciaService,
     public ventana: MatDialog, // VARIABLE MANEJO DE VENTANAS
+    public validar: ValidacionesService
   ){ }
 
   ngOnInit(): void {
@@ -122,7 +154,7 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
       this.direccionEmpresa = this.empresaUno[0].empresa_direccion;
 
       this.ObtenerBaseEmpresa(this.idEmpresa);
-
+      this.ObtenerLicenciaEmpresa(this.idEmpresa);
     });
   }
 
@@ -166,19 +198,32 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
 
   // METODO DE EDICION DE BASES
   AbrirVentanaEditarBase(dataBase: any) {
-    this.editar_base = true;
+    this.editar_base_ = false;
+    this.modificar_base_ = true;
     this.base_editar = dataBase;
     this.pagina_base = 'ver-empresa';
-    this.btnActualizarBase = true;
   }
   
   // MOSTRAR VENTANA EDICION DE BASE
   VerBaseEdicion(value: boolean) {
-    this.btnActualizarBase = value;
-    this.editar_base = false;
-
+    this.modificar_base_ = value;
     this.editar_base_ = false;
     this.agregar_base_ = false;
+  }
+
+  // MOSTRAR VENTANA EDICION DE LICENCIA
+  VerLicenciaEdicion(value: boolean) {
+    this.modificar_licencia_ = value;
+    this.editar_licencia_ = false;
+    this.agregar_licencia_ = false;
+  }
+
+  // METODO DE EDICION DE BASES
+  AbrirVentanaEditarLicencia(dataLicencia: any) {
+    this.editar_licencia_ = false;
+    this.modificar_licencia_ = true;
+    this.licencia_editar = dataLicencia;
+    this.pagina_base = 'ver-empresa';
   }
 
   ObtenerBaseEmpresa(id_empresa: string) {
@@ -205,5 +250,34 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
       this.agregar_base_ = true;
     });
   }
+
+  ObtenerLicenciaEmpresa(id_empresa: string) {
+    let id_empresa_mod = Number(id_empresa);
+    this.licenciaEmpresa = [];
+    this.restLicencia.BuscarDatosLicenciaPorIdEmpresa(id_empresa_mod).subscribe(res => {
+      this.licenciaEmpresa = res;
+
+      this.idEmpresaLicencia = this.licenciaEmpresa[0].id_empresa_licencia;
+      this.idEmpresaBdd = this.licenciaEmpresa[0].id_empresa_bdd;
+      this.empresaLicenciaLlavePublica = this.licenciaEmpresa[0].llave_publica;
+      this.empresaLicenciaFechaActivacion = this.validar.FormatearFecha(this.licenciaEmpresa[0].fecha_activacion, 'YYYY-MM-DD', this.validar.dia_abreviado);
+      this.empresaLicenciaFechaDesactivacion = this.validar.FormatearFecha(this.licenciaEmpresa[0].fecha_desactivacion, 'YYYY-MM-DD', this.validar.dia_abreviado);
+
+      this.editar_licencia_ = true;
+      this.agregar_licencia_ = false;
+    },
+    err => {
+      this.editar_licencia_ = false;
+      this.agregar_licencia_ = false;
+    });
+  }
   
+  AbrirVentanaCrearBase(): void {
+    this.ventana.open(RegistroBaseComponent, { width: '900px', data: this.idEmpresa }).
+      afterClosed().subscribe(item => {
+        this.LeerDatosIniciales();
+        this.editar_base_ = true;
+      }
+    );
+  }
 }

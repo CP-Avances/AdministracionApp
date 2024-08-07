@@ -14,6 +14,7 @@ class LicenciaRutas {
         this.router.post('/registro-licencia', licenciaControlador_1.default.RegistrarLicencia);
         this.router.get('/licencias', licenciaControlador_1.default.ObtenerLicencias);
         this.router.get('/licencias-empresas', licenciaControlador_1.default.ObtenerLicenciasEmpresas);
+        this.router.get('/licencias-empresas/:id', licenciaControlador_1.default.BuscarLicenciaPorId);
         this.router.put('/actualizar-licencia', licenciaControlador_1.default.ActualizarLicencia);
         this.router.post('/eliminar-licencia', licenciaControlador_1.default.EliminarLicencia);
     }

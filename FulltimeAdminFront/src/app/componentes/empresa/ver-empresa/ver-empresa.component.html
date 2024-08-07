@@ -86,12 +86,13 @@
         </ng-template>
 
         <div class="container" style="padding-top: 15px; padding-bottom: 25px;">
-            <div style="padding-bottom: 35px;" *ngIf="editar_base">
+            <div style="padding-bottom: 35px;" *ngIf="modificar_base_">
                 <app-editar-base [base]="base_editar" [pagina]="pagina_base">
                 </app-editar-base>
             </div>
-            <div style="padding-bottom: 35px;" *ngIf="!btnActualizarBase">
-
+            <div style="padding-bottom: 35px;" *ngIf="modificar_licencia_">
+                <app-editar-licencia [licencia]="licencia_editar" [pagina]="pagina_base">
+                </app-editar-licencia>
             </div>
             <div class="row">
                 <div class="col-md" style="padding-bottom: 20px;">
@@ -103,7 +104,7 @@
                             <div class="flex-shrink-1 bd-highlight" style="margin-right: 10px;"
                                 *ngIf="agregar_base_">
                                 <button type="submit" class="btn btn-outline-light btn-sm" style="margin-top: -3px;"
-                                    >
+                                    (click)="AbrirVentanaCrearBase()">
                                     Añadir
                                 </button>
                             </div>
@@ -182,6 +183,41 @@
                                      ></button>
                             </div>
                         </div>
+                        <mat-card-content>
+                            <div class="container" style="padding-top: 15px;">
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Llave Pública:</label>
+                                            <label class="text-break">{{empresaLicenciaLlavePublica}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Fecha Activación:</label>
+                                            <label class="text-break">{{empresaLicenciaFechaActivacion}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Fecha Desactivación:</label>
+                                            <label class="text-break">{{empresaLicenciaFechaDesactivacion}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="text-align: right; padding-top: 3%;" *ngIf="editar_licencia_">
+                                    <i type="submit" id="edit" style="margin-right: 20px;"
+                                        (click)="VerLicenciaEdicion(false); AbrirVentanaEditarLicencia(licenciaEmpresa)" matSuffix matTooltipPosition="right"
+                                        matTooltip="Modificar los datos generales de este registro" class="fas fa-edit">
+                                        <p>Editar</p>
+                                    </i>
+                                </div>
+                            </div>
+                        </mat-card-content>
                     </mat-card>
                 </div>
             </div>
@@ -194,6 +230,39 @@
             <mat-icon class="example-tab-icon">shop</mat-icon>
             <h6 id="items">Módulos</h6>
         </ng-template>
+        <div class="container" style="padding-top: 15px; padding-bottom: 25px;">
+            <div style="padding-bottom: 35px;" *ngIf="modificar_modulos_">
+                <app-editar-modulos [modulos]="modulos_editar" [pagina]="pagina_base">
+                </app-editar-modulos>
+            </div>
+            <div class="row">
+                <div class="col-md" style="padding-bottom: 20px;">
+                    <mat-card class="mat-elevation-z8">
+                        <div class="d-flex bd-highlight" id="titulo">
+                            <div class="w-100 bd-highlight">
+                                <h5>MODULOS ACTUALES</h5>
+                            </div>
+                        </div>
+                        <mat-card-content>
+                            <label style="margin-right: 35px; font-size: 15px; padding-top: 10px;">
+                                Marcar los módulos que se vayan a activar.*
+                            </label>
+                            <div class="container" style="padding-top: 15px;">
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <mat-checkbox [disabled]="true" [checked]="!empresaModuloHoraExtra">
+                                                <span id="color_fuente">Horas Extras</span>
+                                            </mat-checkbox>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
     </mat-tab>
 
     <!-- WEB ACCESS -->

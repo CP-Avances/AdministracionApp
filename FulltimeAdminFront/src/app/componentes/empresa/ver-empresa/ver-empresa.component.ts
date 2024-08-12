@@ -16,6 +16,7 @@ import { BaseService } from 'src/app/servicios/base/base.service';
 import { RegistroBaseComponent } from '../../base/registro-base/registro-base.component';
 import { LicenciaService } from 'src/app/servicios/licencia/licencia.service';
 import { ValidacionesService } from 'src/app/servicios/validaciones/validaciones.service';
+import { RegistroLicenciaComponent } from '../../licencia/registro-licencia/registro-licencia.component';
 
 @Component({
   selector: 'app-ver-empresa',
@@ -41,6 +42,7 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   empleadoLogueado: any = [];
   baseEmpresa: any = [];
   licenciaEmpresa: any = [];
+  modulosEmpresa: any = [];
   tituloEmpleado: any = [];
   idPerVacacion: any = [];
   empresaUno: any = [];
@@ -88,7 +90,6 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
 
   modificar_modulos_:boolean = false;
   editar_modulos_:boolean = false;
-  agregar_modulos_:boolean = false;
 
   pagina_base: any = '';
   base_editar: any = [];
@@ -153,8 +154,23 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
       this.codigoEmpresa = this.empresaUno[0].empresa_codigo;
       this.direccionEmpresa = this.empresaUno[0].empresa_direccion;
 
+      //MODULOS
+      this.empresaModuloPermisos = this.empresaUno[0].permisos;
+      this.empresaModuloVacaciones = this.empresaUno[0].vacaciones;
+      this.empresaModuloHoraExtra = this.empresaUno[0].hora_extra;
+      this.empresaModuloGeolocalizacion = this.empresaUno[0].geolocalizacion;
+      this.empresaModuloTimbreWeb = this.empresaUno[0].timbre_web;
+      this.empresaModuloAppMovil = this.empresaUno[0].app_movil;
+      this.empresaModuloAccionPersonal = this.empresaUno[0].accion_personal;
+      this.empresaModuloAlimentacion = this.empresaUno[0].alimentacion;
+
+      //ARMAR JSON MODULOS
+      //this.modulosEmpresa
+
       this.ObtenerBaseEmpresa(this.idEmpresa);
       this.ObtenerLicenciaEmpresa(this.idEmpresa);
+
+      this.editar_modulos_ = true;
     });
   }
 
@@ -218,11 +234,25 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
     this.agregar_licencia_ = false;
   }
 
+  // MOSTRAR VENTANA EDICION DE MODULOS
+  VerModulosEdicion(value: boolean) {
+    this.modificar_modulos_ = value;
+    this.editar_modulos_ = false;
+  }
+
   // METODO DE EDICION DE BASES
   AbrirVentanaEditarLicencia(dataLicencia: any) {
     this.editar_licencia_ = false;
     this.modificar_licencia_ = true;
     this.licencia_editar = dataLicencia;
+    this.pagina_base = 'ver-empresa';
+  }
+
+  // METODO DE EDICION DE MODULOS
+  AbrirVentanaEditarModulos(dataLicencia: any) {
+    this.editar_modulos_ = false;
+    this.modificar_modulos_ = true;
+    this.modulos_editar = dataLicencia;
     this.pagina_base = 'ver-empresa';
   }
 
@@ -268,7 +298,7 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
     },
     err => {
       this.editar_licencia_ = false;
-      this.agregar_licencia_ = false;
+      this.agregar_licencia_ = true;
     });
   }
   
@@ -277,6 +307,15 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
       afterClosed().subscribe(item => {
         this.LeerDatosIniciales();
         this.editar_base_ = true;
+      }
+    );
+  }
+
+  AbrirVentanaCrearLicencia(): void {
+    this.ventana.open(RegistroLicenciaComponent, { width: '900px', data: this.idEmpresaBdd }).
+      afterClosed().subscribe(item => {
+        this.LeerDatosIniciales();
+        this.editar_licencia_ = true;
       }
     );
   }

@@ -36,6 +36,7 @@ class LicenciaControlador {
                     VALUES ($1, $2, $3, $4) RETURNING *
                 `, [licencia_datos.id_empresa_bdd, jsonEncriptado, licencia_datos.fecha_activacion, licencia_datos.fecha_desactivacion]);
                 const [registro_licencia] = response.rows;
+                console.log('reg_', registro_licencia);
                 if (registro_licencia) {
                     return res.status(200).jsonp({ message: 'ok' });
                 }

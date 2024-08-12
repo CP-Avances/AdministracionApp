@@ -33,6 +33,7 @@ class LicenciaControlador {
             );
 
             const [registro_licencia] = response.rows;
+            console.log('reg_', registro_licencia);
 
             if (registro_licencia) {
                 return res.status(200).jsonp({ message: 'ok' });

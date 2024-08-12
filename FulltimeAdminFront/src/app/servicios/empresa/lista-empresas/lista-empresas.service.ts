@@ -22,4 +22,8 @@ export class ListaEmpresasService {
     return this.http.get(`${environment.url}/empresa/verEmpresa/${id_empresa}`);
   }
 
+  ActualizarEmpresaModulos(id_empresa: number){
+    return this.http.get(`${environment.url}/empresa/actualizar-empresa/${id_empresa}`);
+  }
+
 }

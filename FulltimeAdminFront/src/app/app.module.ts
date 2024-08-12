@@ -50,6 +50,7 @@ import { EditarBaseComponent } from './componentes/base/editar-base/editar-base.
 import { RegistroBaseComponent } from './componentes/base/registro-base/registro-base.component';
 import { EditarLicenciaComponent } from './componentes/licencia/editar-licencia/editar-licencia.component';
 import { EditarModulosComponent } from './componentes/modulos/editar-modulos/editar-modulos.component';
+import { RegistroLicenciaComponent } from './componentes/licencia/registro-licencia/registro-licencia.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { EditarModulosComponent } from './componentes/modulos/editar-modulos/edi
     EditarBaseComponent,
     RegistroBaseComponent,
     EditarLicenciaComponent,
-    EditarModulosComponent
+    EditarModulosComponent,
+    RegistroLicenciaComponent
   ],
   imports: [
     BrowserModule,

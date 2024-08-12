@@ -33,4 +33,8 @@ export class LicenciaService {
     return this.http.put<any>(`${environment.url}/licencia/actualizar-licencia/`, data);
   }
 
+  InsertarLicencia(data: any) {
+    return this.http.post<any>(`${environment.url}/licencia/registro-licencia/`, data);
+  }
+
 }

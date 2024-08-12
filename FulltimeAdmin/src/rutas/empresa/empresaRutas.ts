@@ -16,6 +16,7 @@ class EmpresaRutas {
         this.router.put('/actualizar-empresa-form-uno', EMPRESA_CONTROLADOR.ActualizarEmpresaFormUno);
         this.router.post('/eliminar-empresa', EMPRESA_CONTROLADOR.EliminarEmpresa);
         this.router.get('/verEmpresa/:id', EMPRESA_CONTROLADOR.ListarEmpresaId);
+        this.router.post('/actualizar-empresa/:id', EMPRESA_CONTROLADOR.ActualizarEmpresaModulos);
     }
     
 }

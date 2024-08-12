@@ -166,6 +166,34 @@ class EmpresaControlador {
         }
     }
 
+    public async ActualizarEmpresaModulos(req: Request, res: Response) {
+        let empresa_id_ = req.body.empresa_id;
+        let empresa_modulos_permisos_ = req.body.empresa_modulos_permisos_;
+        let empresa_modulos_vacaciones_ = req.body.empresa_modulos_vacaciones_;
+        let empresa_modulos_hora_extra_ = req.body.empresa_modulos_hora_extra_;
+        let empresa_modulos_geolocalizacion_ = req.body.empresa_modulos_geolocalizacion_;
+        let empresa_modulos_timbre_web_ = req.body.empresa_modulos_timbre_web_;
+        let empresa_modulos_app_movil_ = req.body.empresa_modulos_app_movil_;
+        let empresa_modulos_accion_personal_ = req.body.empresa_modulos_accion_personal_;
+        let empresa_modulos_alimentacion_ = req.body.empresa_modulos_alimentacion_;
+
+        try{
+            await pool.query(
+                `
+                UPDATE empresa SET hora_extra = $2, accion_personal = $3, alimentacion = $4, permisos = $5, geolocalizacion = $6, vacaciones = $7, app_movil = $8, timbre_web = $9 
+                WHERE empresa_id = $1
+                `,
+                [empresa_id_, empresa_modulos_hora_extra_, empresa_modulos_accion_personal_, empresa_modulos_alimentacion_, empresa_modulos_permisos_, empresa_modulos_geolocalizacion_, empresa_modulos_vacaciones_, empresa_modulos_app_movil_, empresa_modulos_timbre_web_]
+            );
+
+            res.jsonp({ message: 'Registro actualizado.' });
+        }
+        catch (error)
+        {
+            return res.jsonp({ message: error });
+        }
+    }
+
 }
 
 export const empresaControlador = new EmpresaControlador;

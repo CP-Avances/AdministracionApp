@@ -1,1 +1,46 @@
-<p>editar-modulos works!</p>
+<div id="titulo">
+    <mat-icon id="movilidad" class="float-left">open_with</mat-icon>
+    <span cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+        MODIFICAR MODULOS
+    </span>
+    <mat-icon class="float-right" id="cerrar" (click)="Cancelar(1)" matSuffix matTooltipPosition="right"
+        matTooltip="Salir">
+        highlight_off
+    </mat-icon>
+</div>
+<mat-card class="example-card mat-elevation-z8">
+    <!-- FORMULARIO COMPLETO -->
+    <mat-card-content>
+        <div style="text-align: center">
+            <div class="nota" style="text-align: justify;">
+                <span>
+                    NOTA: Por favor llenar todos los campos obligatorios (*) del formulario para activar el botón
+                    Guardar.
+                </span>
+            </div>
+        </div>
+        <br>
+        <form [formGroup]="ModulosForm">
+            <div class="row">
+                <div class="col-md">
+                    <div class="d-flex flex-wrap justify-content-around">
+                        <div class="container" style="padding-top: 15px;">
+                            <div class="row">
+                                <div class="col-md">
+                                    <mat-checkbox matSuffix matTooltipPosition="right"
+                                        [formControl]="empresaModulosPermisosForm"
+                                        matTooltip="Indicar si el usuario tiene habilitado el módulo de permisos.">
+                                        <label id="textoradiobtn" style="font-size: 12px;">
+                                            Permisos
+                                        </label>
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+
+</mat-card>

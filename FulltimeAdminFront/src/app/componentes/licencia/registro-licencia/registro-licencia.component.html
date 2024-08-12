@@ -1,0 +1,55 @@
+<div id="titulo">
+    <mat-icon id="movilidad" class="float-left">open_with</mat-icon>
+    <span cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+        REGISTRAR LICENCIA PARA ...
+    </span>
+    <mat-icon class="float-right" id="cerrar" (click)="CerrarVentana()" matSuffix matTooltipPosition="right"
+        matTooltip="Salir">
+        highlight_off
+    </mat-icon>
+</div>
+<div>
+    <!-- FORMULARIO COMPLETO -->
+    <mat-card-content>
+        <div class="container" style="text-align: center">
+            <div class="nota" style="text-align: justify;">
+                <span>
+                    NOTA: Por favor llenar todos los campos obligatorios (*) del formulario para activar el botón
+                    Guardar.
+                </span>
+            </div>
+            <form [formGroup]="formulario">
+                <div class="row">
+                    <div class="col-md">
+                        <div class="d-flex flex-wrap justify-content-around">
+                            <mat-form-field id="fechas">
+                                <mat-label>Fecha Activación</mat-label>
+                                <input matInput [matDatepicker]="picker" placeholder="dd/mm/aaaa"
+                                    [formControl]="empresaLicenciaFechaActivacionForm" min="1950-01-31" max="2050-01-31" required>
+                                <mat-datepicker-toggle matSuffix [for]="picker" id="i-cursor" matTooltipPosition="right"
+                                    matTooltip="Indicar la fecha de activación de la licencia. Seleccione la fecha dando click en el icono de calendario o puede escribir la fecha con el formato  día/mes/año. Ejemplo: 12/04/1993">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker touchUi #picker></mat-datepicker>
+                            </mat-form-field>
+                            <mat-form-field id="fechas">
+                                <mat-label>Fecha Desactivación</mat-label>
+                                <input matInput [matDatepicker]="picker2" placeholder="dd/mm/aaaa"
+                                    [formControl]="empresaLicenciaFechaDesactivacionForm" min="1950-01-31" max="2050-01-31" required>
+                                <mat-datepicker-toggle matSuffix [for]="picker2" id="i-cursor" matTooltipPosition="right"
+                                    matTooltip="Indicar la fecha de desactivación de la licencia. Seleccione la fecha dando click en el icono de calendario o puede escribir la fecha con el formato  día/mes/año. Ejemplo: 12/04/1993">
+                                </mat-datepicker-toggle>
+                                <mat-datepicker touchUi #picker2></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </mat-card-content>
+    <div class="d-flex flex-wrap justify-content-center" style="padding-top: 2%; margin-bottom: 2%;">
+        <mat-card-actions style="text-align: center">
+            <button id="btn-raised" class="btn btn-sm" [disabled]="!formulario.valid"
+            (click)="ValidarDatosLicencia(formulario.value)" value="Guardar">Guardar</button>
+        </mat-card-actions>
+    </div>
+</div>

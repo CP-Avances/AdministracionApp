@@ -89,7 +89,8 @@ class BaseEmpresaControlador {
                     empresas_bdd.id_empresa_bdd, 
                     empresas_bdd.empresa_bdd_descripcion,
                     empresas_bdd.empresa_bdd_usuario,
-                    empresas_bdd.empresa_bdd_contrasena 
+                    empresas_bdd.empresa_bdd_contrasena,
+                    empresa.numero_relojes
                 FROM pg_database pg_database 
                 LEFT JOIN (SELECT * FROM empresa_bdd) AS empresas_bdd ON empresas_bdd.empresa_bdd_nombre = pg_database.datname 
                 INNER JOIN (SELECT * FROM empresa) AS empresa ON empresa.empresa_id = empresas_bdd.id_empresa 

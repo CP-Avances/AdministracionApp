@@ -54,6 +54,7 @@ export class EditarEmpresaComponent implements OnInit {
       empresaCodigoForm: [''],
       empresaDireccionForm: [''],
       empresaDescripcionForm: [''],
+      empresaNumeroRelojesForm: ['']
     })
   }
 
@@ -69,12 +70,13 @@ export class EditarEmpresaComponent implements OnInit {
 
   ObtenerEmpresa(){
   
-    const {empresa_id, empresa_codigo, empresa_direccion, empresa_descripcion} = this.empresa[0];
+    const {empresa_id, empresa_codigo, empresa_direccion, empresa_descripcion, numero_relojes} = this.empresa[0];
 
     this.primeroFormGroup.setValue({
       empresaCodigoForm: empresa_codigo,
       empresaDireccionForm: empresa_direccion,
       empresaDescripcionForm: empresa_descripcion,
+      empresaNumeroRelojesForm: numero_relojes
     });
     
   }
@@ -84,12 +86,9 @@ export class EditarEmpresaComponent implements OnInit {
       empresa_id: this.idEmpresa,
       empresa_codigo: form1.empresaCodigoForm,
       empresa_direccion: form1.empresaDireccionForm,
-      empresa_descripcion: form1.empresaDescripcionForm
+      empresa_descripcion: form1.empresaDescripcionForm,
+      numero_relojes: form1.empresaNumeroRelojesForm
     }
-    console.log('empresa.empresa_id_',empresa.empresa_id);
-    console.log('empresa.empresa_codigo_',empresa.empresa_codigo);
-    console.log('empresa.empresa_direccion_',empresa.empresa_direccion);
-    console.log('empresa.empresa_descripcion_',empresa.empresa_descripcion);
 
     this.restEmpresa.ActualizarEmpresaFormUno(empresa).subscribe(
       (response: any) => {

@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { RegistroEmpresaService } from 'src/app/servicios/empresa/registro-empresa/registro-empresa.service';
+import { ValidacionesService } from 'src/app/servicios/validaciones/validaciones.service';
 
 @Component({
   selector: 'app-registro-empresa',
@@ -23,7 +24,8 @@ export class RegistroEmpresaComponent implements OnInit {
     private _formBuilder: FormBuilder,
     public ventana: MatDialog,
     private restEmpresa: RegistroEmpresaService,
-    private router: Router
+    private router: Router,
+    private validar: ValidacionesService
   ){ }
 
   ngOnInit(): void {
@@ -34,7 +36,8 @@ export class RegistroEmpresaComponent implements OnInit {
     this.primeroFormGroup = this._formBuilder.group({
       empresaRegistroDescripcionForm: [''],
       empresaRegistroCodigoForm: [''],
-      empresaRegistroDireccionForm: ['']
+      empresaRegistroDireccionForm: [''],
+      empresaNumeroRelojesForm: ['']
     });
     this.segundoFormGroup = this._formBuilder.group({
       empresaRegistroModuloPermisosForm: [false],
@@ -54,6 +57,7 @@ export class RegistroEmpresaComponent implements OnInit {
       empresa_codigo: form1.empresaRegistroCodigoForm,
       empresa_direccion: form1.empresaRegistroDireccionForm,
       empresa_descripcion: form1.empresaRegistroDescripcionForm,
+      numero_relojes: form1.empresaNumeroRelojesForm,
       hora_extra: form2.empresaRegistroModuloHorasExtraForm,
       accion_personal: form2.empresaRegistroModuloAccionesPersonalForm,
       alimentacion: form2.empresaRegistroModuloAlimentacionForm,
@@ -94,6 +98,10 @@ export class RegistroEmpresaComponent implements OnInit {
   // METODO PARA INGRESAR A FICHA DE EMPRESA
   VerDatos() {
     this.router.navigate(['/empresas']);
+  }
+
+  IngresarSoloNumerosEnteros(evt: any) {
+    return this.validar.IngresarSoloNumeros(evt);
   }
 
 }

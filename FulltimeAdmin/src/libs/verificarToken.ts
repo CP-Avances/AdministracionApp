@@ -36,7 +36,6 @@ export const TokenValidation = async (req: Request, res: Response, next: NextFun
         // SI EL TOKEN NO ESTA VACIO
         // SE EXTRAE LOS DATOS DEL TOKEN 
         const payload = jwt.verify(token, process.env.TOKEN_SECRET || 'llaveSecreta') as IPayload;
-        console.log(payload);
         // CUANDO SE EXTRAE LOS DATOS SE GUARDA EN UNA PROPIEDAD REQ.USERID PARA Q LAS DEMAS FUNCIONES PUEDAN UTILIZAR ESE ID 
         if (!payload._usuario) return res.status(401).send('No tiene acceso a los recursos de la aplicacion.');
         

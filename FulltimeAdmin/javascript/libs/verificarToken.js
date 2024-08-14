@@ -29,7 +29,6 @@ const TokenValidation = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         // SI EL TOKEN NO ESTA VACIO
         // SE EXTRAE LOS DATOS DEL TOKEN 
         const payload = jsonwebtoken_1.default.verify(token, process.env.TOKEN_SECRET || 'llaveSecreta');
-        console.log(payload);
         // CUANDO SE EXTRAE LOS DATOS SE GUARDA EN UNA PROPIEDAD REQ.USERID PARA Q LAS DEMAS FUNCIONES PUEDAN UTILIZAR ESE ID 
         if (!payload._usuario)
             return res.status(401).send('No tiene acceso a los recursos de la aplicacion.');

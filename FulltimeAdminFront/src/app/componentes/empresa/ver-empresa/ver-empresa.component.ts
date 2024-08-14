@@ -57,6 +57,7 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   descripcionEmpresa: string;
   codigoEmpresa: string;
   direccionEmpresa: string;
+  numeroRelojesEmpresa: string;
 
   //VER BASE EMPRESA
   idEmpresaBdd: string;
@@ -167,6 +168,7 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
       this.descripcionEmpresa = this.empresaUno[0].empresa_descripcion;
       this.codigoEmpresa = this.empresaUno[0].empresa_codigo;
       this.direccionEmpresa = this.empresaUno[0].empresa_direccion;
+      this.numeroRelojesEmpresa = this.empresaUno[0].numero_relojes;
 
       //MODULOS
       this.empresaModuloPermisos = this.empresaUno[0].permisos;
@@ -442,7 +444,8 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
             [
               { text: 'Id de empresa: ' + this.empresaUno[0].empresa_id, style: 'item' },
               { text: 'Código de la empresa: ' + this.codigoEmpresa, style: 'item' },
-              { text: 'Dirección URL del servicio de la empresa: ' + this.direccionEmpresa, style: 'item' }
+              { text: 'Dirección URL del servicio de la empresa: ' + this.direccionEmpresa, style: 'item' },
+              { text: 'Número de relojes: ' + this.numeroRelojesEmpresa, style: 'item' }
             ]
           ]
         },

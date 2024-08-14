@@ -36,6 +36,7 @@ class EmpresaControlador {
         let empresa_codigo_ = req.body.empresa_codigo;
         let empresa_direccion_ = req.body.empresa_direccion;
         let empresa_descripcion_ = req.body.empresa_descripcion;
+        let numero_relojes_ = req.body.numero_relojes;
         let hora_extra_ = req.body.hora_extra;
         let accion_personal_ = req.body.accion_personal;
         let alimentacion_ = req.body.alimentacion;
@@ -52,10 +53,10 @@ class EmpresaControlador {
 
             const response: QueryResult = await pool.query(
                 `
-                INSERT INTO empresa (empresa_codigo, empresa_direccion, empresa_descripcion, hora_extra, accion_personal, alimentacion, permisos, geolocalizacion, vacaciones, app_movil, timbre_web, movil_direccion, movil_descripcion)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *
+                INSERT INTO empresa (empresa_codigo, empresa_direccion, empresa_descripcion, numero_relojes, hora_extra, accion_personal, alimentacion, permisos, geolocalizacion, vacaciones, app_movil, timbre_web, movil_direccion, movil_descripcion)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *
                 `,
-                [codigo_empresa_mod, empresa_direccion_, empresa_descripcion_, hora_extra_, accion_personal_, alimentacion_, permisos_, geolocalizacion_, vacaciones_, app_movil_, timbre_web_, movil_direccion_, movil_descripcion_]
+                [codigo_empresa_mod, empresa_direccion_, empresa_descripcion_, numero_relojes_, hora_extra_, accion_personal_, alimentacion_, permisos_, geolocalizacion_, vacaciones_, app_movil_, timbre_web_, movil_direccion_, movil_descripcion_]
             );
 
             const [registro_empresa] = response.rows;
@@ -111,16 +112,17 @@ class EmpresaControlador {
         let empresa_codigo_ = req.body.empresa_codigo;
         let empresa_direccion_ = req.body.empresa_direccion;
         let empresa_descripcion_ = req.body.empresa_descripcion;
+        let empresa_numero_relojes_ = req.body.numero_relojes;
 
         try{
             let empresa_codigo_mod = RsaKeyService.encriptarLogin(empresa_codigo_);
 
             await pool.query(
                 `
-                UPDATE empresa SET empresa_codigo = $2, empresa_direccion = $3, empresa_descripcion = $4 
+                UPDATE empresa SET empresa_codigo = $2, empresa_direccion = $3, empresa_descripcion = $4, numero_relojes = $5 
                 WHERE empresa_id = $1
                 `,
-                [empresa_id_, empresa_codigo_mod, empresa_direccion_, empresa_descripcion_]
+                [empresa_id_, empresa_codigo_mod, empresa_direccion_, empresa_descripcion_, empresa_numero_relojes_]
             );
 
             res.jsonp({ message: 'Registro actualizado.' });

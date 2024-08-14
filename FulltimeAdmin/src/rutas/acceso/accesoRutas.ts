@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import ACCESO_CONTROLADOR from '../../controlador/acceso/accesoControlador';
+import { TokenValidation } from '../../libs/verificarToken';
 
 class AccesoRutas {
 
@@ -10,7 +11,7 @@ class AccesoRutas {
     }
 
     configuracion(): void {
-        this.router.post('/actualizar-accessweb', ACCESO_CONTROLADOR.ActualizarAccesoWeb);
+        this.router.post('/actualizar-accessweb', TokenValidation, ACCESO_CONTROLADOR.ActualizarAccesoWeb);
     }
     
 }

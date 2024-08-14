@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { VerEmpresaComponent } from '../../empresa/ver-empresa/ver-empresa.component';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup } from '@angular/forms';
+import { RegistroEmpresaService } from 'src/app/servicios/empresa/registro-empresa/registro-empresa.service';
 
 @Component({
   selector: 'app-editar-modulos',
@@ -12,6 +13,9 @@ export class EditarModulosComponent implements OnInit{
 
   @Input() modulos: any;
   @Input() pagina: any;
+
+  ip: string | null;
+  idEmpresa: number;
 
   empresaModulosPermisosForm = new FormControl('');
   empresaModulosVacacionesForm = new FormControl('');
@@ -24,11 +28,15 @@ export class EditarModulosComponent implements OnInit{
 
   constructor(
     public componentev: VerEmpresaComponent,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private restModulos: RegistroEmpresaService
   ){ }
 
   ngOnInit(): void {
-    console.log("empresa:", this.modulos[0]);
+    this.ip = localStorage.getItem('ip');
+    this.idEmpresa = this.modulos.empresa_id;
+    console.log('EMPRESA_', this.idEmpresa);
+    this.InicializarValores();
   }
 
   public ModulosForm = new FormGroup({
@@ -42,6 +50,17 @@ export class EditarModulosComponent implements OnInit{
     empresaModulosAlimentacionForm: this.empresaModulosAlimentacionForm
   });
 
+  InicializarValores(){
+    this.empresaModulosPermisosForm.setValue(this.modulos.empresa_modulos_permisos_);
+    this.empresaModulosVacacionesForm.setValue(this.modulos.empresa_modulos_vacaciones_);
+    this.empresaModulosHoraExtraForm.setValue(this.modulos.empresa_modulos_hora_extra_);
+    this.empresaModulosGeolocalizacionForm.setValue(this.modulos.empresa_modulos_geolocalizacion_);
+    this.empresaModulosTimbreVirtualForm.setValue(this.modulos.empresa_modulos_timbre_web_);
+    this.empresaModulosAplicacionMovilForm.setValue(this.modulos.empresa_modulos_app_movil_);
+    this.empresaModulosAccionPersonalForm.setValue(this.modulos.empresa_modulos_accion_personal_);
+    this.empresaModulosAlimentacionForm.setValue(this.modulos.empresa_modulos_alimentacion_);
+  }
+
   // CERRAR VENTA DE REGISTRO
   Cancelar(opcion: any) {
     if (this.pagina === 'ver-empresa') {
@@ -51,6 +70,49 @@ export class EditarModulosComponent implements OnInit{
         this.componentev.LeerDatosIniciales();
       }
     }
+  }
+
+  ValidarDatosModulos(form: any) {
+    this.ActualizarModulos(form);
+  }
+
+  ActualizarModulos(form: any) {
+    let datosBase = {
+      empresa_id: this.idEmpresa,
+      empresa_modulos_permisos_: this.empresaModulosPermisosForm.value,
+      empresa_modulos_vacaciones_: this.empresaModulosVacacionesForm.value,
+      empresa_modulos_hora_extra_: this.empresaModulosHoraExtraForm.value,
+      empresa_modulos_geolocalizacion_: this.empresaModulosGeolocalizacionForm.value,
+      empresa_modulos_timbre_web_: this.empresaModulosTimbreVirtualForm.value,
+      empresa_modulos_app_movil_: this.empresaModulosAplicacionMovilForm.value,
+      empresa_modulos_accion_personal_: this.empresaModulosAccionPersonalForm.value,
+      empresa_modulos_alimentacion_: this.empresaModulosAlimentacionForm.value
+    }
+    this.GuardarDatos(datosBase);
+  }
+
+  GuardarDatos(datos: any) {
+    console.log(datos);
+    this.restModulos.ActualizarEmpresaModulos(datos).subscribe(
+      (response: any) => {
+        if (response.message === 'Registro actualizado.') {
+          this.toastr.success('Operación exitosa.', 'Registro actualizado.', {
+            timeOut: 6000,
+          });
+          this.LimpiarCampos();
+          this.Cancelar(2);
+        }
+      },
+      error => {
+        this.toastr.error(error.error.message, 'Upss!!! algo salió mal.', {
+          timeOut: 6000,
+        });
+      }
+    );
+  }
+
+  LimpiarCampos() {
+    this.ModulosForm.reset();
   }
 
 }

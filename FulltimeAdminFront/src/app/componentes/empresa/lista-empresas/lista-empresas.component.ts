@@ -12,6 +12,7 @@ import { ListaEmpresasService } from 'src/app/servicios/empresa/lista-empresas/l
 import { forkJoin } from 'rxjs';
 import { MetodosComponent } from '../../metodoEliminar/metodos.component';
 import { ValidacionesService } from 'src/app/servicios/validaciones/validaciones.service';
+import { RegistroEmpresaService } from 'src/app/servicios/empresa/registro-empresa/registro-empresa.service';
 
 @Component({
   selector: 'app-lista-empresas',
@@ -61,10 +62,12 @@ export class ListaEmpresasComponent implements OnInit {
   DataEmpresas: any;
 
   constructor(
-    public restEmpresa: ListaEmpresasService,
+    public restListaEmpresa: ListaEmpresasService,
     public ventana: MatDialog, // VARIABLE MANEJO DE VENTANAS DE DIÁLOGO
     private toastr: ToastrService,
     private validar: ValidacionesService,
+    private restEmpresa: RegistroEmpresaService,
+    private router: Router
   )
   { }
 
@@ -116,7 +119,7 @@ export class ListaEmpresasComponent implements OnInit {
   
   // METODO PARA LISTAR EMPRESAS
   async GetEmpresas(){
-    this.restEmpresa.ObtenerInformacionEmpresasRegistradas().subscribe(
+    this.restListaEmpresa.ObtenerInformacionEmpresasRegistradas().subscribe(
       datos => {
         this.empresa = datos;
         console.log(':::::',this.empresa);
@@ -177,6 +180,35 @@ export class ListaEmpresasComponent implements OnInit {
   ManejarPaginaMulti(e: PageEvent) {
     this.tamanio_paginaMul = e.pageSize;
     this.numero_paginaMul = e.pageIndex + 1
+  }
+
+  ConfirmarDelete(datos: any) {
+    let dataIdEmpresa = {
+      empresa_id: datos
+    }
+    this.restEmpresa.EliminarEmpresa(dataIdEmpresa).subscribe(
+      response => {
+        if (response.message === 'Registro eliminado.') {
+          this.VerDatos();
+          this.toastr.success('Operación exitosa.', 'Registro Eliminado.', {
+            timeOut: 6000,
+          });
+        }else{
+          this.toastr.error('Verifique datos adjuntos a la empresa antes de eliminarla', 'Upss!!! algo salió mal.', {
+            timeOut: 6000,
+          });
+        }
+      },
+      error => {
+        this.toastr.error(error.error.message, 'Upss!!! algo salió mal.', {
+          timeOut: 6000,
+        });
+      }
+    );
+  }
+
+  VerDatos() {
+    this.router.navigate(['/home']);
   }
 
 }

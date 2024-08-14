@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class LicenciaService {
+export class WebAccessService {
 
   url: string;
 
@@ -21,16 +21,8 @@ export class LicenciaService {
     private http: HttpClient
   ) { }
 
-  BuscarDatosLicenciaPorIdEmpresa(id_empresa: number){
-    return this.http.get(`${environment.url}/licencia/licencias-empresas/${id_empresa}`);
-  }
-
-  ActualizarLicencia(data: any){
-    return this.http.put<any>(`${environment.url}/licencia/actualizar-licencia/`, data);
-  }
-
-  InsertarLicencia(data: any) {
-    return this.http.post<any>(`${environment.url}/licencia/registro-licencia/`, data);
+  ActualizarAccessoWeb(data: any){
+    return this.http.post<any>(`${environment.url}/web-access/actualizar-accessweb`, data);
   }
 
 }

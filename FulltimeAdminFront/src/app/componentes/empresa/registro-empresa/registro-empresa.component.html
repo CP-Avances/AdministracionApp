@@ -1,1 +1,160 @@
-<p>registro-empresa works!</p>
+<div class="container" style="padding-top: 15px;">
+    <mat-card class="example-card mat-elevation-z8">
+        <div id="titulo">
+            <button class="btn btn-outline-light btn-sm" style="float: left; margin-left: 10px;"
+                [routerLink]="['/empresas']">
+                Listar empresas
+            </button>
+            <span>REGISTRAR DATOS DE LA EMPRESA</span>
+        </div>
+        <mat-horizontal-stepper [linear]="isLinear" #stepper>
+            <mat-step [stepControl]="primeroFormGroup">
+                <ng-template matStepLabel>
+                    <mat-icon id="seccion_emple" matSuffix matTooltipPosition="right"
+                        matTooltip="Sección 1: Datos Empresariales">
+                        person_add
+                    </mat-icon>
+                </ng-template>
+                <div class="subtitulo">
+                    <span>Datos Iniciales de la Empresa</span>
+                </div>
+                <br>
+                <div class="nota">
+                    <span>
+                        Por favor llenar todos los campos obligatorios (*) del formulario y dar click en Siguiente
+                        para continuar.
+                    </span>
+                </div>
+                <form [formGroup]="primeroFormGroup">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        <mat-form-field>
+                                            <mat-label>Descripción</mat-label>
+                                            <input matInput placeholder="Ej: Casa Pazmiño" type="text"
+                                                formControlName="empresaRegistroDescripcionForm" required>
+                                            <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                                matTooltip="Ingresar el nombre de la Empresa.">
+                                                help_outline
+                                            </mat-icon>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        <mat-form-field>
+                                            <mat-label>Código Empresarial</mat-label>
+                                            <input matInput placeholder="Ej: CxdIG0" type="text"
+                                                formControlName="empresaRegistroCodigoForm" required>
+                                            <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                                matTooltip="Ingresar un código para el ingreso al sistema.">
+                                                help_outline
+                                            </mat-icon>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        <mat-form-field>
+                                            <mat-label>Dirección URL Empresarial</mat-label>
+                                            <input matInput placeholder="Ej: http://192.168.0.14:3000" type="text"
+                                                formControlName="empresaRegistroDireccionForm" required>
+                                            <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                                matTooltip="Ingresar la URL del servicio del sistema.">
+                                                help_outline
+                                            </mat-icon>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="d-flex flex-wrap justify-content-between float-right">
+                    <button mat-raised-button id="btn-raised" matStepperNext class="float-right">Siguiente</button>
+                </div>
+            </mat-step>
+
+            <mat-step [stepControl]="segundoFormGroup">
+                <form [formGroup]="segundoFormGroup">
+                    <ng-template matStepLabel>
+                        <mat-icon id="seccion_emple" matSuffix matTooltipPosition="right"
+                            matTooltip="Sección 2: Módulos">insert_emoticon
+                        </mat-icon>
+                    </ng-template>
+                    <div class="subtitulo">
+                        <span>Módulos</span>
+                    </div>
+                    <br>
+                    <div class="nota">
+                        <span>Por favor llenar todos los campos obligatorios (*) del formulario y dar click en Siguiente
+                            para continuar.</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="d-flex flex-wrap justify-content-between">
+                                        <mat-checkbox formControlName="empresaRegistroModuloPermisosForm">
+                                            <span id="color_fuente">Permisos</span>
+                                        </mat-checkbox>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-between">
+                                        <mat-checkbox formControlName="empresaRegistroModuloVacacionesForm">
+                                            <span id="color_fuente">Vacaciones</span>
+                                        </mat-checkbox>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-between">
+                                        <mat-checkbox formControlName="empresaRegistroModuloHorasExtraForm">
+                                            <span id="color_fuente">Horas Extras</span>
+                                        </mat-checkbox>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex flex-wrap justify-content-between">
+                                        <mat-checkbox formControlName="empresaRegistroModuloGeolocalizacionForm">
+                                            <span id="color_fuente">Geolocalización</span>
+                                        </mat-checkbox>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-between">
+                                        <mat-checkbox formControlName="empresaRegistroModuloTimbreVirtualForm">
+                                            <span id="color_fuente">Timbre Virtual</span>
+                                        </mat-checkbox>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-between">
+                                        <mat-checkbox formControlName="empresaRegistroModuloAplicacionMovilForm">
+                                            <span id="color_fuente">Aplicación Móvil</span>
+                                        </mat-checkbox>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex flex-wrap justify-content-between">
+                                        <mat-checkbox formControlName="empresaRegistroModuloAccionesPersonalForm">
+                                            <span id="color_fuente">Acción de Personal</span>
+                                        </mat-checkbox>
+                                    </div>
+                                    <div class="d-flex flex-wrap justify-content-between">
+                                        <mat-checkbox formControlName="empresaRegistroModuloAlimentacionForm">
+                                            <span id="color_fuente">Alimentación</span>
+                                        </mat-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div style="text-align: center; padding-top: 15px;">
+                    <button mat-raised-button matStepperPrevious class="float-left" id="btn-raised-">Atrás</button>
+                    <button button mat-raised-button id="btn-raised" (click)="stepper.reset()">Cancelar</button>
+                    <button button mat-raised-button class="float-right" id="btn-raised_"
+                        (click)="InsertarEmpresa(primeroFormGroup.value, segundoFormGroup.value);"
+                        type="submit" [disabled]="!segundoFormGroup.valid">
+                        Guardar
+                    </button>
+                </div>
+            </mat-step>
+        </mat-horizontal-stepper>
+    </mat-card>
+</div>

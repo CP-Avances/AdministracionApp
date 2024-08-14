@@ -134,7 +134,7 @@ body {
 /* ESTILOS DE INPUTS DE BUSQUEDA EN TABLAS */
 #t-inputs {
     background: transparent;
-    font-size: 14px;
+    font-size: 12px;
     text-align: center;
     outline: none;
     fill: none;
@@ -273,6 +273,23 @@ mat-divider {
 mat-progress-spinner {
     background: transparent;
     z-index: 100;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: small;
+  }
+
+  .icon {
+    margin-right: 10px;
+  }
+
+/* ESTILLO PARA CENTRAR LOS TITULOS DE LAS TABLAS DE FORMA VERTICAL */
+#cabecera {
+    vertical-align: middle;
 }
 
 @import "~leaflet/dist/leaflet.css";

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import EMPRESA_CONTROLADOR from '../../controlador/empresa/empresaControlador';
+import { TokenValidation } from '../../libs/verificarToken';
 
 class EmpresaRutas {
 
@@ -10,13 +11,13 @@ class EmpresaRutas {
     }
 
     configuracion(): void {
-        this.router.get('/empresas', EMPRESA_CONTROLADOR.ObtenerEmpresas);
-        this.router.post('/registro-empresa', EMPRESA_CONTROLADOR.RegistrarEmpresas);
-        this.router.put('/actualizar-empresa', EMPRESA_CONTROLADOR.ActualizarEmpresa);
-        this.router.put('/actualizar-empresa-form-uno', EMPRESA_CONTROLADOR.ActualizarEmpresaFormUno);
-        this.router.post('/eliminar-empresa', EMPRESA_CONTROLADOR.EliminarEmpresa);
-        this.router.get('/verEmpresa/:id', EMPRESA_CONTROLADOR.ListarEmpresaId);
-        this.router.post('/actualizar-empresa/:id', EMPRESA_CONTROLADOR.ActualizarEmpresaModulos);
+        this.router.get('/empresas', TokenValidation, EMPRESA_CONTROLADOR.ObtenerEmpresas);
+        this.router.post('/registro-empresa', TokenValidation, EMPRESA_CONTROLADOR.RegistrarEmpresas);
+        this.router.put('/actualizar-empresa', TokenValidation, EMPRESA_CONTROLADOR.ActualizarEmpresa);
+        this.router.put('/actualizar-empresa-form-uno', TokenValidation, EMPRESA_CONTROLADOR.ActualizarEmpresaFormUno);
+        this.router.post('/eliminar-empresa', TokenValidation, EMPRESA_CONTROLADOR.EliminarEmpresa);
+        this.router.get('/verEmpresa/:id', TokenValidation, EMPRESA_CONTROLADOR.ListarEmpresaId);
+        this.router.put('/actualizar-empresa-modulos', TokenValidation, EMPRESA_CONTROLADOR.ActualizarEmpresaModulos);
     }
     
 }

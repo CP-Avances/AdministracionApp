@@ -167,6 +167,7 @@ class EmpresaControlador {
     }
 
     public async ActualizarEmpresaModulos(req: Request, res: Response) {
+        
         let empresa_id_ = req.body.empresa_id;
         let empresa_modulos_permisos_ = req.body.empresa_modulos_permisos_;
         let empresa_modulos_vacaciones_ = req.body.empresa_modulos_vacaciones_;

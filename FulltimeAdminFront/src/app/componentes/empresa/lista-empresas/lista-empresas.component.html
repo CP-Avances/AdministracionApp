@@ -96,8 +96,12 @@
                         <td>{{e.empresa_codigo}}</td>
                         <td class="justify-content-center">
                             <i matSuffix matTooltipPosition="right" matTooltip="Ver datos generales de este registro."
-                                class="fas fa-eye" id="t-ver" [routerLink]="['/verEmpresa/', e.empresa_id]">
+                                class="fas fa-eye" style="color: rgb(0, 137, 228);" id="t-ver" [routerLink]="['/verEmpresa/', e.empresa_id]">
                                 <p>Ver</p>
+                            </i>
+                            <i (click)="ConfirmarDelete(e.empresa_id)" class="far fa-trash-alt" id="t-eliminar" matSuffix
+                                matTooltipPosition="right" matTooltip="Eliminar este registro.">
+                                <p>Eliminar</p>
                             </i>
                         </td>
                     </tr>

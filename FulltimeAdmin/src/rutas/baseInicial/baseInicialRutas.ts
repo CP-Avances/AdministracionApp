@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import BASEINICIAL_CONTROLADOR from '../../controlador/baseInicial/baseInicialControlador';
+import { TokenValidation } from '../../libs/verificarToken';
 
 class BaseInicialRutas {
 
@@ -10,7 +11,7 @@ class BaseInicialRutas {
     }
 
     configuracion(): void {
-        this.router.get('/base-informacion', BASEINICIAL_CONTROLADOR.ObtenerDatosBaseInicial);
+        this.router.get('/base-informacion', TokenValidation, BASEINICIAL_CONTROLADOR.ObtenerDatosBaseInicial);
     }
 }
 

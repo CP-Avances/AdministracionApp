@@ -24,21 +24,101 @@
             <div class="row">
                 <div class="col-md">
                     <div class="d-flex flex-wrap justify-content-around">
-                        <div class="container" style="padding-top: 15px;">
+                        <div class="container">
                             <div class="row">
-                                <div class="col-md">
-                                    <mat-checkbox matSuffix matTooltipPosition="right"
-                                        [formControl]="empresaModulosPermisosForm"
-                                        matTooltip="Indicar si el usuario tiene habilitado el módulo de permisos.">
-                                        <label id="textoradiobtn" style="font-size: 12px;">
-                                            Permisos
-                                        </label>
-                                    </mat-checkbox>
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="espacio d-flex justify-content-start">
+                                                <mat-checkbox matSuffix matTooltipPosition="right"
+                                                    [formControl]="empresaModulosPermisosForm"
+                                                    matTooltip="Indicar si el usuario tiene habilitado el módulo de permisos.">
+                                                    <label id="textoradiobtn" style="font-size: 12px;">
+                                                        Permisos
+                                                    </label>
+                                                </mat-checkbox>
+                                            </div>
+                                            <div class="espacio d-flex justify-content-start">
+                                                <mat-checkbox matSuffix matTooltipPosition="right"
+                                                    [formControl]="empresaModulosVacacionesForm"
+                                                    matTooltip="Indicar si el usuario tiene habilitado el módulo de vacaciones.">
+                                                    <label id="textoradiobtn" style="font-size: 12px;">
+                                                        Vacaciones
+                                                    </label>
+                                                </mat-checkbox>
+                                            </div>
+                                            <div class="espacio d-flex justify-content-start">
+                                                <mat-checkbox matSuffix matTooltipPosition="right"
+                                                    [formControl]="empresaModulosHoraExtraForm"
+                                                    matTooltip="Indicar si el usuario tiene habilitado el módulo de hora extra.">
+                                                    <label id="textoradiobtn" style="font-size: 12px;">
+                                                        Hora Extra
+                                                    </label>
+                                                </mat-checkbox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="espacio d-flex justify-content-start">
+                                                <mat-checkbox matSuffix matTooltipPosition="right"
+                                                    [formControl]="empresaModulosGeolocalizacionForm"
+                                                    matTooltip="Indicar si el usuario tiene habilitado el módulo de geolocalización.">
+                                                    <label id="textoradiobtn" style="font-size: 12px;">
+                                                        Geolocalización
+                                                    </label>
+                                                </mat-checkbox>
+                                            </div>
+                                            <div class="espacio d-flex justify-content-start">
+                                                <mat-checkbox matSuffix matTooltipPosition="right"
+                                                    [formControl]="empresaModulosTimbreVirtualForm"
+                                                    matTooltip="Indicar si el usuario tiene habilitado el módulo de timbre virtual.">
+                                                    <label id="textoradiobtn" style="font-size: 12px;">
+                                                        Timbre Virtual
+                                                    </label>
+                                                </mat-checkbox>
+                                            </div>
+                                            <div class="espacio d-flex justify-content-start">
+                                                <mat-checkbox matSuffix matTooltipPosition="right"
+                                                    [formControl]="empresaModulosAplicacionMovilForm"
+                                                    matTooltip="Indicar si el usuario tiene habilitado el módulo de aplicación móvil.">
+                                                    <label id="textoradiobtn" style="font-size: 12px;">
+                                                        Aplicación Móvil
+                                                    </label>
+                                                </mat-checkbox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="espacio d-flex justify-content-start">
+                                                <mat-checkbox matSuffix matTooltipPosition="right"
+                                                    [formControl]="empresaModulosAccionPersonalForm"
+                                                    matTooltip="Indicar si el usuario tiene habilitado el módulo de acción de personal.">
+                                                    <label id="textoradiobtn" style="font-size: 12px;">
+                                                        Acción de Personal
+                                                    </label>
+                                                </mat-checkbox>
+                                            </div>
+                                            <div class="espacio d-flex justify-content-start">
+                                                <mat-checkbox matSuffix matTooltipPosition="right"
+                                                    [formControl]="empresaModulosAlimentacionForm"
+                                                    matTooltip="Indicar si el usuario tiene habilitado el módulo de acción de alimentación.">
+                                                    <label id="textoradiobtn" style="font-size: 12px;">
+                                                        Alimentación
+                                                    </label>
+                                                </mat-checkbox>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
+            </div>
+            <div class="d-flex flex-wrap justify-content-center">
+                <button type="button" id="btn-raised" class="btn btn-sm" [disabled]="!ModulosForm.valid"
+                (click)="ValidarDatosModulos(ModulosForm.value)" value="Guardar">
+                    Guardar
+                </button>
             </div>
         </form>
     </mat-card-content>

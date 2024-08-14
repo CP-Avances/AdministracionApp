@@ -56,7 +56,7 @@ class AccesoControlador {
                     [web_access]
                 );
 
-                res.jsonp({ message: 'Registros actualizado.' });
+                res.jsonp({ message: 'Registros actualizados.' });
 
                 //res.status(500).jsonp({ message: 'error' });
                 //return { error: 'Error en la actualizacion de Acceso a la aplicacion web.'}

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import BASE_EMPRESA_CONTROLADOR from '../../controlador/baseEmpresa/baseEmpresaControlador';
+import { TokenValidation } from '../../libs/verificarToken';
 
 class BaseEmpresaRutas {
 
@@ -10,13 +11,13 @@ class BaseEmpresaRutas {
     }
 
     configuracion(): void {
-        this.router.post('/registro-base-empresas', BASE_EMPRESA_CONTROLADOR.RegistrarEmpresas);
-        this.router.get('/base-empresas-informacion', BASE_EMPRESA_CONTROLADOR.ObtenerBaseEmpresasInformacion);
-        this.router.get('/base-empresas', BASE_EMPRESA_CONTROLADOR.ObtenerBaseEmpresas);
-        this.router.post('/buscar-empresas', BASE_EMPRESA_CONTROLADOR.BuscarBaseEmpresas);
-        this.router.get('/buscar-empresas/:id', BASE_EMPRESA_CONTROLADOR.BuscarBaseEmpresasPorId);
-        this.router.put('/actualizar-empresas', BASE_EMPRESA_CONTROLADOR.ActualizarBaseEmpresa);
-        this.router.post('/eliminar-empresas', BASE_EMPRESA_CONTROLADOR.EliminarEmpresa);
+        this.router.post('/registro-base-empresas', TokenValidation,  BASE_EMPRESA_CONTROLADOR.RegistrarEmpresas);
+        this.router.get('/base-empresas-informacion', TokenValidation,  BASE_EMPRESA_CONTROLADOR.ObtenerBaseEmpresasInformacion);
+        this.router.get('/base-empresas', TokenValidation,  BASE_EMPRESA_CONTROLADOR.ObtenerBaseEmpresas);
+        this.router.post('/buscar-empresas', TokenValidation,  BASE_EMPRESA_CONTROLADOR.BuscarBaseEmpresas);
+        this.router.get('/buscar-empresas/:id', TokenValidation,  BASE_EMPRESA_CONTROLADOR.BuscarBaseEmpresasPorId);
+        this.router.put('/actualizar-empresas', TokenValidation,  BASE_EMPRESA_CONTROLADOR.ActualizarBaseEmpresa);
+        this.router.post('/eliminar-empresas', TokenValidation,  BASE_EMPRESA_CONTROLADOR.EliminarEmpresa);
     }
     
 }

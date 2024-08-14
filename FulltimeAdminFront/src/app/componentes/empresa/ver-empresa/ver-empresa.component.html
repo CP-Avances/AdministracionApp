@@ -65,7 +65,7 @@
                                 </button>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                                <button class="btn btn-block d-flex align-items-center justify-content-center"
+                                <button (click)="GenerarPdf('open')" class="btn btn-block d-flex align-items-center justify-content-center"
                                     id="Selector">
                                     <i class="material-icons">picture_as_pdf</i><span>Abrir PDF</span>
                                 </button>
@@ -306,7 +306,7 @@
                         </mat-card-content>
                         <div style="text-align: right; padding-top: 3%;" *ngIf="editar_modulos_">
                             <i type="submit" id="edit" style="margin-right: 20px;"
-                                (click)="VerModulosEdicion(false); AbrirVentanaEditarModulos(licenciaEmpresa)"
+                                (click)="VerModulosEdicion(false); AbrirVentanaEditarModulos(modulosEmpresa)"
                                 matSuffix matTooltipPosition="right"
                                 matTooltip="Modificar los datos generales de este registro" class="fas fa-edit">
                                 <p>Editar</p>
@@ -324,6 +324,46 @@
             <mat-icon class="example-tab-icon">lock_open</mat-icon>
             <h6 id="items">Acceso Web</h6>
         </ng-template>
+        <div class="container" style="padding-top: 15px; padding-bottom: 25px;">
+            <div class="row">
+                <div class="col-md" style="padding-bottom: 20px;">
+                    <mat-card class="mat-elevation-z8">
+                        <div class="d-flex bd-highlight" id="titulo">
+                            <div class="w-100 bd-highlight">
+                                <h5>ACCESO WEB</h5>
+                            </div>
+                        </div>
+
+                        <mat-radio-group>
+                            <div class="row">
+                                <div class="col-md">
+                                    <div class="d-flex flex-wrap justify-content-start">
+                                        <mat-radio-button [value]="true"
+                                            (change)="CambiarEstadoAccesoWeb($event)">
+                                            Activo
+                                        </mat-radio-button>
+                                    </div>
+                                </div>
+                                <div class="col-md">
+                                    <div class="d-flex flex-wrap justify-content-start">
+                                        <mat-radio-button [value]="false"
+                                            (change)="CambiarEstadoAccesoWeb($event)">
+                                            Inactivo
+                                        </mat-radio-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap justify-content-center">
+                                <button type="button" id="btn-raised" class="btn btn-sm"
+                                (click)="GuardarAccesoWeb()" value="Guardar">
+                                    Guardar
+                                </button>
+                            </div>
+                        </mat-radio-group>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
     </mat-tab>
 
 </mat-tab-group>

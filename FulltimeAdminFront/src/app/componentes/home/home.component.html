@@ -4,10 +4,9 @@
       <h5>Bases Disponibles</h5>
     </div>
   </div>
-  <br>
   <div class="row" style="text-align: justify;">
-    <div class="col-md-6 d-flex flex-wrap justify-content-around">
-      <mat-card *ngFor="let card of cardData" [ngClass]="'mat-elevation-z8 card-base '" style="color: rgb(36, 36, 36);">
+    <div class="col-md-12 d-flex flex-wrap justify-content-around">
+      <mat-card *ngFor="let card of cardData" [ngClass]="'mat-elevation-z8 card-base'" style="color: rgb(36, 36, 36); margin-bottom: 10px; margin-top: 10px;">
         <mat-card-title style="text-align: center; padding: 3px;">
           <mat-label class="titulo-base-card">{{card.empresa_bdd_descripcion}}</mat-label>
         </mat-card-title>

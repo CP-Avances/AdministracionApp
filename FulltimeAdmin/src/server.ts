@@ -26,7 +26,7 @@ class Servidor{
     }
 
     configuracion(): void {
-        this.app.set('puerto', process.env.PORT || 3008);
+        this.app.set('puerto', process.env.PORT || 3010);
         this.app.use(cors());
         
         this.app.use(express.json({ limit: '50mb' }));

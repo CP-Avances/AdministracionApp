@@ -2,13 +2,17 @@
 
 import Pool from 'pg-pool';
 
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const dbConfig = {
-  user: 'postgres', // postgres
-  host: '192.168.0.148',
-  port: 5432,
-  database: 'fulltime4_pruebas_empresa',
-  password: 'fu11tim3'
-}
+  user: process.env.PG_USER,
+  host: process.env.PG_HOST,
+  port: Number(process.env.PG_PORT),
+  database: process.env.PG_DATABASE,
+  password: process.env.PG_PASSWORD,
+};
 
 const pool = new Pool(dbConfig);
 
@@ -20,5 +24,5 @@ pool.query('SELECT NOW()', (err, res) => {
   }
 })
 
-export {pool, dbConfig}
+export { pool, dbConfig }
 export default pool;

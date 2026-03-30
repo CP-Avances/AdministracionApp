@@ -1,7 +1,5 @@
 import { ToastrService } from 'ngx-toastr';
-import { LoginService } from '../login/login.service';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import * as moment from 'moment';
 
 @Injectable({
@@ -12,71 +10,8 @@ export class ValidacionesService {
 
   constructor(
     private toastr: ToastrService,
-    private router: Router,
-    private audit: LoginService,
   ) { }
 
-
-  /** ********************************************************************************* **
-   ** **                REDIRECCION POR ACCESO A MODULOS NO AUTORIZADOS              ** **
-   ** ********************************************************************************* **/
-
-  // REDIRECCIONAMIENTO A LA PAGINA PRINCIPAL DEL ADMINISTRADOR
-  RedireccionarHomeAdmin(error: any) {
-    const { access, message, url, title } = error;
-
-    if (access === false) {
-      this.toastr.info(message + ' ' + url, title, {
-        timeOut: 6000,
-        positionClass: 'toast-top-center',
-
-      })
-        .onTap.subscribe(items => {
-          if (url) {
-            window.open(`https://${url}`, "_blank");
-          }
-        });
-      this.router.navigate(['/home']);
-    }
-  }
-
-  // REDIRECCIONAMIENTO A LA PAGINA PRINCIPAL DEL EMPLEADO
-  RedireccionarHomeEmpleado(error: any) {
-    const { access, message, url, title } = error;
-    if (access === false) {
-      this.toastr.info(message + ' ' + url, title, {
-        timeOut: 6000,
-        positionClass: 'toast-top-center',
-
-      })
-        .onTap.subscribe(items => {
-          if (url) {
-            window.open(`https://${url}`, "_blank");
-          }
-        });
-        this.router.navigate(['/home']);
-      //this.router.navigate(['/estadisticas']);
-    }
-  }
-
-  // REDIRECCIONAMIENTO AL HOME DE LA RUTA ACTUAL
-  RedireccionarMixto(error: any) {
-    const { access, message, url, title } = error;
-    if (access === false) {
-      this.toastr.info(message + ' ' + url, title, {
-        timeOut: 6000,
-        positionClass: 'toast-top-center',
-      })
-        .onTap.subscribe(items => {
-          if (url) {
-            window.open(`https://${url}`, "_blank");
-          }
-        });
-      this.router.navigate(['/']);
-      // this.router.navigate(['/', { relativeTo: this.route, skipLocationChange: false }]);
-    }
-
-  }
 
   /** ******************************************************************** *
    *                  METODO PARA CONTROLAR INGRESO DE LETRAS              *
@@ -142,11 +77,6 @@ export class ValidacionesService {
         moment(fecha, 'YYYY/MM/DD').format(dia).slice(1) +
         ', ' + moment(fecha, 'YYYY/MM/DD').format(formato);
     }
-    return valor;
-  }
-
-  FormatearHora(hora: string, formato: string) {
-    let valor = moment(hora, 'HH:mm:ss').format(formato);
     return valor;
   }
 

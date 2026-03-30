@@ -58,6 +58,8 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   codigoEmpresa: string;
   direccionEmpresa: string;
   numeroRelojesEmpresa: string;
+  estadoEmpresa: boolean;
+  zonaHorariaEmpresa: string;
 
   //VER BASE EMPRESA
   idEmpresaBdd: string;
@@ -169,6 +171,8 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
       this.codigoEmpresa = this.empresaUno[0].empresa_codigo;
       this.direccionEmpresa = this.empresaUno[0].empresa_direccion;
       this.numeroRelojesEmpresa = this.empresaUno[0].numero_relojes;
+      this.estadoEmpresa = this.empresaUno[0].estado;
+      this.zonaHorariaEmpresa = this.empresaUno[0].zona_horaria;
 
       //MODULOS
       this.empresaModuloPermisos = this.empresaUno[0].permisos;
@@ -468,7 +472,7 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
         name: { fontSize: 14, bold: true },
         item: { fontSize: 12, bold: false },
         tableHeader: { fontSize: 12, bold: true, alignment: 'center', fillColor: '#8adff9' },
-        tableCell: { fontSize: 12, alignment: 'center'}
+        tableCell: { fontSize: 12, alignment: 'center' }
       }
     };
   }

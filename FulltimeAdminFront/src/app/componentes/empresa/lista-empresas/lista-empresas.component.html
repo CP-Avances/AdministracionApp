@@ -54,6 +54,8 @@
                         <th scope="col">Empresa ID</th>
                         <th scope="col">Empresa Descripcion</th>
                         <th scope="col">Empresa Código</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -94,6 +96,7 @@
                         <td scope="row">{{e.empresa_id}}</td>
                         <td>{{e.empresa_descripcion}}</td>
                         <td>{{e.empresa_codigo}}</td>
+                        <td>{{ e.estado ? 'Activa' : 'Inactiva' }}</td>
                         <td class="justify-content-center">
                             <i matSuffix matTooltipPosition="right" matTooltip="Ver datos generales de este registro."
                                 class="fas fa-eye" style="color: rgb(0, 137, 228);" id="t-ver" [routerLink]="['/verEmpresa/', e.empresa_id]">

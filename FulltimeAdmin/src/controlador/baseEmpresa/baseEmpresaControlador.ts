@@ -15,9 +15,9 @@ class BaseEmpresaControlador {
         let empresa_bdd_contrasena_ = req.body.empresa_bdd_contrasena;
 
         try {
-            
-            let contrasenaEncriptada = FUNCIONES_LLAVES.encriptarDatos(empresa_bdd_contrasena_);
 
+            //let contrasenaEncriptada = FUNCIONES_LLAVES.encriptarDatos(empresa_bdd_contrasena_);
+            let contrasenaEncriptada = empresa_bdd_contrasena_;
             const response: QueryResult = await pool.query(
                 `
                 INSERT INTO empresa_bdd (id_empresa, empresa_bdd_nombre, empresa_bdd_host, empresa_bdd_puerto, empresa_bdd_descripcion, empresa_bdd_usuario, empresa_bdd_contrasena) 
@@ -39,8 +39,8 @@ class BaseEmpresaControlador {
         }
     }
 
-    public async ObtenerBaseEmpresas(req: Request, res: Response){
-        try{
+    public async ObtenerBaseEmpresas(req: Request, res: Response) {
+        try {
             const EMPRESAS = await pool.query(
                 `
                 SELECT 
@@ -59,25 +59,24 @@ class BaseEmpresaControlador {
                 ORDER BY empresa.empresa_direccion 
                 `
             );
-            
+
             if (EMPRESAS.rowCount !== null) {
-                if(EMPRESAS.rowCount > 0){
+                if (EMPRESAS.rowCount > 0) {
                     return res.jsonp(EMPRESAS.rows);
-                }else{
+                } else {
                     res.status(404).jsonp({ message: 'vacio' });
                 }
-            }else{
+            } else {
                 res.status(500).jsonp({ message: 'error' });
             }
         }
-        catch(error)
-        {
+        catch (error) {
             res.status(500).jsonp({ message: 'error' });
         }
     }
 
-    public async ObtenerBaseEmpresasInformacion(req: Request, res: Response){
-        try{
+    public async ObtenerBaseEmpresasInformacion(req: Request, res: Response) {
+        try {
             const EMPRESAS = await pool.query(
                 `
                 SELECT 
@@ -98,32 +97,31 @@ class BaseEmpresaControlador {
                 ORDER BY pg_database_size(pg_database.datname) DESC
                 `
             );
-             
+
             if (EMPRESAS.rowCount !== null) {
-                if(EMPRESAS.rowCount > 0){
+                if (EMPRESAS.rowCount > 0) {
                     for (const empresa of EMPRESAS.rows) {
                         console.log(empresa.empresa_bdd_contrasena);
                         empresa.empresa_bdd_contrasena = FUNCIONES_LLAVES.desencriptarDatos(empresa.empresa_bdd_contrasena).toString();
                         console.log(empresa.empresa_bdd_contrasena);
                     }
                     return res.jsonp(EMPRESAS.rows);
-                }else{
+                } else {
                     res.status(404).jsonp({ message: 'vacio' });
                 }
-            }else{
+            } else {
                 res.status(500).jsonp({ message: 'error' });
             }
         }
-        catch(error)
-        {
+        catch (error) {
             res.status(500).jsonp({ message: error });
         }
     }
 
-    public async BuscarBaseEmpresas(req: Request, res: Response){
-        try{
-            let nombre_bdd_ = '%'+req.body.nombre_bdd+'%';
-            let nombre_empresa_ = '%'+req.body.nombre_empresa+'%';
+    public async BuscarBaseEmpresas(req: Request, res: Response) {
+        try {
+            let nombre_bdd_ = '%' + req.body.nombre_bdd + '%';
+            let nombre_empresa_ = '%' + req.body.nombre_empresa + '%';
 
             const EMPRESAS = await pool.query(
                 `
@@ -145,26 +143,25 @@ class BaseEmpresaControlador {
                 `,
                 ['postgres', 'template1', 'template0', 'ft_v4_login', nombre_bdd_, nombre_empresa_]
             );
-            
+
             if (EMPRESAS.rowCount !== null) {
-                if(EMPRESAS.rowCount > 0){
+                if (EMPRESAS.rowCount > 0) {
                     res.jsonp(EMPRESAS.rows);
-                }else{
+                } else {
                     res.status(404).jsonp({ message: 'vacio' });
                 }
-            }else{
+            } else {
                 res.status(500).jsonp({ message: 'error' });
             }
-            
+
         }
-        catch(error)
-        {
+        catch (error) {
             res.status(500).jsonp({ message: error });
         }
     }
 
-    public async BuscarBaseEmpresasPorId(req: Request, res: Response){
-        try{
+    public async BuscarBaseEmpresasPorId(req: Request, res: Response) {
+        try {
             const { id } = req.params;
 
             const EMPRESAS = await pool.query(
@@ -185,25 +182,24 @@ class BaseEmpresaControlador {
                 `,
                 [id]
             );
-            
+
             if (EMPRESAS.rowCount !== null) {
-                if(EMPRESAS.rowCount > 0){
+                if (EMPRESAS.rowCount > 0) {
 
                     for (const empresa of EMPRESAS.rows) {
                         empresa.empresa_bdd_contrasena = FUNCIONES_LLAVES.desencriptarDatos(empresa.empresa_bdd_contrasena);
                     }
 
                     res.jsonp(EMPRESAS.rows);
-                }else{
+                } else {
                     res.status(404).jsonp({ message: 'vacio' });
                 }
-            }else{
+            } else {
                 res.status(500).jsonp({ message: 'error' });
             }
-            
+
         }
-        catch(error)
-        {
+        catch (error) {
             res.status(500).jsonp({ message: 'error' });
         }
     }
@@ -218,7 +214,7 @@ class BaseEmpresaControlador {
         let empresa_bdd_usuario_ = req.body.empresa_bdd_usuario;
         let empresa_bdd_contrasena_ = req.body.empresa_bdd_contrasena;
 
-        try{
+        try {
 
             var contrasenaEncriptada = RsaKeyService.encriptarDatos(empresa_bdd_contrasena_);
             console.log('_' + contrasenaEncriptada + '_');
@@ -234,8 +230,7 @@ class BaseEmpresaControlador {
 
             res.jsonp({ message: 'Registro actualizado.' });
         }
-        catch (error)
-        {
+        catch (error) {
             return res.jsonp({ message: error });
         }
     }
@@ -243,7 +238,7 @@ class BaseEmpresaControlador {
     public async EliminarEmpresa(req: Request, res: Response) {
         try {
             let id_empresa_bdd_ = req.body.id_empresa_bdd;
-            
+
             await pool.query(
                 `
                 DELETE FROM empresa_bdd WHERE id_empresa_bdd = $1

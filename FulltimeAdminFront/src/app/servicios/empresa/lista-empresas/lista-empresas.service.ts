@@ -14,16 +14,16 @@ export class ListaEmpresasService {
     public router: Router
   ) { }
 
-  ObtenerInformacionEmpresasRegistradas(){
+  ObtenerInformacionEmpresasRegistradas() {
     return this.http.get<any>(`${environment.url}/empresa/empresas`);
   }
 
-  ObtenerInformacionEmpresaPorId(id_empresa: number){
+  ObtenerInformacionEmpresaPorId(id_empresa: number) {
     return this.http.get(`${environment.url}/empresa/verEmpresa/${id_empresa}`);
   }
 
-  ActualizarEmpresaModulos(id_empresa: number){
-    return this.http.get(`${environment.url}/empresa/actualizar-empresa/${id_empresa}`);
+  ObtenerInformacionZonasHorarios() {
+    return this.http.get<any>(`${environment.url}/empresa/zonas-horarias`);
   }
 
 }

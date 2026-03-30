@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37,19 +14,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.empresaControlador = void 0;
 const database_1 = __importDefault(require("../../database"));
-const rsa_keys_service_1 = __importStar(require("../llaves/rsa-keys.service"));
 class EmpresaControlador {
     ObtenerEmpresas(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const EMPRESAS = yield database_1.default.query(`
-                SELECT empresa_id, empresa_codigo, empresa_direccion, empresa_descripcion, hora_extra, accion_personal, alimentacion, permisos, geolocalizacion, vacaciones, app_movil, timbre_web, movil_direccion, movil_descripcion FROM empresa ORDER BY 1
+                SELECT empresa_id, empresa_codigo, empresa_direccion, empresa_descripcion, hora_extra, accion_personal, alimentacion, permisos, geolocalizacion, vacaciones, app_movil, timbre_web, movil_direccion, movil_descripcion, estado FROM empresa ORDER BY estado DESC
                 `);
                 if (EMPRESAS.rowCount !== null) {
                     if (EMPRESAS.rowCount > 0) {
-                        for (const empresa of EMPRESAS.rows) {
-                            empresa.empresa_codigo = rsa_keys_service_1.FUNCIONES_LLAVES.desencriptarLogin(empresa.empresa_codigo);
-                        }
+                        /*for (const empresa of EMPRESAS.rows) {
+                            empresa.empresa_codigo = FUNCIONES_LLAVES.desencriptarLogin(empresa.empresa_codigo);
+                        }*/
                         return res.jsonp(EMPRESAS.rows);
                     }
                     else {
@@ -81,12 +57,14 @@ class EmpresaControlador {
             let timbre_web_ = req.body.timbre_web;
             let movil_direccion_ = req.body.movil_direccion;
             let movil_descripcion_ = req.body.movil_descripcion;
+            let zona_horaria_ = req.body.zona_horaria;
             try {
-                let codigo_empresa_mod = rsa_keys_service_1.default.encriptarLogin(empresa_codigo_);
+                //let codigo_empresa_mod = RsaKeyService.encriptarLogin(empresa_codigo_);
+                let codigo_empresa_mod = empresa_codigo_;
                 const response = yield database_1.default.query(`
-                INSERT INTO empresa (empresa_codigo, empresa_direccion, empresa_descripcion, numero_relojes, hora_extra, accion_personal, alimentacion, permisos, geolocalizacion, vacaciones, app_movil, timbre_web, movil_direccion, movil_descripcion)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *
-                `, [codigo_empresa_mod, empresa_direccion_, empresa_descripcion_, numero_relojes_, hora_extra_, accion_personal_, alimentacion_, permisos_, geolocalizacion_, vacaciones_, app_movil_, timbre_web_, movil_direccion_, movil_descripcion_]);
+                INSERT INTO empresa (empresa_codigo, empresa_direccion, empresa_descripcion, numero_relojes, hora_extra, accion_personal, alimentacion, permisos, geolocalizacion, vacaciones, app_movil, timbre_web, movil_direccion, movil_descripcion, zona_horaria)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *
+                `, [codigo_empresa_mod, empresa_direccion_, empresa_descripcion_, numero_relojes_, hora_extra_, accion_personal_, alimentacion_, permisos_, geolocalizacion_, vacaciones_, app_movil_, timbre_web_, movil_direccion_, movil_descripcion_, zona_horaria_]);
                 const [registro_empresa] = response.rows;
                 if (registro_empresa) {
                     return res.status(200).jsonp({ message: 'ok' });
@@ -116,12 +94,15 @@ class EmpresaControlador {
             let timbre_web_ = req.body.timbre_web;
             let movil_direccion_ = req.body.movil_direccion;
             let movil_descripcion_ = req.body.movil_descripcion;
+            let estado_ = req.body.estado;
+            let zona_horaria_ = req.body.zona_horaria;
             try {
-                let empresa_codigo_mod = rsa_keys_service_1.default.encriptarLogin(empresa_codigo_);
+                //let empresa_codigo_mod = RsaKeyService.encriptarLogin(empresa_codigo_);
+                let empresa_codigo_mod = empresa_codigo_;
                 yield database_1.default.query(`
-                UPDATE empresa SET empresa_codigo = $2, empresa_direccion = $3, empresa_descripcion = $4, hora_extra = $5, accion_personal = $6, alimentacion = $7, permisos = $8, geolocalizacion = $9, vacaciones = $10, app_movil = $11, timbre_web = $12, movil_direccion = $13, movil_descripcion = $14 
+                UPDATE empresa SET empresa_codigo = $2, empresa_direccion = $3, empresa_descripcion = $4, hora_extra = $5, accion_personal = $6, alimentacion = $7, permisos = $8, geolocalizacion = $9, vacaciones = $10, app_movil = $11, timbre_web = $12, movil_direccion = $13, movil_descripcion = $14, estado = $15, zona_horaria = $16 
                 WHERE empresa_id = $1
-                `, [empresa_id_, empresa_codigo_mod, empresa_direccion_, empresa_descripcion_, hora_extra_, accion_personal_, alimentacion_, permisos_, geolocalizacion_, vacaciones_, app_movil_, timbre_web_, movil_direccion_, movil_descripcion_]);
+                `, [empresa_id_, empresa_codigo_mod, empresa_direccion_, empresa_descripcion_, hora_extra_, accion_personal_, alimentacion_, permisos_, geolocalizacion_, vacaciones_, app_movil_, timbre_web_, movil_direccion_, movil_descripcion_, estado_, zona_horaria_]);
                 res.jsonp({ message: 'Registro actualizado.' });
             }
             catch (error) {
@@ -136,12 +117,16 @@ class EmpresaControlador {
             let empresa_direccion_ = req.body.empresa_direccion;
             let empresa_descripcion_ = req.body.empresa_descripcion;
             let empresa_numero_relojes_ = req.body.numero_relojes;
+            let empresa_estado_ = req.body.estado;
+            let empresa_zona_horaria_ = req.body.zona_horaria;
             try {
-                let empresa_codigo_mod = rsa_keys_service_1.default.encriptarLogin(empresa_codigo_);
+                //let empresa_codigo_mod = RsaKeyService.encriptarLogin(empresa_codigo_);
+                let empresa_codigo_mod = empresa_codigo_;
                 yield database_1.default.query(`
-                UPDATE empresa SET empresa_codigo = $2, empresa_direccion = $3, empresa_descripcion = $4, numero_relojes = $5 
+                UPDATE empresa SET empresa_codigo = $2, empresa_direccion = $3, empresa_descripcion = $4, 
+                numero_relojes = $5, estado = $6, zona_horaria = $7
                 WHERE empresa_id = $1
-                `, [empresa_id_, empresa_codigo_mod, empresa_direccion_, empresa_descripcion_, empresa_numero_relojes_]);
+                `, [empresa_id_, empresa_codigo_mod, empresa_direccion_, empresa_descripcion_, empresa_numero_relojes_, empresa_estado_, empresa_zona_horaria_]);
                 res.jsonp({ message: 'Registro actualizado.' });
             }
             catch (error) {
@@ -170,9 +155,9 @@ class EmpresaControlador {
             SELECT * FROM empresa WHERE empresa_id = $1
             `, [id]);
             if (EMPRESA.rowCount != 0) {
-                for (const empresa of EMPRESA.rows) {
-                    empresa.empresa_codigo = rsa_keys_service_1.FUNCIONES_LLAVES.desencriptarLogin(empresa.empresa_codigo);
-                }
+                /*for (const empresa of EMPRESA.rows) {
+                    empresa.empresa_codigo = FUNCIONES_LLAVES.desencriptarLogin(empresa.empresa_codigo);
+                }*/
                 return res.jsonp(EMPRESA.rows);
             }
             else {
@@ -200,6 +185,29 @@ class EmpresaControlador {
             }
             catch (error) {
                 return res.jsonp({ message: error });
+            }
+        });
+    }
+    ObtenerZonasHorarias(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ZONAS = yield database_1.default.query(`
+                SELECT * FROM zonas_horarias ORDER BY nombre_general ASC
+                `);
+                if (ZONAS.rowCount !== null) {
+                    if (ZONAS.rowCount > 0) {
+                        return res.jsonp(ZONAS.rows);
+                    }
+                    else {
+                        res.status(404).jsonp({ message: 'vacio' });
+                    }
+                }
+                else {
+                    res.status(500).jsonp({ message: 'error' });
+                }
+            }
+            catch (error) {
+                res.status(500).jsonp({ message: 'error' });
             }
         });
     }

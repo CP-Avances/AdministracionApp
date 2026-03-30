@@ -54,11 +54,16 @@
                                             </mat-icon>
                                         </mat-form-field>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="d-flex flex-wrap justify-content-center">
                                         <mat-form-field>
                                             <mat-label>Número Relojes</mat-label>
                                             <input matInput placeholder="Ej: 1" type="text"
-                                                formControlName="empresaNumeroRelojesForm"  (keypress)="IngresarSoloNumerosEnteros($event)" required>
+                                                formControlName="empresaNumeroRelojesForm"
+                                                (keypress)="IngresarSoloNumerosEnteros($event)" required>
                                             <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
                                                 matTooltip="Ingresar el número de relojes.">
                                                 help_outline
@@ -69,12 +74,17 @@
                                 <div class="col-md-4">
                                     <div class="d-flex flex-wrap justify-content-center">
                                         <mat-form-field>
-                                            <mat-label>Dirección URL Empresarial</mat-label>
-                                            <input matInput placeholder="Ej: http://192.168.0.14:3000" type="text"
-                                                formControlName="empresaRegistroDireccionForm" required>
-                                            <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
-                                                matTooltip="Ingresar la URL del servicio del sistema.">
-                                                help_outline
+                                            <mat-label>Zona horaria*</mat-label>
+                                            <mat-select formControlName="empresaZonaHorariaForm" required>
+                                                @for (option of zonas; track option) {
+                                                <mat-option [value]="option.nombre_general">
+                                                    {{ option.nombre_general }}
+                                                </mat-option>
+                                                }
+                                            </mat-select>
+                                            <mat-icon matSuffix matTooltipPosition="right"
+                                                matTooltip="Seleccionar la zona horaria de la empresa.">
+                                                schedule
                                             </mat-icon>
                                         </mat-form-field>
                                     </div>
@@ -160,8 +170,8 @@
                     <button mat-raised-button matStepperPrevious class="float-left" id="btn-raised-">Atrás</button>
                     <button button mat-raised-button id="btn-raised" (click)="stepper.reset()">Cancelar</button>
                     <button button mat-raised-button class="float-right" id="btn-raised_"
-                        (click)="InsertarEmpresa(primeroFormGroup.value, segundoFormGroup.value);"
-                        type="submit" [disabled]="!segundoFormGroup.valid">
+                        (click)="InsertarEmpresa(primeroFormGroup.value, segundoFormGroup.value);" type="submit"
+                        [disabled]="!segundoFormGroup.valid">
                         Guardar
                     </button>
                 </div>

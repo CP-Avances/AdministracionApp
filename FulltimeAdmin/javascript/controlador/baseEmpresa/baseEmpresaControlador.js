@@ -49,7 +49,8 @@ class BaseEmpresaControlador {
             let empresa_bdd_usuario_ = req.body.empresa_bdd_usuario;
             let empresa_bdd_contrasena_ = req.body.empresa_bdd_contrasena;
             try {
-                let contrasenaEncriptada = rsa_keys_service_1.FUNCIONES_LLAVES.encriptarDatos(empresa_bdd_contrasena_);
+                //let contrasenaEncriptada = FUNCIONES_LLAVES.encriptarDatos(empresa_bdd_contrasena_);
+                let contrasenaEncriptada = empresa_bdd_contrasena_;
                 const response = yield database_1.default.query(`
                 INSERT INTO empresa_bdd (id_empresa, empresa_bdd_nombre, empresa_bdd_host, empresa_bdd_puerto, empresa_bdd_descripcion, empresa_bdd_usuario, empresa_bdd_contrasena) 
                     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *

@@ -19,6 +19,7 @@ class EmpresaRutas {
         this.router.post('/eliminar-empresa', verificarToken_1.TokenValidation, empresaControlador_1.default.EliminarEmpresa);
         this.router.get('/verEmpresa/:id', verificarToken_1.TokenValidation, empresaControlador_1.default.ListarEmpresaId);
         this.router.put('/actualizar-empresa-modulos', verificarToken_1.TokenValidation, empresaControlador_1.default.ActualizarEmpresaModulos);
+        this.router.get('/zonas-horarias', verificarToken_1.TokenValidation, empresaControlador_1.default.ObtenerZonasHorarias);
     }
 }
 const EMPRESA_RUTAS = new EmpresaRutas();

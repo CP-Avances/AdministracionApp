@@ -5,12 +5,11 @@ import { Component, OnInit } from '@angular/core';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { map, shareReplay } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, asapScheduler } from 'rxjs';
+import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Location } from '@angular/common';
 import * as moment from 'moment';
 
-import { MainNavService } from './main-nav.service';
 import { LoginService } from 'src/app/servicios/login/login.service';
 
 import { ThemePalette } from '@angular/material/core';
@@ -199,7 +198,6 @@ export class MainNavComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private toaster: ToastrService,
-    private funciones: MainNavService,
     private breakpointObserver: BreakpointObserver
   ) { }
 
@@ -289,29 +287,6 @@ export class MainNavComponent implements OnInit {
           }
         ]
       },
-      {
-        name: 'Migración',
-        accion: true,
-        estado: true,
-        subtitulo: false,
-        icono: 'send',
-        children: [
-          {
-            name: 'Fulltime Web',
-            color: true,
-            ver: true,
-            icono: 'note_add',
-            url: '/home'
-          },
-          {
-            name: 'DataFlex',
-            color: true,
-            ver: true,
-            icono: 'note_add',
-            url: '/home'
-          }
-        ]
-      }
     ];
 
     this.MetodoSubSelectMenu("Casa Pazmino");

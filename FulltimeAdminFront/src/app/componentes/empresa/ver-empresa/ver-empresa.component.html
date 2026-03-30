@@ -26,6 +26,16 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="espacio d-flex justify-content-start">
+                                            <label id="datosF">Estado:</label>
+                                            <label>{{estadoEmpresa ? 'Activa' : 'Inactiva'}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md">
                                         <div class="espacio d-flex justify-content-start">
@@ -37,16 +47,17 @@
                                 <div class="row">
                                     <div class="col-md">
                                         <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Dirección:</label>
-                                            <label>{{direccionEmpresa}}</label>
+                                            <label id="datosF">Número Relojes:</label>
+                                            <label>{{numeroRelojesEmpresa}}</label>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-md">
                                         <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Número Relojes:</label>
-                                            <label>{{numeroRelojesEmpresa}}</label>
+                                            <label id="datosF">Zona Horaria:</label>
+                                            <label>{{zonaHorariaEmpresa}}</label>
                                         </div>
                                     </div>
                                 </div>
@@ -73,7 +84,8 @@
                                 </button>
                             </mat-grid-tile>
                             <mat-grid-tile>
-                                <button (click)="GenerarPdf('open')" class="btn btn-block d-flex align-items-center justify-content-center"
+                                <button (click)="GenerarPdf('open')"
+                                    class="btn btn-block d-flex align-items-center justify-content-center"
                                     id="Selector">
                                     <i class="material-icons">picture_as_pdf</i><span>Abrir PDF</span>
                                 </button>
@@ -146,14 +158,6 @@
                                         <div class="espacio d-flex justify-content-start">
                                             <label id="datosF">Puerto:</label>
                                             <label>{{empresaBddPuerto}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Contraseña:</label>
-                                            <label>{{empresaBddContrasena}}</label>
                                         </div>
                                     </div>
                                 </div>
@@ -280,7 +284,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true" [checked]="empresaModuloGeolocalizacion">
+                                                    <mat-checkbox [disabled]="true"
+                                                        [checked]="empresaModuloGeolocalizacion">
                                                         <span id="color_fuente">Geolocalización</span>
                                                     </mat-checkbox>
                                                 </div>
@@ -297,12 +302,14 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true" [checked]="empresaModuloAccionPersonal">
+                                                    <mat-checkbox [disabled]="true"
+                                                        [checked]="empresaModuloAccionPersonal">
                                                         <span id="color_fuente">Acciones de Personal</span>
                                                     </mat-checkbox>
                                                 </div>
                                                 <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true" [checked]="empresaModuloAlimentacion">
+                                                    <mat-checkbox [disabled]="true"
+                                                        [checked]="empresaModuloAlimentacion">
                                                         <span id="color_fuente">Alimentación</span>
                                                     </mat-checkbox>
                                                 </div>
@@ -314,9 +321,9 @@
                         </mat-card-content>
                         <div style="text-align: right; padding-top: 3%;" *ngIf="editar_modulos_">
                             <i type="submit" id="edit" style="margin-right: 20px;"
-                                (click)="VerModulosEdicion(false); AbrirVentanaEditarModulos(modulosEmpresa)"
-                                matSuffix matTooltipPosition="right"
-                                matTooltip="Modificar los datos generales de este registro" class="fas fa-edit">
+                                (click)="VerModulosEdicion(false); AbrirVentanaEditarModulos(modulosEmpresa)" matSuffix
+                                matTooltipPosition="right" matTooltip="Modificar los datos generales de este registro"
+                                class="fas fa-edit">
                                 <p>Editar</p>
                             </i>
                         </div>
@@ -346,24 +353,22 @@
                             <div class="row">
                                 <div class="col-md">
                                     <div class="d-flex flex-wrap justify-content-start">
-                                        <mat-radio-button [value]="true"
-                                            (change)="CambiarEstadoAccesoWeb($event)">
+                                        <mat-radio-button [value]="true" (change)="CambiarEstadoAccesoWeb($event)">
                                             Activo
                                         </mat-radio-button>
                                     </div>
                                 </div>
                                 <div class="col-md">
                                     <div class="d-flex flex-wrap justify-content-start">
-                                        <mat-radio-button [value]="false"
-                                            (change)="CambiarEstadoAccesoWeb($event)">
+                                        <mat-radio-button [value]="false" (change)="CambiarEstadoAccesoWeb($event)">
                                             Inactivo
                                         </mat-radio-button>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex flex-wrap justify-content-center">
-                                <button type="button" id="btn-raised" class="btn btn-sm"
-                                (click)="GuardarAccesoWeb()" value="Guardar">
+                                <button type="button" id="btn-raised" class="btn btn-sm" (click)="GuardarAccesoWeb()"
+                                    value="Guardar">
                                     Guardar
                                 </button>
                             </div>

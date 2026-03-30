@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, ActivatedRoute } from '@angular/router';
 import { LoginService } from '../login/login.service';
 
 @Injectable({
@@ -8,28 +8,28 @@ import { LoginService } from '../login/login.service';
 export class AuthGuard implements CanActivate {
   constructor(
     private loginService: LoginService,
-    private router: Router
+    private router: Router,
+    private active_route: ActivatedRoute
   ) { }
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): boolean | UrlTree {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
 
     if (this.loginService.loggedIn()) {
       return true;
     }
 
-    if (route.data?.['log']) {
-      return true;
+    if (!this.loginService.loggedIn()) {
+      if (route.data['log'] != undefined) {
+        return true;
+      }
+
     }
 
     localStorage.clear();
     sessionStorage.clear();
-
-    sessionStorage.setItem('redireccionar', state.url);
-
-    return this.router.createUrlTree(['/login']);
+    localStorage.setItem("redireccionar", state.url)
+    this.router.navigate(['/login'], { relativeTo: this.active_route, skipLocationChange: false });
+    return false;
   }
 
 }

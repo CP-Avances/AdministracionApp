@@ -1,43 +1,109 @@
-<header id="home-section">
-    <div class="dark-overlay">
-        <div class="home-inner">
-            <div class="container">
-                <div class="row">
-                    <div class="col d-flex align-items-center justify-content-center">
-                        <mat-card class="mat-elevation-z8">
-                            <img src="../../../../assets/imagenes/logo/logoAdmin.png"> <br><br>
-                            <form [formGroup]="formulario">
-                                <mat-form-field>
-                                    <mat-label>Ingresa tu Usuario</mat-label>
-                                    <input matInput style="font-size: 14px;" placeholder="juan.perez"
-                                        [formControl]="user" required>
-                                    <mat-error
-                                    *ngIf="user.invalid">{{ObtenerMensajeCampoUsuarioError()}}</mat-error>
-                                </mat-form-field>
-                                <br>
-                                <mat-form-field>
-                                    <mat-label>Ingresa tu Contraseña</mat-label>
-                                    <input matInput style="font-size: 13px;" maxlength="14"
-                                        oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                                        (keyup.enter)="hide1 = true; ValidarUsuario(formulario.value)"
-                                        [formControl]="pass" [type]="hide1 ? 'password' : 'text'" required>
-                                    <button mat-icon-button matSuffix (click)="hide1 = !hide1">
-                                        <mat-icon>{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
-                                    </button>
-                                    <mat-error
-                                        *ngIf="pass.invalid">{{ObtenerMensajeCampoContraseniaError()}}</mat-error>
-                                </mat-form-field>
-                            </form>
-                            <div style="margin: auto;">
-                                <button type="submit" class="btn btn-lg btn-block"
-                                    (click)="ValidarUsuario(formulario.value)"
-                                    [disabled]="!formulario.valid">Ingresar</button>
-                            </div>
-                        </mat-card>
+<header class="login-admin-page">
+
+    <div class="login-overlay">
+
+        <div class="login-layout">
+
+            <!-- Panel izquierdo informativo -->
+            <div class="login-info">
+                <div class="login-info-content">
+                    <div class="badge-admin">
+                        <mat-icon>admin_panel_settings</mat-icon>
+                        <span>Administración FullTime</span>
+                    </div>
+
+                    <h1>Panel de Administración</h1>
+
+                    <p>
+                        Gestiona empresas, bases de datos, módulos, relojes biométricos y configuraciones
+                        del sistema desde una plataforma centralizada.
+                    </p>
+
+                    <div class="info-items">
+                        <div class="info-item">
+                            <mat-icon>business</mat-icon>
+                            <span>Gestión de empresas</span>
+                        </div>
+
+                        <div class="info-item">
+                            <mat-icon>storage</mat-icon>
+                            <span>Control de bases de datos</span>
+                        </div>
+
+                        <div class="info-item">
+                            <mat-icon>settings_applications</mat-icon>
+                            <span>Configuración del sistema</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Card login -->
+            <div class="login-card-wrapper">
+
+                <mat-card class="login-card mat-elevation-z8">
+
+                    <div class="logo-section">
+                        <img src="../../../../assets/imagenes/logo/logoAdmin.png" alt="Full Time Admin">
+                        <h2>Bienvenido</h2>
+                        <p>Ingrese sus credenciales para continuar</p>
+                    </div>
+
+                    <form [formGroup]="formulario" class="login-form">
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Usuario</mat-label>
+
+                            <mat-icon matPrefix>person_outline</mat-icon>
+
+                            <input matInput placeholder="juan.perez" [formControl]="user" required>
+
+                            <mat-error *ngIf="user.invalid">
+                                {{ ObtenerMensajeCampoUsuarioError() }}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Contraseña</mat-label>
+
+                            <mat-icon matPrefix>lock_outline</mat-icon>
+
+                            <input matInput maxlength="14"
+                                oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                                (keyup.enter)="hide1 = true; ValidarUsuario(formulario.value)" [formControl]="pass"
+                                [type]="hide1 ? 'password' : 'text'" required>
+
+                            <button type="button" mat-icon-button matSuffix (click)="hide1 = !hide1">
+                                <mat-icon>{{ hide1 ? 'visibility_off' : 'visibility' }}</mat-icon>
+                            </button>
+
+                            <mat-error *ngIf="pass.invalid">
+                                {{ ObtenerMensajeCampoContraseniaError() }}
+                            </mat-error>
+                        </mat-form-field>
+
+                    </form>
+
+                    <button type="submit" class="btn-login" (click)="ValidarUsuario(formulario.value)"
+                        [disabled]="!formulario.valid">
+
+                        <mat-icon>login</mat-icon>
+                        Ingresar
+                    </button>
+
+                    <div class="login-footer-text">
+                        <mat-icon>shield</mat-icon>
+                        <span>Acceso exclusivo para administradores</span>
+                    </div>
+
+                </mat-card>
+
+            </div>
+
         </div>
+
     </div>
+
 </header>
+
 <app-footer></app-footer>

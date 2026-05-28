@@ -36,8 +36,6 @@ class AccesoControlador {
                 WHERE id_empresa_bdd = $1
                 `, [id_empresa_bdd_]);
                 if (EMPRESA.rowCount != 0) {
-                    let id_empresa_bdd_database = EMPRESA.rows[0].id_empresa_bdd;
-                    let id_empresa_database = EMPRESA.rows[0].id_empresa;
                     let empresa_bdd_nombre_database = EMPRESA.rows[0].empresa_bdd_nombre;
                     let empresa_bdd_host_database = EMPRESA.rows[0].empresa_bdd_host;
                     let empresa_bdd_password_database = rsa_keys_service_1.FUNCIONES_LLAVES.desencriptarDatos(EMPRESA.rows[0].empresa_bdd_contrasena);
@@ -55,8 +53,6 @@ class AccesoControlador {
                         UPDATE eu_empleados SET web_access = $1
                     `, [web_access]);
                     res.jsonp({ message: 'Registros actualizados.' });
-                    //res.status(500).jsonp({ message: 'error' });
-                    //return { error: 'Error en la actualizacion de Acceso a la aplicacion web.'}
                 }
             }
             catch (error) {

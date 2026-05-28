@@ -15,6 +15,7 @@ import { ListaEmpresasService } from 'src/app/servicios/empresa/lista-empresas/l
   templateUrl: './editar-empresa.component.html',
   styleUrl: './editar-empresa.component.css'
 })
+
 export class EditarEmpresaComponent implements OnInit {
 
   isLinear = true;
@@ -63,7 +64,8 @@ export class EditarEmpresaComponent implements OnInit {
       empresaDescripcionForm: [''],
       empresaNumeroRelojesForm: [''],
       empresaZonaHorariaForm: [''],
-      empresaEstadoForm: ['']
+      empresaEstadoForm: [''],
+      empresaInstalacionForm: [''],
     })
   }
 
@@ -79,19 +81,16 @@ export class EditarEmpresaComponent implements OnInit {
 
   ObtenerEmpresa() {
 
-    const { zona_horaria, estado, empresa_codigo, empresa_direccion, empresa_descripcion, numero_relojes } = this.empresa[0];
-    console.log('empresa_codigo ', empresa_codigo)
-    console.log('ver empresa ', this.empresa[0])
+    const { zona_horaria, estado, empresa_codigo, empresa_descripcion, numero_relojes, instalacion } = this.empresa[0];
     var zona = zona_horaria;
     var verificar_zona = this.zonas.filter((o: any) => { return zona === o.formato_nombre }).map((o: any) => { return o.nombre_general });
     this.primeroFormGroup.setValue({
       empresaCodigoForm: empresa_codigo,
-      empresaDireccionForm: empresa_direccion,
       empresaDescripcionForm: empresa_descripcion,
       empresaNumeroRelojesForm: numero_relojes,
       empresaZonaHorariaForm: verificar_zona[0],
-      empresaEstadoForm: estado
-
+      empresaEstadoForm: estado,
+      empresaInstalacionForm: instalacion
     });
 
   }
@@ -102,27 +101,28 @@ export class EditarEmpresaComponent implements OnInit {
     let empresa = {
       empresa_id: this.idEmpresa,
       empresa_codigo: form1.empresaCodigoForm,
-      empresa_direccion: form1.empresaDireccionForm,
       empresa_descripcion: form1.empresaDescripcionForm,
       numero_relojes: form1.empresaNumeroRelojesForm,
       zona_horaria: nombre,
       estado: form1.empresaEstadoForm,
+      instalacion: form1.empresaInstalacionForm,
     }
 
     this.restEmpresa.ActualizarEmpresaFormUno(empresa).subscribe(
-      (response: any) => {
-        console.log('response.message_', response.message);
-        if (response.message === 'Registro actualizado.') {
-          this.toastr.success('Operación exitosa.', 'Registro actualizado.', {
+      {
+        next: (response: any) => {
+          if (response.message === 'Registro actualizado.') {
+            this.toastr.success('Operación exitosa.', 'Registro actualizado.', {
+              timeOut: 6000,
+            });
+            this.LimpiarCampos();
+          }
+        },
+        error: (error) => {
+          this.toastr.error(error.error.message, 'Upss!!! algo salió mal.', {
             timeOut: 6000,
           });
-          this.LimpiarCampos();
         }
-      },
-      error => {
-        this.toastr.error(error.error.message, 'Upss!!! algo salió mal.', {
-          timeOut: 6000,
-        });
       }
     );
   }
@@ -131,18 +131,17 @@ export class EditarEmpresaComponent implements OnInit {
   // METODO PARA LISTAR EMPRESAS
   async GetZonaHorarias() {
     this.zona.ObtenerInformacionZonasHorarios().subscribe(
-      datos => {
-        this.zonas = datos;
-        console.log(':::::', this.zonas);
-        this.ObtenerEmpresa();
-      },
-      err => {
-        this.zonas = null;
-        console.log('error');
+      {
+        next: (datos) => {
+          this.zonas = datos;
+          this.ObtenerEmpresa();
+        },
+        error: () => {
+          this.zonas = null;
+        }
       }
     );
 
-    console.log('_:::', this.zonas);
   }
 
 }

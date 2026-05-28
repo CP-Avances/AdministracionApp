@@ -19,6 +19,7 @@
     "@types/pg": "^8.11.6",
     "@types/pg-pool": "^2.0.6",
     "@types/ws": "^8.5.10",
+    "argon2": "^0.44.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
@@ -33,6 +34,7 @@
     "xmlbuilder": "^15.1.1"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.6"
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^25.9.1"
   }
 }

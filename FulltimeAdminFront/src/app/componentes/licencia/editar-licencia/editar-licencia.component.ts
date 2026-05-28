@@ -10,6 +10,7 @@ import { ValidacionesService } from 'src/app/servicios/validaciones/validaciones
   templateUrl: './editar-licencia.component.html',
   styleUrl: './editar-licencia.component.css'
 })
+
 export class EditarLicenciaComponent implements OnInit {
 
   @Input() licencia: any;
@@ -21,23 +22,20 @@ export class EditarLicenciaComponent implements OnInit {
   licenciaFechaActivacionForm = new FormControl('', Validators.required);
   licenciaFechaDesactivacionForm = new FormControl('', Validators.required);
 
-  ip: string | null;
-
   constructor(
     public componentev: VerEmpresaComponent,
     private toastr: ToastrService,
     private restLicencia: LicenciaService,
     public validar: ValidacionesService
-  ){ }
+  ) { }
 
   ngOnInit(): void {
-    this.ip = localStorage.getItem('ip');
     this.idBaseEmpresa = this.licencia[0].id_empresa_bdd;
     this.idEmpresaLicencia = this.licencia[0].id_empresa_licencia;
     this.InicializarValores();
   }
 
-  InicializarValores(){
+  InicializarValores() {
     this.licenciaFechaActivacionForm.setValue(this.licencia[0].fecha_activacion);
     this.licenciaFechaDesactivacionForm.setValue(this.licencia[0].fecha_desactivacion);
   }
@@ -48,11 +46,11 @@ export class EditarLicenciaComponent implements OnInit {
   });
 
   ValidarDatosLicencia(form: any) {
-    if(form.empresaLicenciaFechaActivacion === '' || form.empresaLicenciaFechaActivacion === null){
+    if (form.empresaLicenciaFechaActivacion === '' || form.empresaLicenciaFechaActivacion === null) {
       this.toastr.info('Verifique los datos ingresados.', '', {
         timeOut: 6000,
       })
-    }else{
+    } else {
       this.ActualizarBase(form);
     }
   }
@@ -69,22 +67,24 @@ export class EditarLicenciaComponent implements OnInit {
 
   GuardarDatos(datos: any) {
     this.restLicencia.ActualizarLicencia(datos).subscribe(
-      response => {
-        if(response.message === 'Registro actualizado.'){
-          this.toastr.success('Operación exitosa.', 'Registro actualizado.', {
+      {
+        next: (response) => {
+          if (response.message === 'Registro actualizado.') {
+            this.toastr.success('Operación exitosa.', 'Registro actualizado.', {
+              timeOut: 6000,
+            });
+            this.LimpiarCampos();
+            this.Cancelar(2);
+          } else {
+            this.toastr.warning('Intente nuevamente.', 'Ups!!! algo salio mal.', {
+              timeOut: 6000,
+            });
+          }
+        }, error: () => {
+          this.toastr.error('Ups!!! algo salio mal.', 'Ups!!! algo salio mal.', {
             timeOut: 6000,
-          });
-          this.LimpiarCampos();
-          this.Cancelar(2);
-        }else{
-          this.toastr.warning('Intente nuevamente.', 'Ups!!! algo salio mal.', {
-            timeOut: 6000,
-          });
+          })
         }
-      }, error => {
-        this.toastr.error('Ups!!! algo salio mal.', 'Ups!!! algo salio mal.', {
-          timeOut: 6000,
-        })
       }
     );
   }

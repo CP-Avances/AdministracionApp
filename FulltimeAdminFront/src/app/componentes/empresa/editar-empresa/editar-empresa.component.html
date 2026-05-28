@@ -27,7 +27,8 @@
                                     formControlName="empresaDescripcionForm" required>
                                 <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
                                     matTooltip="Es obligatorio ingresar la descripción de la nueva empresa">
-                                    help_outline</mat-icon>
+                                    description
+                                </mat-icon>
                             </mat-form-field>
                             <mat-form-field>
                                 <mat-label>Número de Relojes</mat-label>
@@ -35,7 +36,18 @@
                                     formControlName="empresaNumeroRelojesForm" required>
                                 <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
                                     matTooltip="Es obligatorio ingresar la dirección URL de la nueva empresa">
-                                    help_outline
+                                    fingerprint
+                                </mat-icon>
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Instalación sistema *</mat-label>
+                                <mat-select formControlName="empresaInstalacionForm" required>
+                                    <mat-option value="INTERNA">INTERNA</mat-option>
+                                    <mat-option value="EXTERNA">EXTERNA</mat-option>
+                                </mat-select>
+                                <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                    matTooltip="Tipo de funcionamiento del sistema.">
+                                    settings_input_component
                                 </mat-icon>
                             </mat-form-field>
                         </div>
@@ -47,14 +59,14 @@
                                 <input matInput type="text" formControlName="empresaCodigoForm" required>
                                 <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
                                     matTooltip="Ingresar el código de empresa.">
-                                    help_outline
+                                    confirmation_number
                                 </mat-icon>
                             </mat-form-field>
                         </div>
 
                         <div class="d-flex flex-wrap justify-content-center">
                             <mat-form-field>
-                                <mat-label>Zona horaria*</mat-label>
+                                <mat-label>Zona horaria</mat-label>
                                 <mat-select formControlName="empresaZonaHorariaForm" required>
                                     @for (option of zonas; track option) {
                                     <mat-option [value]="option.nombre_general">
@@ -62,16 +74,16 @@
                                     </mat-option>
                                     }
                                 </mat-select>
-                                <mat-icon matSuffix matTooltipPosition="right"
+                                <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
                                     matTooltip="Seleccionar la zona horaria de la empresa.">
-                                    schedule
+                                    public
                                 </mat-icon>
                             </mat-form-field>
                         </div>
 
                         <div class="d-flex flex-wrap justify-content-center">
                             <mat-form-field>
-                                <mat-label>Estado*</mat-label>
+                                <mat-label>Tarea automáticas*</mat-label>
                                 <mat-select formControlName="empresaEstadoForm" required>
                                     @for (option of estados; track option) {
                                     <mat-option [value]="option.estado">
@@ -79,9 +91,9 @@
                                     </mat-option>
                                     }
                                 </mat-select>
-                                <mat-icon matSuffix matTooltipPosition="right"
-                                    matTooltip="Seleccionar la zona horaria de la empresa.">
-                                    schedule
+                                <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
+                                    matTooltip="Indicar si se ejecutan las tareas automáticas.">
+                                    event_repeat
                                 </mat-icon>
                             </mat-form-field>
                         </div>

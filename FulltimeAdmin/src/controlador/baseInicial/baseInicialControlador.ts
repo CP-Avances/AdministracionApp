@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import {pool, dbConfig} from '../../database';
+import { dbConfig } from '../../database';
 
 class BaseInicialControlador {
 
-    public async ObtenerDatosBaseInicial(req: Request, res: Response){
-        try{
-            let datos_base = 
-            { 
+    public async ObtenerDatosBaseInicial(req: Request, res: Response) {
+        try {
+            let datos_base =
+            {
                 base: dbConfig.database,
                 host: dbConfig.host,
                 puerto: dbConfig.port,
@@ -17,8 +17,7 @@ class BaseInicialControlador {
                 datos_base
             );
         }
-        catch(error)
-        {
+        catch (error) {
             res.status(500).jsonp({ message: 'error' });
         }
     }

@@ -40,9 +40,6 @@ class Servidor{
     }
 
     rutas(): void {
-        //this.app.use('/fulltime', EMPRESAS_RUTAS);//ruta para empresa
-        //this.app.use('/parametrizacion', PARAMETRIZACION_RUTAS);//ruta datos inciales
-        //this.app.use('/empleado', EMPLEADO_RUTAS);//ruta datos inciales
         this.app.use('/base-empresa', BASE_EMPRESAS_RUTAS);
         this.app.use('/login', LOGIN_RUTAS);
         this.app.use('/base', BASEINICIAL_RUTAS);

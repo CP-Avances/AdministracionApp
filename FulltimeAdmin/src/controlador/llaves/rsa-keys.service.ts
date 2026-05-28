@@ -1,38 +1,81 @@
-import * as CryptoJS from 'crypto-js';
-import { frasecontrasenia, ivcontrasenia, saltcontrasenia } from './frase-contrasenia';//Importacion frase para encriptar, semilla iv para encriptar vector de inicializacion, semilla salt frase para encriptar de derivacion limitada
+import { createCipheriv, createDecipheriv, randomBytes, pbkdf2Sync } from "crypto";
+import argon2 from "argon2";
 
-class RsaKeysService {
+const frasecontrasenia = process.env.FRASE_CONTRASENIA ?? "";
+const salcontrasenia = process.env.SAL_CONTRASENIA ?? "";
 
-    //Codificacion de Base64 a UTF8
-    private key = CryptoJS.enc.Utf8.parse(frasecontrasenia);
-    private iv = CryptoJS.enc.Utf8.parse(ivcontrasenia);
-    private salt = CryptoJS.enc.Utf8.parse(saltcontrasenia);
-    //Generacion de key de derivacion encriptada para passwords
-    private keyLogin = CryptoJS.enc.Utf8.parse(CryptoJS.PBKDF2(this.key, this.salt, { keySize: 8, iterations: 1000 }).toString());
+class CryptoService {
+    private readonly keyGeneral: Buffer;
 
     constructor() {
+        if (!frasecontrasenia || !salcontrasenia) {
+            throw new Error("FRASE_CONTRASENIA y SAL_CONTRASENIA son obligatorias");
+        }
+
+        // 32 bytes = AES-256
+        this.keyGeneral = pbkdf2Sync(frasecontrasenia, salcontrasenia, 100_000, 32, "sha256");
     }
 
-    public encriptarDatos(password: string): string{
-        //Encriptacion sin key encriptada, mas eficiente para datos que no sean passwords
-        return CryptoJS.AES.encrypt(password, this.key, {iv: this.iv}).toString();
+    /* =========================
+       CIFRADO REVERSIBLE (AES-GCM)
+       ========================= */
+
+    private encryptAesGcm(plain: string, key: Buffer): string {
+        const iv = randomBytes(12);
+        const cipher = createCipheriv("aes-256-gcm", key, iv);
+
+        const encrypted = Buffer.concat([cipher.update(plain, "utf8"), cipher.final()]);
+        const authTag = cipher.getAuthTag();
+
+        // iv:tag:data
+        return `${iv.toString("hex")}:${authTag.toString("hex")}:${encrypted.toString("hex")}`;
     }
 
-    public desencriptarDatos(passwordEncrypted: string): string{
-        //Desencriptacion sin key encriptada, mas eficiente para datos que no sean passwords
-        return CryptoJS.AES.decrypt(passwordEncrypted, this.key, { iv: this.iv }).toString(CryptoJS.enc.Utf8);
+    private decryptAesGcm(ciphertext: string, key: Buffer): string {
+        const parts = ciphertext.split(":");
+        if (parts.length !== 3) throw new Error("Formato de datos cifrados inválido");
+
+        const [ivHex, tagHex, dataHex] = parts;
+        if (!ivHex || !tagHex || !dataHex) throw new Error("Datos cifrados incompletos");
+
+        const iv = Buffer.from(ivHex, "hex");
+        const tag = Buffer.from(tagHex, "hex");
+        const encrypted = Buffer.from(dataHex, "hex");
+
+        const decipher = createDecipheriv("aes-256-gcm", key, iv);
+        decipher.setAuthTag(tag);
+
+        const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
+        return decrypted.toString("utf8");
     }
 
-    public encriptarLogin(password: string): string{
-        //Encriptacion con key encriptada para passwords
-        return CryptoJS.AES.encrypt(password, this.keyLogin, { iv: this.iv}).toString();
+    // Datos generales (reversibles)
+    public encriptarDatos(valor: string): string {
+        return this.encryptAesGcm(valor, this.keyGeneral);
     }
 
-    public desencriptarLogin(passwordEncrypted: string): string {
-        return CryptoJS.AES.decrypt(passwordEncrypted, this.keyLogin, { iv: this.iv}).toString(CryptoJS.enc.Utf8);
-    }    
+    public desencriptarDatos(valorEncriptado: string): string {
+        return this.decryptAesGcm(valorEncriptado, this.keyGeneral);
+    }
+
+    /* =========================
+       CONTRASEÑAS (NO reversible)
+       ========================= */
+
+    public async hashLogin(passwordPlano: string): Promise<string> {
+        return argon2.hash(passwordPlano, {
+            type: argon2.argon2id,
+            memoryCost: 2 ** 16,
+            timeCost: 3,
+            parallelism: 1
+        });
+    }
+
+    public async verificarLogin(passwordPlano: string, hashBD: string): Promise<boolean> {
+        return argon2.verify(hashBD, passwordPlano);
+    }
 
 }
 
-export const FUNCIONES_LLAVES = new RsaKeysService();
+export const FUNCIONES_LLAVES = new CryptoService();
 export default FUNCIONES_LLAVES;

@@ -1,7 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -30,7 +28,7 @@ export class BaseService {
   }
 
   InsertarBase(data: any){
-    return this.http.post<any>(`${environment.url}/base-empresa/registro-base-empresas/`, data);
+    return this.http.post<any>(`${environment.url}/base-empresa/registro-base-empresas`, data);
   }
 
 }

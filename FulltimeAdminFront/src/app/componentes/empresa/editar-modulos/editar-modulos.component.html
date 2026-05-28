@@ -1,0 +1,155 @@
+<div id="titulo">
+
+    <span>
+        MODIFICAR MÓDULOS
+    </span>
+
+    <mat-icon class="float-right" id="cerrar" (click)="Cancelar(1)" matSuffix matTooltipPosition="right"
+        matTooltip="Salir">
+        highlight_off
+    </mat-icon>
+</div>
+
+<mat-card class="example-card mat-elevation-z8 card-principal">
+
+    <mat-card-content>
+
+        <div class="nota-modulos">
+            <mat-icon>info</mat-icon>
+            <span>
+                Seleccione los módulos que estarán habilitados para la empresa.
+            </span>
+        </div>
+
+        <form [formGroup]="ModulosForm">
+
+            <div class="modulos-grid">
+
+                <!-- PERMISOS -->
+                <div class="modulo-card">
+                    <div class="modulo-icono">
+                        <mat-icon>assignment</mat-icon>
+                    </div>
+
+                    <div class="modulo-info">
+                        <mat-checkbox [formControl]="empresaModulosPermisosForm" matTooltipPosition="right"
+                            matTooltip="Indicar si el usuario tiene habilitado el módulo de permisos.">
+                            <span>Permisos</span>
+                        </mat-checkbox>
+                    </div>
+                </div>
+
+                <!-- VACACIONES -->
+                <div class="modulo-card">
+                    <div class="modulo-icono">
+                        <mat-icon>beach_access</mat-icon>
+                    </div>
+
+                    <div class="modulo-info">
+                        <mat-checkbox [formControl]="empresaModulosVacacionesForm" matTooltipPosition="right"
+                            matTooltip="Indicar si el usuario tiene habilitado el módulo de vacaciones.">
+                            <span>Vacaciones</span>
+                        </mat-checkbox>
+                    </div>
+                </div>
+
+                <!-- HORA EXTRA -->
+                <div class="modulo-card">
+                    <div class="modulo-icono">
+                        <mat-icon>schedule</mat-icon>
+                    </div>
+
+                    <div class="modulo-info">
+                        <mat-checkbox [formControl]="empresaModulosHoraExtraForm" matTooltipPosition="right"
+                            matTooltip="Indicar si el usuario tiene habilitado el módulo de hora extra.">
+                            <span>Hora Extra</span>
+                        </mat-checkbox>
+                    </div>
+                </div>
+
+                <!-- GEOLOCALIZACIÓN -->
+                <div class="modulo-card">
+                    <div class="modulo-icono">
+                        <mat-icon>location_on</mat-icon>
+                    </div>
+
+                    <div class="modulo-info">
+                        <mat-checkbox [formControl]="empresaModulosGeolocalizacionForm" matTooltipPosition="right"
+                            matTooltip="Indicar si el usuario tiene habilitado el módulo de geolocalización.">
+                            <span>Geolocalización</span>
+                        </mat-checkbox>
+                    </div>
+                </div>
+
+                <!-- TIMBRE VIRTUAL -->
+                <div class="modulo-card">
+                    <div class="modulo-icono">
+                        <mat-icon>fingerprint</mat-icon>
+                    </div>
+
+                    <div class="modulo-info">
+                        <mat-checkbox [formControl]="empresaModulosTimbreVirtualForm" matTooltipPosition="right"
+                            matTooltip="Indicar si el usuario tiene habilitado el módulo de timbre virtual.">
+                            <span>Timbre Virtual</span>
+                        </mat-checkbox>
+                    </div>
+                </div>
+
+                <!-- APLICACIÓN MÓVIL -->
+                <div class="modulo-card">
+                    <div class="modulo-icono">
+                        <mat-icon>phone_iphone</mat-icon>
+                    </div>
+
+                    <div class="modulo-info">
+                        <mat-checkbox [formControl]="empresaModulosAplicacionMovilForm" matTooltipPosition="right"
+                            matTooltip="Indicar si el usuario tiene habilitado el módulo de aplicación móvil.">
+                            <span>Aplicación Móvil</span>
+                        </mat-checkbox>
+                    </div>
+                </div>
+
+                <!-- ACCIÓN DE PERSONAL -->
+                <div class="modulo-card">
+                    <div class="modulo-icono">
+                        <mat-icon>badge</mat-icon>
+                    </div>
+
+                    <div class="modulo-info">
+                        <mat-checkbox [formControl]="empresaModulosAccionPersonalForm" matTooltipPosition="right"
+                            matTooltip="Indicar si el usuario tiene habilitado el módulo de acción de personal.">
+                            <span>Acción de Personal</span>
+                        </mat-checkbox>
+                    </div>
+                </div>
+
+                <!-- ALIMENTACIÓN -->
+                <div class="modulo-card">
+                    <div class="modulo-icono">
+                        <mat-icon>restaurant</mat-icon>
+                    </div>
+
+                    <div class="modulo-info">
+                        <mat-checkbox [formControl]="empresaModulosAlimentacionForm" matTooltipPosition="right"
+                            matTooltip="Indicar si el usuario tiene habilitado el módulo de alimentación.">
+                            <span>Alimentación</span>
+                        </mat-checkbox>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="acciones-modulos">
+                <button type="button" id="btn-raised" class="btn btn-sm" [disabled]="!ModulosForm.valid"
+                    (click)="ValidarDatosModulos(ModulosForm.value)" value="Guardar">
+
+                    <mat-icon>save</mat-icon>
+                    Guardar
+                </button>
+            </div>
+
+        </form>
+
+    </mat-card-content>
+
+</mat-card>

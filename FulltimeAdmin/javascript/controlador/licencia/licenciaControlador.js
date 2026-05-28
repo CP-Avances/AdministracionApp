@@ -27,16 +27,16 @@ class LicenciaControlador {
                 fecha_desactivacion: empresa_licencia_fecha_desactivacion_
             };
             try {
-                const jsonEncriptado = rsa_keys_service_1.FUNCIONES_LLAVES.encriptarLogin(JSON.stringify(licencia_datos).toString());
+                const jsonEncriptado = rsa_keys_service_1.FUNCIONES_LLAVES.encriptarDatos(JSON.stringify(licencia_datos).toString());
                 if (jsonEncriptado === null) {
                     return res.status(500).jsonp({ message: 'error' });
                 }
                 const response = yield database_1.default.query(`
                 INSERT INTO empresa_licencia (id_empresa_bdd, llave_publica, fecha_activacion, fecha_desactivacion)
                     VALUES ($1, $2, $3, $4) RETURNING *
-                `, [licencia_datos.id_empresa_bdd, jsonEncriptado, licencia_datos.fecha_activacion, licencia_datos.fecha_desactivacion]);
+                `, [licencia_datos.id_empresa_bdd, jsonEncriptado, licencia_datos.fecha_activacion,
+                    licencia_datos.fecha_desactivacion]);
                 const [registro_licencia] = response.rows;
-                console.log('reg_', registro_licencia);
                 if (registro_licencia) {
                     return res.status(200).jsonp({ message: 'ok' });
                 }
@@ -92,7 +92,8 @@ class LicenciaControlador {
                     empresa_licencia.fecha_activacion,
                     empresa_licencia.fecha_desactivacion 
                 FROM empresa_licencia empresa_licencia 
-                INNER JOIN empresa_bdd empresa_bdd ON empresa_bdd.id_empresa_bdd = empresa_licencia.id_empresa_bdd
+                INNER JOIN empresa_bdd empresa_bdd 
+                ON empresa_bdd.id_empresa_bdd = empresa_licencia.id_empresa_bdd
                 INNER JOIN empresa empresa ON empresa.empresa_id = empresa_bdd.id_empresa
                 ORDER BY empresa_bdd.id_empresa;
                 `);
@@ -125,11 +126,13 @@ class LicenciaControlador {
                     fecha_activacion: empresa_licencia_fecha_activacion_,
                     fecha_desactivacion: empresa_licencia_fecha_desactivacion_
                 };
-                const jsonEncriptado = rsa_keys_service_1.FUNCIONES_LLAVES.encriptarLogin(JSON.stringify(licencia_datos).toString());
+                const jsonEncriptado = rsa_keys_service_1.FUNCIONES_LLAVES.encriptarDatos(JSON.stringify(licencia_datos).toString());
                 yield database_1.default.query(`
-                UPDATE empresa_licencia SET id_empresa_bdd = $2, llave_publica = $3, fecha_activacion = $4, fecha_desactivacion = $5 
+                UPDATE empresa_licencia SET id_empresa_bdd = $2, llave_publica = $3, fecha_activacion = $4,
+                 fecha_desactivacion = $5 
                 WHERE id_empresa_licencia = $1 
-                `, [id_empresa_licencia_, id_empresa_bdd_, jsonEncriptado, empresa_licencia_fecha_activacion_, empresa_licencia_fecha_desactivacion_]);
+                `, [id_empresa_licencia_, id_empresa_bdd_, jsonEncriptado, empresa_licencia_fecha_activacion_,
+                    empresa_licencia_fecha_desactivacion_]);
                 res.jsonp({ message: 'Registro actualizado.' });
             }
             catch (error) {
@@ -163,7 +166,8 @@ class LicenciaControlador {
                     empresa_licencia.fecha_activacion,
                     empresa_licencia.fecha_desactivacion
                 FROM empresa_licencia empresa_licencia
-                INNER JOIN empresa_bdd empresa_bdd ON empresa_bdd.id_empresa_bdd = empresa_licencia.id_empresa_bdd
+                INNER JOIN empresa_bdd empresa_bdd 
+                ON empresa_bdd.id_empresa_bdd = empresa_licencia.id_empresa_bdd
                 WHERE 
                     empresa_bdd.id_empresa = $1
                 ORDER BY 1

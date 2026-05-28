@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import LOGIN_CONTROLADOR, { loginControlador } from '../../controlador/login/loginControlador';
+import LOGIN_CONTROLADOR from '../../controlador/login/loginControlador';
 
 class LoginRutas {
 
     public router: Router = Router();
 
-    constructor(){
+    constructor() {
         this.configuracion();
     }
 

@@ -35,9 +35,6 @@ class Servidor {
         });
     }
     rutas() {
-        //this.app.use('/fulltime', EMPRESAS_RUTAS);//ruta para empresa
-        //this.app.use('/parametrizacion', PARAMETRIZACION_RUTAS);//ruta datos inciales
-        //this.app.use('/empleado', EMPLEADO_RUTAS);//ruta datos inciales
         this.app.use('/base-empresa', baseEmpresaRutas_1.default);
         this.app.use('/login', loginRutas_1.default);
         this.app.use('/base', baseInicialRutas_1.default);

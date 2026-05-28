@@ -1,239 +1,245 @@
-<br>
-<mat-tab-group (selectedTabChange)="DetectarEventoTab($event)" #pestana>
+<mat-tab-group class="empresa-tabs" (selectedTabChange)="DetectarEventoTab($event)" #pestana>
 
     <!-- INFORMACION OFICIAL DE LA EMPRESA -->
     <mat-tab label="perfil">
         <ng-template mat-tab-label>
-            <mat-icon class="example-tab-icon">person_pin</mat-icon>
-            <h6 id="items">Perfil Empresa</h6>
+            <mat-icon class="example-tab-icon">business</mat-icon>
+            <h6 id="items">Empresa</h6>
         </ng-template>
-        <div class="container" style="padding-top: 15px; padding-bottom: 25px;">
-            <div class="row">
-                <div class="col-md">
-                    <mat-card class="mat-elevation-z8">
-                        <div class="d-flex bd-highlight" id="resultados">
-                            <h5 class="w-100 bd-highlight align-self-center">
-                                {{descripcionEmpresa}}
-                            </h5>
-                        </div>
-                        <mat-card-content>
-                            <div class="container" style="padding-top: 15px;">
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Id:</label>
-                                            <label>{{idEmpresa}}</label>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Estado:</label>
-                                            <label>{{estadoEmpresa ? 'Activa' : 'Inactiva'}}</label>
-                                        </div>
-                                    </div>
-                                </div>
+        <div class="empresa-page">
 
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Código:</label>
-                                            <label>{{codigoEmpresa}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Número Relojes:</label>
-                                            <label>{{numeroRelojesEmpresa}}</label>
-                                        </div>
-                                    </div>
-                                </div>
+            <div class="empresa-header-card mat-elevation-z6">
+                <div class="empresa-header-info">
+                    <div class="empresa-icono">
+                        <mat-icon>business</mat-icon>
+                    </div>
 
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Zona Horaria:</label>
-                                            <label>{{zonaHorariaEmpresa}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="text-align: right;">
-                                <i type="submit" id="edit" (click)="AbirVentanaEditarEmpresa(empresaUno)" matSuffix
-                                    matTooltipPosition="right"
-                                    matTooltip="Modificar los datos generales de este registro" class="fas fa-edit">
-                                    <p>Editar</p>
-                                </i>
-                            </div>
-                        </mat-card-content>
-                    </mat-card>
+                    <div>
+                        <h3>{{ descripcionEmpresa }}</h3>
+                        <p>Información general de la empresa registrada.</p>
+                    </div>
                 </div>
-                <br>
-                <div class="col-md">
-                    <mat-card class="mat-elevation-z8">
-                        <mat-grid-list cols="2" rowHeight="3:1">
-                            <mat-grid-tile>
-                                <button type="submit" [routerLink]="['/empresas']"
-                                    class="btn btn-block d-flex align-items-center justify-content-center"
-                                    id="Selector">
-                                    <i class="material-icons">keyboard_backspace</i><span>Atrás</span>
-                                </button>
-                            </mat-grid-tile>
-                            <mat-grid-tile>
-                                <button (click)="GenerarPdf('open')"
-                                    class="btn btn-block d-flex align-items-center justify-content-center"
-                                    id="Selector">
-                                    <i class="material-icons">picture_as_pdf</i><span>Abrir PDF</span>
-                                </button>
-                            </mat-grid-tile>
-                        </mat-grid-list>
-                    </mat-card>
+
+                <div class="empresa-header-actions">
+                    <button mat-raised-button color="primary" [routerLink]="['/empresas']">
+                        <mat-icon>keyboard_backspace</mat-icon>
+                        Atrás
+                    </button>
+
+                    <button mat-raised-button color="accent" (click)="GenerarPdf('open')">
+                        <mat-icon>picture_as_pdf</mat-icon>
+                        Abrir PDF
+                    </button>
                 </div>
             </div>
+
+            <mat-card class="card-panel mat-elevation-z6">
+                <div class="card-panel-header">
+                    <div>
+                        <h4>Datos de la Empresa</h4>
+                        <span>Detalle principal de configuración</span>
+                    </div>
+
+                    <button mat-icon-button color="primary" (click)="AbirVentanaEditarEmpresa(empresaUno)"
+                        matTooltip="Modificar los datos generales de este registro">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </div>
+
+                <mat-card-content>
+                    <div class="info-grid">
+
+                        <div class="info-item">
+                            <mat-icon>pin</mat-icon>
+                            <div>
+                                <span>Id</span>
+                                <strong>{{ idEmpresa }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <mat-icon>task_alt</mat-icon>
+                            <div>
+                                <span>Ejecutar tareas automáticas</span>
+                                <strong>
+                                    <span class="badge" [ngClass]="estadoEmpresa ? 'badge-activo' : 'badge-inactivo'">
+                                        {{ estadoEmpresa ? 'Activa' : 'Inactiva' }}
+                                    </span>
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <mat-icon>qr_code_2</mat-icon>
+                            <div>
+                                <span>Código</span>
+                                <strong>{{ codigoEmpresa }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <mat-icon>fingerprint</mat-icon>
+                            <div>
+                                <span>Número relojes</span>
+                                <strong>{{ numeroRelojesEmpresa }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <mat-icon>public</mat-icon>
+                            <div>
+                                <span>Zona horaria</span>
+                                <strong>{{ zonaHorariaEmpresa }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <mat-icon>settings_applications</mat-icon>
+                            <div>
+                                <span>Instalación</span>
+                                <strong>
+                                    <span class="badge badge-instalacion">
+                                        {{ instalacionEmpresa }}
+                                    </span>
+                                </strong>
+                            </div>
+                        </div>
+
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
         </div>
     </mat-tab>
 
     <!-- BASE REGISTRADA Y LICENCIAS -->
     <mat-tab label="bases">
         <ng-template mat-tab-label>
-            <mat-icon class="example-tab-icon">account_balance</mat-icon>
+            <mat-icon class="example-tab-icon">storage</mat-icon>
             <h6 id="items">Base de Datos y Licencia</h6>
         </ng-template>
 
-        <div class="container" style="padding-top: 15px; padding-bottom: 25px;">
-            <div style="padding-bottom: 35px;" *ngIf="modificar_base_">
-                <app-editar-base [base]="base_editar" [pagina]="pagina_base">
-                </app-editar-base>
-            </div>
-            <div style="padding-bottom: 35px;" *ngIf="modificar_licencia_">
-                <app-editar-licencia [licencia]="licencia_editar" [pagina]="pagina_base">
-                </app-editar-licencia>
-            </div>
-            <div class="row">
-                <div class="col-md" style="padding-bottom: 20px;">
-                    <mat-card class="mat-elevation-z8">
-                        <div class="d-flex bd-highlight" id="titulo">
-                            <div class="w-100 bd-highlight">
-                                <h5>BASE ACTUAL</h5>
-                            </div>
-                            <div class="flex-shrink-1 bd-highlight" style="margin-right: 10px;" *ngIf="agregar_base_">
-                                <button type="submit" class="btn btn-outline-light btn-sm" style="margin-top: -3px;"
-                                    (click)="AbrirVentanaCrearBase()">
-                                    Añadir
-                                </button>
-                            </div>
-                        </div>
-                        <mat-card-content>
-                            <div class="container" style="padding-top: 15px;">
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Nombre Base de Datos:</label>
-                                            <label>{{empresaBddNombre}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Descripción:</label>
-                                            <label>{{empresaBddDescripcion}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Host:</label>
-                                            <label>{{empresaBddHost}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Puerto:</label>
-                                            <label>{{empresaBddPuerto}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Usuario:</label>
-                                            <label>{{empresaBddUsuario}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="text-align: right; padding-top: 3%;" *ngIf="editar_base_">
-                                    <i type="submit" id="edit" style="margin-right: 20px;"
-                                        (click)="VerBaseEdicion(false); AbrirVentanaEditarBase(baseEmpresa)" matSuffix
-                                        matTooltipPosition="right"
-                                        matTooltip="Modificar los datos generales de este registro" class="fas fa-edit">
-                                        <p>Editar</p>
-                                    </i>
-                                </div>
-                            </div>
-                        </mat-card-content>
-                    </mat-card>
-                </div>
+        <div class="empresa-page">
 
-                <div class="col-md">
-                    <mat-card class="mat-elevation-z8">
-                        <div class="d-flex bd-highlight" id="titulo">
-                            <div class="w-100 bd-highlight">
-                                <h5>LICENCIA ACTUAL</h5>
-                            </div>
-                            <div class="flex-shrink-1 bd-highlight" style="margin-right: 10px;"
-                                *ngIf="agregar_licencia_">
-                                <button type="submit" class="btn btn-outline-light btn-sm" style="margin-top: -3px;"
-                                    (click)="AbrirVentanaCrearLicencia()">
-                                    Añadir
-                                </button>
-                            </div>
+            <div class="form-edicion" *ngIf="modificar_base_">
+                <app-editar-base [base]="base_editar" [pagina]="pagina_base"></app-editar-base>
+            </div>
+
+            <div class="form-edicion" *ngIf="modificar_licencia_">
+                <app-editar-licencia [licencia]="licencia_editar" [pagina]="pagina_base"></app-editar-licencia>
+            </div>
+
+            <div class="cards-doble">
+
+                <!-- BASE ACTUAL -->
+                <mat-card class="card-panel mat-elevation-z6">
+                    <div class="card-panel-header">
+                        <div>
+                            <h4>Base Actual</h4>
+                            <span>Conexión principal de la empresa</span>
                         </div>
-                        <mat-card-content>
-                            <div class="container" style="padding-top: 15px;">
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Llave Pública:</label>
-                                            <label class="text-break">{{empresaLicenciaLlavePublica}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Fecha Activación:</label>
-                                            <label class="text-break">{{empresaLicenciaFechaActivacion}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="espacio d-flex justify-content-start">
-                                            <label id="datosF">Fecha Desactivación:</label>
-                                            <label class="text-break">{{empresaLicenciaFechaDesactivacion}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="text-align: right; padding-top: 3%;" *ngIf="editar_licencia_">
-                                    <i type="submit" id="edit" style="margin-right: 20px;"
-                                        (click)="VerLicenciaEdicion(false); AbrirVentanaEditarLicencia(licenciaEmpresa)"
-                                        matSuffix matTooltipPosition="right"
-                                        matTooltip="Modificar los datos generales de este registro" class="fas fa-edit">
-                                        <p>Editar</p>
-                                    </i>
-                                </div>
+
+                        <button mat-raised-button color="primary" *ngIf="agregar_base_"
+                            (click)="AbrirVentanaCrearBase()">
+                            <mat-icon>add</mat-icon>
+                            Añadir
+                        </button>
+                    </div>
+
+                    <mat-card-content>
+                        <div class="info-list">
+
+                            <div class="info-line">
+                                <mat-icon>storage</mat-icon>
+                                <span>Nombre Base de Datos</span>
+                                <strong>{{ empresaBddNombre }}</strong>
                             </div>
-                        </mat-card-content>
-                    </mat-card>
-                </div>
+
+                            <div class="info-line">
+                                <mat-icon>description</mat-icon>
+                                <span>Descripción</span>
+                                <strong>{{ empresaBddDescripcion }}</strong>
+                            </div>
+
+                            <div class="info-line">
+                                <mat-icon>dns</mat-icon>
+                                <span>Host</span>
+                                <strong>{{ empresaBddHost }}</strong>
+                            </div>
+
+                            <div class="info-line">
+                                <mat-icon>settings_ethernet</mat-icon>
+                                <span>Puerto</span>
+                                <strong>{{ empresaBddPuerto }}</strong>
+                            </div>
+
+                            <div class="info-line">
+                                <mat-icon>account_circle</mat-icon>
+                                <span>Usuario</span>
+                                <strong>{{ empresaBddUsuario }}</strong>
+                            </div>
+
+                        </div>
+
+                        <div class="acciones-card" *ngIf="editar_base_">
+                            <button mat-stroked-button color="primary"
+                                (click)="VerBaseEdicion(false); AbrirVentanaEditarBase(baseEmpresa)">
+                                <mat-icon>edit</mat-icon>
+                                Editar Base
+                            </button>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+                <!-- LICENCIA ACTUAL -->
+                <mat-card class="card-panel mat-elevation-z6">
+                    <div class="card-panel-header">
+                        <div>
+                            <h4>Licencia Actual</h4>
+                            <span>Información de activación y vigencia</span>
+                        </div>
+
+                        <button mat-raised-button color="primary" *ngIf="agregar_licencia_"
+                            (click)="AbrirVentanaCrearLicencia()">
+                            <mat-icon>add</mat-icon>
+                            Añadir
+                        </button>
+                    </div>
+
+                    <mat-card-content>
+                        <div class="info-list">
+
+                            <div class="info-line">
+                                <mat-icon>vpn_key</mat-icon>
+                                <span>Llave Pública</span>
+                                <strong class="texto-largo">{{ empresaLicenciaLlavePublica }}</strong>
+                            </div>
+
+                            <div class="info-line">
+                                <mat-icon>event_available</mat-icon>
+                                <span>Fecha Activación</span>
+                                <strong>{{ empresaLicenciaFechaActivacion }}</strong>
+                            </div>
+
+                            <div class="info-line">
+                                <mat-icon>event_busy</mat-icon>
+                                <span>Fecha Desactivación</span>
+                                <strong>{{ empresaLicenciaFechaDesactivacion}}</strong>
+                            </div>
+
+                        </div>
+
+                        <div class="acciones-card" *ngIf="editar_licencia_">
+                            <button mat-stroked-button color="primary"
+                                (click)="VerLicenciaEdicion(false); AbrirVentanaEditarLicencia(licenciaEmpresa)">
+                                <mat-icon>edit</mat-icon>
+                                Editar Licencia
+                            </button>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
             </div>
         </div>
     </mat-tab>
@@ -241,95 +247,93 @@
     <!-- MODULOS -->
     <mat-tab label="modulos">
         <ng-template mat-tab-label>
-            <mat-icon class="example-tab-icon">shop</mat-icon>
+            <mat-icon class="example-tab-icon">apps</mat-icon>
             <h6 id="items">Módulos</h6>
         </ng-template>
-        <div class="container" style="padding-top: 15px; padding-bottom: 25px;">
-            <div style="padding-bottom: 35px;" *ngIf="modificar_modulos_">
-                <app-editar-modulos [modulos]="modulos_editar" [pagina]="pagina_base">
-                </app-editar-modulos>
+
+        <div class="empresa-page">
+
+            <div class="form-edicion" *ngIf="modificar_modulos_">
+                <app-editar-modulos [modulos]="modulos_editar" [pagina]="pagina_base"></app-editar-modulos>
             </div>
-            <div class="row">
-                <div class="col-md" style="padding-bottom: 20px;">
-                    <mat-card class="mat-elevation-z8">
-                        <div class="d-flex bd-highlight" id="titulo">
-                            <div class="w-100 bd-highlight">
-                                <h5>MODULOS ACTUALES</h5>
-                            </div>
-                        </div>
-                        <mat-card-content>
-                            <label style="margin-right: 35px; font-size: 15px; padding-top: 10px;">
-                                Módulos activados.
-                            </label>
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true" [checked]="empresaModuloPermisos">
-                                                        <span id="color_fuente">Permisos</span>
-                                                    </mat-checkbox>
-                                                </div>
-                                                <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true" [checked]="empresaModuloVacaciones">
-                                                        <span id="color_fuente">Vacaciones</span>
-                                                    </mat-checkbox>
-                                                </div>
-                                                <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true" [checked]="empresaModuloHoraExtra">
-                                                        <span id="color_fuente">Horas Extras</span>
-                                                    </mat-checkbox>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true"
-                                                        [checked]="empresaModuloGeolocalizacion">
-                                                        <span id="color_fuente">Geolocalización</span>
-                                                    </mat-checkbox>
-                                                </div>
-                                                <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true" [checked]="empresaModuloTimbreWeb">
-                                                        <span id="color_fuente">Timbre Virtual</span>
-                                                    </mat-checkbox>
-                                                </div>
-                                                <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true" [checked]="empresaModuloAppMovil">
-                                                        <span id="color_fuente">Aplicación Móvil</span>
-                                                    </mat-checkbox>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true"
-                                                        [checked]="empresaModuloAccionPersonal">
-                                                        <span id="color_fuente">Acciones de Personal</span>
-                                                    </mat-checkbox>
-                                                </div>
-                                                <div class="espacio d-flex justify-content-start">
-                                                    <mat-checkbox [disabled]="true"
-                                                        [checked]="empresaModuloAlimentacion">
-                                                        <span id="color_fuente">Alimentación</span>
-                                                    </mat-checkbox>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </mat-card-content>
-                        <div style="text-align: right; padding-top: 3%;" *ngIf="editar_modulos_">
-                            <i type="submit" id="edit" style="margin-right: 20px;"
-                                (click)="VerModulosEdicion(false); AbrirVentanaEditarModulos(modulosEmpresa)" matSuffix
-                                matTooltipPosition="right" matTooltip="Modificar los datos generales de este registro"
-                                class="fas fa-edit">
-                                <p>Editar</p>
-                            </i>
-                        </div>
-                    </mat-card>
+
+            <mat-card class="card-panel mat-elevation-z6">
+                <div class="card-panel-header">
+                    <div>
+                        <h4>Módulos Actuales</h4>
+                        <span>Módulos habilitados para esta empresa</span>
+                    </div>
+
+                    <button mat-stroked-button color="primary" *ngIf="editar_modulos_"
+                        (click)="VerModulosEdicion(false); AbrirVentanaEditarModulos(modulosEmpresa)">
+                        <mat-icon>edit</mat-icon>
+                        Editar Módulos
+                    </button>
                 </div>
-            </div>
+
+                <mat-card-content>
+                    <div class="modulos-grid">
+
+                        <div class="modulo-item"
+                            [ngClass]="empresaModuloPermisos ? 'modulo-activo' : 'modulo-inactivo'">
+                            <mat-icon>assignment</mat-icon>
+                            <span>Permisos</span>
+                            <strong>{{ empresaModuloPermisos ? 'Activo' : 'Inactivo' }}</strong>
+                        </div>
+
+                        <div class="modulo-item"
+                            [ngClass]="empresaModuloVacaciones ? 'modulo-activo' : 'modulo-inactivo'">
+                            <mat-icon>beach_access</mat-icon>
+                            <span>Vacaciones</span>
+                            <strong>{{ empresaModuloVacaciones ? 'Activo' : 'Inactivo' }}</strong>
+                        </div>
+
+                        <div class="modulo-item"
+                            [ngClass]="empresaModuloHoraExtra ? 'modulo-activo' : 'modulo-inactivo'">
+                            <mat-icon>schedule</mat-icon>
+                            <span>Horas Extras</span>
+                            <strong>{{ empresaModuloHoraExtra ? 'Activo' : 'Inactivo' }}</strong>
+                        </div>
+
+                        <div class="modulo-item"
+                            [ngClass]="empresaModuloGeolocalizacion ? 'modulo-activo' : 'modulo-inactivo'">
+                            <mat-icon>location_on</mat-icon>
+                            <span>Geolocalización</span>
+                            <strong>{{ empresaModuloGeolocalizacion ? 'Activo' : 'Inactivo' }}</strong>
+                        </div>
+
+                        <div class="modulo-item"
+                            [ngClass]="empresaModuloTimbreWeb ? 'modulo-activo' : 'modulo-inactivo'">
+                            <mat-icon>computer</mat-icon>
+                            <span>Timbre Virtual</span>
+                            <strong>{{ empresaModuloTimbreWeb ? 'Activo' : 'Inactivo' }}</strong>
+                        </div>
+
+                        <div class="modulo-item"
+                            [ngClass]="empresaModuloAppMovil ? 'modulo-activo' : 'modulo-inactivo'">
+                            <mat-icon>smartphone</mat-icon>
+                            <span>Aplicación Móvil</span>
+                            <strong>{{ empresaModuloAppMovil ? 'Activo' : 'Inactivo' }}</strong>
+                        </div>
+
+                        <div class="modulo-item"
+                            [ngClass]="empresaModuloAccionPersonal ? 'modulo-activo' : 'modulo-inactivo'">
+                            <mat-icon>manage_accounts</mat-icon>
+                            <span>Acciones de Personal</span>
+                            <strong>{{ empresaModuloAccionPersonal ? 'Activo' : 'Inactivo' }}</strong>
+                        </div>
+
+                        <div class="modulo-item"
+                            [ngClass]="empresaModuloAlimentacion ? 'modulo-activo' : 'modulo-inactivo'">
+                            <mat-icon>restaurant</mat-icon>
+                            <span>Alimentación</span>
+                            <strong>{{ empresaModuloAlimentacion ? 'Activo' : 'Inactivo' }}</strong>
+                        </div>
+
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
         </div>
     </mat-tab>
 
@@ -339,43 +343,35 @@
             <mat-icon class="example-tab-icon">lock_open</mat-icon>
             <h6 id="items">Acceso Web</h6>
         </ng-template>
-        <div class="container" style="padding-top: 15px; padding-bottom: 25px;">
-            <div class="row">
-                <div class="col-md" style="padding-bottom: 20px;">
-                    <mat-card class="mat-elevation-z8">
-                        <div class="d-flex bd-highlight" id="titulo">
-                            <div class="w-100 bd-highlight">
-                                <h5>ACCESO WEB</h5>
-                            </div>
-                        </div>
 
-                        <mat-radio-group>
-                            <div class="row">
-                                <div class="col-md">
-                                    <div class="d-flex flex-wrap justify-content-start">
-                                        <mat-radio-button [value]="true" (change)="CambiarEstadoAccesoWeb($event)">
-                                            Activo
-                                        </mat-radio-button>
-                                    </div>
-                                </div>
-                                <div class="col-md">
-                                    <div class="d-flex flex-wrap justify-content-start">
-                                        <mat-radio-button [value]="false" (change)="CambiarEstadoAccesoWeb($event)">
-                                            Inactivo
-                                        </mat-radio-button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-wrap justify-content-center">
-                                <button type="button" id="btn-raised" class="btn btn-sm" (click)="GuardarAccesoWeb()"
-                                    value="Guardar">
-                                    Guardar
-                                </button>
-                            </div>
-                        </mat-radio-group>
-                    </mat-card>
+        <div class="empresa-page">
+            <mat-card class="card-panel card-acceso mat-elevation-z6">
+                <div class="card-panel-header">
+                    <div>
+                        <h4>Acceso Web</h4>
+                        <span>Control de acceso a la plataforma web</span>
+                    </div>
                 </div>
-            </div>
+
+                <mat-card-content>
+                    <mat-radio-group class="radio-acceso">
+                        <mat-radio-button [value]="true" (change)="CambiarEstadoAccesoWeb($event)">
+                            Activo
+                        </mat-radio-button>
+
+                        <mat-radio-button [value]="false" (change)="CambiarEstadoAccesoWeb($event)">
+                            Inactivo
+                        </mat-radio-button>
+                    </mat-radio-group>
+
+                    <div class="acciones-card center">
+                        <button type="button" mat-raised-button color="primary" (click)="GuardarAccesoWeb()">
+                            <mat-icon>save</mat-icon>
+                            Guardar
+                        </button>
+                    </div>
+                </mat-card-content>
+            </mat-card>
         </div>
     </mat-tab>
 

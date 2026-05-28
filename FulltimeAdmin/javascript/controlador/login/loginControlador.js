@@ -39,7 +39,6 @@ class LoginControlador {
                 }
             }
             catch (error) {
-                console.error(error);
                 res.status(500).jsonp({ message: 'error' });
             }
         });

@@ -8,12 +8,12 @@ import { ListaEmpresasService } from 'src/app/servicios/empresa/lista-empresas/l
 import { RegistroEmpresaService } from 'src/app/servicios/empresa/registro-empresa/registro-empresa.service';
 import { ValidacionesService } from 'src/app/servicios/validaciones/validaciones.service';
 
-
 @Component({
   selector: 'app-registro-empresa',
   templateUrl: './registro-empresa.component.html',
   styleUrl: './registro-empresa.component.css'
 })
+
 export class RegistroEmpresaComponent implements OnInit {
 
   filteredOptions: Observable<any[]>;
@@ -21,7 +21,6 @@ export class RegistroEmpresaComponent implements OnInit {
   primeroFormGroup: FormGroup;
   segundoFormGroup: FormGroup;
 
-  ip: string | null;
   zonas: any = [];
 
   constructor(
@@ -42,17 +41,15 @@ export class RegistroEmpresaComponent implements OnInit {
   // METODO PARA LISTAR EMPRESAS
   async GetZonaHorarias() {
     this.zona.ObtenerInformacionZonasHorarios().subscribe(
-      datos => {
-        this.zonas = datos;
-        console.log(':::::', this.zonas);
-      },
-      err => {
-        this.zonas = null;
-        console.log('error');
+      {
+        next: (datos) => {
+          this.zonas = datos;
+        },
+        error: () => {
+          this.zonas = null;
+        }
       }
     );
-
-    console.log('_:::', this.zonas);
   }
 
   AsignarFormulario() {
@@ -60,7 +57,8 @@ export class RegistroEmpresaComponent implements OnInit {
       empresaRegistroDescripcionForm: [''],
       empresaRegistroCodigoForm: [''],
       empresaNumeroRelojesForm: [''],
-      empresaZonaHorariaForm: ['']
+      empresaZonaHorariaForm: [''],
+      empresaInstalacionForm: ['']
     });
     this.segundoFormGroup = this._formBuilder.group({
       empresaRegistroModuloPermisosForm: [false],
@@ -80,9 +78,9 @@ export class RegistroEmpresaComponent implements OnInit {
     const [nombre] = zona.split(" ("); // DIVIDIMOS EN DOS PARTES
     let datosEmpresaNueva = {
       empresa_codigo: form1.empresaRegistroCodigoForm,
-      empresa_direccion: 'http://192.168.0.145:3001/server',
       empresa_descripcion: form1.empresaRegistroDescripcionForm,
       numero_relojes: form1.empresaNumeroRelojesForm,
+      instalacion: form1.empresaInstalacionForm,
       hora_extra: form2.empresaRegistroModuloHorasExtraForm,
       accion_personal: form2.empresaRegistroModuloAccionesPersonalForm,
       alimentacion: form2.empresaRegistroModuloAlimentacionForm,
@@ -91,8 +89,6 @@ export class RegistroEmpresaComponent implements OnInit {
       vacaciones: form2.empresaRegistroModuloVacacionesForm,
       app_movil: form2.empresaRegistroModuloAplicacionMovilForm,
       timbre_web: form2.empresaRegistroModuloTimbreVirtualForm,
-      movil_direccion: '',
-      movil_descripcion: '',
       zona_horaria: nombre,
     }
 

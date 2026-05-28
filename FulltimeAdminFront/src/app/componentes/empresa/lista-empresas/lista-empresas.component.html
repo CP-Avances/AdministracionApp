@@ -21,21 +21,9 @@
 </div>
 
 <div class="container" style="padding-bottom: 50px; text-align: center;">
-    <div style="text-align: center; padding-bottom: 12px;" *ngIf="btnCheckHabilitar">
-        <div class="col-md">
-            <button class="btn btn-primary btn-outline-light" style="margin-right: 10px;"
-                (click)="ConfirmarDeleteMultiple(1)">
-                Eliminar
-            </button>
-          </div>
-    </div>
 
     <div class="mat-elevation-z8" style="background: white;">
         <div class="d-flex bd-highlight" id="titulo">
-            <mat-icon class="flex-shrink-1 bd-highlight" (click)="HabilitarSeleccion()" matSuffix
-                matTooltipPosition="right" matTooltip="Selección múltiple para inhabilitar empleados." id="SelectCheck">
-                library_add_check
-            </mat-icon>
             <span class="w-100 bd-highlight">
                 LISTA DE EMPRESAS
             </span>
@@ -44,23 +32,16 @@
             <table class="table table-hover table-sm">
                 <thead class="thead-light">
                     <tr style="text-align: center;">
-                        <th>
-                            <mat-checkbox *ngIf="btnCheckHabilitar" (change)="$event ? masterToggle() : null"
-                                [checked]="selectionUno.hasValue() && isAllSelected()"
-                                [indeterminate]="selectionUno.hasValue() && !isAllSelected()"
-                                [aria-label]="checkboxLabel()">
-                            </mat-checkbox>
-                        </th>
                         <th scope="col">Empresa ID</th>
                         <th scope="col">Empresa Descripcion</th>
                         <th scope="col">Empresa Código</th>
-                        <th scope="col">Estado</th>
+                        <th scope="col">Tareas Automáticas</th>
+                        <th scope="col">Instalación</th>
                         <th scope="col">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td></td>
                         <td>
                             <mat-form-field class="input-tables codigo">
                                 <input matInput placeholder="Buscar" [formControl]="empresa_id"
@@ -75,35 +56,33 @@
                         </td>
                         <td>
                             <mat-form-field class="input-tables codigo">
-                                <input matInput placeholder="Buscar" [formControl]="empresa_codigo"
-                                    (keypress)="$event">
+                                <input matInput placeholder="Buscar" [formControl]="empresa_codigo" (keypress)="$event">
                             </mat-form-field>
                         </td>
+                        <td></td>
+                        <td></td>
                         <td>
                             <mat-icon id="i-ayuda" matSuffix matTooltipPosition="right"
                                 matTooltip="Búsqueda de empleado de acuerdo a cada columna de la tabla.">
-                                help_outline
+                                search
                             </mat-icon>
                         </td>
                     </tr>
-                    <tr *ngFor="let e of empresa | empresaId: empresa_id.value | empresaDescripcion: empresa_descripcion.value | empresaCodigo: empresa_codigo.value | paginate:tamanio_pagina:numero_pagina">
-                        <td>
-                            <mat-checkbox *ngIf="btnCheckHabilitar" (click)="$event.stopPropagation()"
-                                (change)="$event ? selectionUno.toggle(e) : null" [checked]="selectionUno.isSelected(e)"
-                                [aria-label]="checkboxLabel(e)">
-                            </mat-checkbox>
-                        </td>
+                    <tr
+                        *ngFor="let e of empresa | empresaId: empresa_id.value | empresaDescripcion: empresa_descripcion.value | empresaCodigo: empresa_codigo.value | paginate:tamanio_pagina:numero_pagina">
                         <td scope="row">{{e.empresa_id}}</td>
                         <td>{{e.empresa_descripcion}}</td>
                         <td>{{e.empresa_codigo}}</td>
                         <td>{{ e.estado ? 'Activa' : 'Inactiva' }}</td>
+                        <td>{{ e.instalacion}}</td>
                         <td class="justify-content-center">
                             <i matSuffix matTooltipPosition="right" matTooltip="Ver datos generales de este registro."
-                                class="fas fa-eye" style="color: rgb(0, 137, 228);" id="t-ver" [routerLink]="['/verEmpresa/', e.empresa_id]">
+                                class="fas fa-eye" style="color: rgb(0, 137, 228);" id="t-ver"
+                                [routerLink]="['/verEmpresa/', e.empresa_id]">
                                 <p>Ver</p>
                             </i>
-                            <i (click)="ConfirmarDelete(e.empresa_id)" class="far fa-trash-alt" id="t-eliminar" matSuffix
-                                matTooltipPosition="right" matTooltip="Eliminar este registro.">
+                            <i (click)="ConfirmarDelete(e.empresa_id)" class="far fa-trash-alt" id="t-eliminar"
+                                matSuffix matTooltipPosition="right" matTooltip="Eliminar este registro.">
                                 <p>Eliminar</p>
                             </i>
                         </td>

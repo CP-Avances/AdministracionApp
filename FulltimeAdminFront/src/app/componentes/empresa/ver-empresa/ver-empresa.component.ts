@@ -1,18 +1,14 @@
 // IMPORTAR LIBRERIAS
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { MatDatepicker } from '@angular/material/datepicker';
-import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { switchMap } from 'rxjs/operators';
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-import { BaseEmpresaService } from 'src/app/servicios/baseEmpresa/baseEmpresa.service';
 import { ListaEmpresasService } from 'src/app/servicios/empresa/lista-empresas/lista-empresas.service';
 import { EditarEmpresaComponent } from '../editar-empresa/editar-empresa.component';
 import { BaseService } from 'src/app/servicios/base/base.service';
@@ -29,6 +25,7 @@ import moment from 'moment';
   templateUrl: './ver-empresa.component.html',
   styleUrl: './ver-empresa.component.css'
 })
+
 export class VerEmpresaComponent implements OnInit, AfterViewInit {
 
   @ViewChild('tabla2') tabla2: ElementRef;
@@ -44,13 +41,9 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   empresa_modulos: number = 0;
 
   // VARIABLES DE ALMACENAMIENTO DE DATOS CONSULTADOS
-  discapacidadUser: any = [];
-  empleadoLogueado: any = [];
   baseEmpresa: any = [];
   licenciaEmpresa: any = [];
   modulosEmpresa: any = [];
-  tituloEmpleado: any = [];
-  idPerVacacion: any = [];
   empresaUno: any = [];
 
   //VER EMPRESA
@@ -60,6 +53,7 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   numeroRelojesEmpresa: string;
   estadoEmpresa: boolean;
   zonaHorariaEmpresa: string;
+  instalacionEmpresa: string;
 
   //VER BASE EMPRESA
   idEmpresaBdd: string;
@@ -169,10 +163,10 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
       this.empresaUno = this.datoActual;
       this.descripcionEmpresa = this.empresaUno[0].empresa_descripcion;
       this.codigoEmpresa = this.empresaUno[0].empresa_codigo;
-      this.direccionEmpresa = this.empresaUno[0].empresa_direccion;
       this.numeroRelojesEmpresa = this.empresaUno[0].numero_relojes;
       this.estadoEmpresa = this.empresaUno[0].estado;
       this.zonaHorariaEmpresa = this.empresaUno[0].zona_horaria;
+      this.instalacionEmpresa = this.empresaUno[0].instalacion;
 
       //MODULOS
       this.empresaModuloPermisos = this.empresaUno[0].permisos;
@@ -231,7 +225,6 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
     this.ventana.open(EditarEmpresaComponent, { data: dataEmpley, width: '800px' })
       .afterClosed().subscribe(result => {
         if (result) {
-          //this.VerEmpresa();
           this.LeerDatosIniciales();
         }
       })
@@ -329,21 +322,24 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   ObtenerLicenciaEmpresa(id_empresa: string) {
     let id_empresa_mod = Number(id_empresa);
     this.licenciaEmpresa = [];
-    this.restLicencia.BuscarDatosLicenciaPorIdEmpresa(id_empresa_mod).subscribe(res => {
-      this.licenciaEmpresa = res;
+    this.restLicencia.BuscarDatosLicenciaPorIdEmpresa(id_empresa_mod).subscribe(
+      {
+        next: (res) => {
+          this.licenciaEmpresa = res;
 
-      this.idEmpresaLicencia = this.licenciaEmpresa[0].id_empresa_licencia;
-      this.idEmpresaBdd = this.licenciaEmpresa[0].id_empresa_bdd;
-      this.empresaLicenciaLlavePublica = this.licenciaEmpresa[0].llave_publica;
-      this.empresaLicenciaFechaActivacion = this.validar.FormatearFecha(this.licenciaEmpresa[0].fecha_activacion, 'YYYY-MM-DD', this.validar.dia_abreviado);
-      this.empresaLicenciaFechaDesactivacion = this.validar.FormatearFecha(this.licenciaEmpresa[0].fecha_desactivacion, 'YYYY-MM-DD', this.validar.dia_abreviado);
+          this.idEmpresaLicencia = this.licenciaEmpresa[0].id_empresa_licencia;
+          this.idEmpresaBdd = this.licenciaEmpresa[0].id_empresa_bdd;
+          this.empresaLicenciaLlavePublica = this.licenciaEmpresa[0].llave_publica;
+          this.empresaLicenciaFechaActivacion = this.validar.FormatearFecha(this.licenciaEmpresa[0].fecha_activacion, 'YYYY-MM-DD', this.validar.dia_abreviado);
+          this.empresaLicenciaFechaDesactivacion = this.validar.FormatearFecha(this.licenciaEmpresa[0].fecha_desactivacion, 'YYYY-MM-DD', this.validar.dia_abreviado);
 
-      this.editar_licencia_ = true;
-      this.agregar_licencia_ = false;
-    },
-      err => {
-        this.editar_licencia_ = false;
-        this.agregar_licencia_ = true;
+          this.editar_licencia_ = true;
+          this.agregar_licencia_ = false;
+        },
+        error: () => {
+          this.editar_licencia_ = false;
+          this.agregar_licencia_ = true;
+        }
       });
   }
 
@@ -448,7 +444,6 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
             [
               { text: 'Id de empresa: ' + this.empresaUno[0].empresa_id, style: 'item' },
               { text: 'Código de la empresa: ' + this.codigoEmpresa, style: 'item' },
-              { text: 'Dirección URL del servicio de la empresa: ' + this.direccionEmpresa, style: 'item' },
               { text: 'Número de relojes: ' + this.numeroRelojesEmpresa, style: 'item' }
             ]
           ]
@@ -468,11 +463,11 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
         keywords: 'Perfil, Empresa',
       },
       styles: {
-        header: { fontSize: 14, bold: true, margin: [0, 20, 0, 10] },
-        name: { fontSize: 14, bold: true },
-        item: { fontSize: 12, bold: false },
-        tableHeader: { fontSize: 12, bold: true, alignment: 'center', fillColor: '#8adff9' },
-        tableCell: { fontSize: 12, alignment: 'center' }
+        header: { fontSize: 12, bold: true, margin: [0, 20, 0, 10] },
+        name: { fontSize: 12, bold: true },
+        item: { fontSize: 11, bold: false },
+        tableHeader: { fontSize: 10, bold: true, alignment: 'center', fillColor: '#8adff9' },
+        tableCell: { fontSize: 10, alignment: 'center' }
       }
     };
   }

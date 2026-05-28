@@ -1,76 +1,284 @@
-@media (max-width: 992px) {
-    .home-inner {
-        padding-top: 100px;
-    }
+.login-admin-page {
+  min-height: 100vh;
+  background:
+    linear-gradient(135deg, rgba(15, 76, 129, 0.95), rgba(15, 117, 188, 0.78)),
+    url('../../../assets/imagenes/entrepreneur.jpg') no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed;
+  position: relative;
+}
+
+.login-overlay {
+  min-height: 100vh;
+  width: 100%;
+  background: rgba(5, 18, 35, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 35px;
+}
+
+.login-layout {
+  width: 100%;
+  max-width: 1050px;
+  min-height: 560px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+/* =========================
+   PANEL IZQUIERDO
+========================= */
+
+.login-info {
+  padding: 50px;
+  color: white;
+  display: flex;
+  align-items: center;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.20), transparent 35%),
+    linear-gradient(145deg, rgba(15, 76, 129, 0.85), rgba(7, 35, 65, 0.85));
+}
+
+.login-info-content {
+  max-width: 470px;
+}
+
+.badge-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #e8f5ff;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 25px;
+}
+
+.badge-admin mat-icon {
+  font-size: 19px;
+  width: 19px;
+  height: 19px;
+}
+
+.login-info h1 {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0 0 18px 0;
+}
+
+.login-info p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #dceeff;
+  margin-bottom: 28px;
+}
+
+.info-items {
+  display: grid;
+  gap: 14px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #f0f9ff;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.info-item mat-icon {
+  color: #9fe3ff;
+}
+
+/* =========================
+   CARD LOGIN
+========================= */
+
+.login-card-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 45px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 24px;
+  padding: 32px 30px 28px 30px;
+  text-align: center;
+  border: none;
+  box-shadow: 0 16px 36px rgba(15, 76, 129, 0.20) !important;
+}
+
+.logo-section img {
+  width: 190px;
+  max-width: 100%;
+  margin-bottom: 12px;
+}
+
+.logo-section h2 {
+  color: #0f4c81;
+  font-size: 26px;
+  font-weight: 800;
+  margin: 8px 0 4px 0;
+}
+
+.logo-section p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 24px 0;
+}
+
+.login-form {
+  width: 100%;
 }
 
 mat-form-field {
-    width: 230px;
+  width: 100%;
+  margin-bottom: 8px;
 }
 
-img {
-    width: 100%;
+::ng-deep .mat-mdc-form-field-icon-prefix {
+  color: #0f75bc;
+  margin-right: 8px;
 }
 
-.pantalla {
-    margin: auto;
+::ng-deep .mat-mdc-text-field-wrapper {
+  border-radius: 12px !important;
 }
 
-.btn-block {
-    background-color: rgb(23, 173, 9);
-    border-radius: 15px;
-    margin-left: 15px;
-    width: 230px;
-    color: white;
+::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+  color: #0f75bc !important;
 }
 
-mat-card {
-    width: 300px;
-    margin: auto;
-    text-align: center;
-    padding-top: 25px;
-    border-style: groove;
-    border-radius: 25px;
-    padding-bottom: 25px;
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #0f75bc !important;
 }
 
-#home-section {
-    background: url('../../../assets/imagenes/entrepreneur.jpg') no-repeat;
-    min-height: 100vh;
-    background-size: cover;
-    background-attachment: fixed;
+input {
+  font-size: 14px;
 }
 
-.dark-overlay {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    min-width: 100%;
-    background-color: rgba(0, 0, 0, .6);
+button[mat-icon-button] mat-icon {
+  color: #0f75bc;
 }
 
-.home-inner {
-    padding: 55px 100px 15px 100px;
+.btn-login {
+  width: 100%;
+  height: 44px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0f75bc, #0f4c81);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(15, 76, 129, 0.30);
+  transition: all 0.2s ease;
 }
 
-.caja1 {
-    font-size: 13px;
-    text-align: right;
-    margin-right: 16px;
-    margin-bottom: 25px;
+.btn-login:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0d66a3, #0b3f6b);
+  box-shadow: 0 10px 24px rgba(15, 76, 129, 0.38);
+  transform: translateY(-1px);
 }
 
-.caja2 {
-    margin-bottom: 10px;
-    margin-top: 12px;
-    text-align: center;
-    font-size: 13px;
-    color: rgb(177, 173, 173);
+.btn-login:disabled {
+  background: #b7c7d6;
+  color: #edf2f7;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
-.verde {
-    color: rgb(23, 173, 9);
-    margin-left: 5px;
+.btn-login mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.login-footer-text {
+  margin-top: 22px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #eef7ff;
+  color: #0f4c81;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.login-footer-text mat-icon {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media only screen and (max-width: 900px) {
+  .login-layout {
+    grid-template-columns: 1fr;
+    max-width: 430px;
+  }
+
+  .login-info {
+    display: none;
+  }
+
+  .login-card-wrapper {
+    padding: 30px 22px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .login-overlay {
+    padding: 18px;
+  }
+
+  .login-layout {
+    border-radius: 22px;
+  }
+
+  .login-card-wrapper {
+    padding: 24px 16px;
+  }
+
+  .login-card {
+    padding: 28px 22px 24px 22px;
+    border-radius: 20px;
+  }
+
+  .logo-section img {
+    width: 165px;
+  }
+
+  .logo-section h2 {
+    font-size: 23px;
+  }
 }

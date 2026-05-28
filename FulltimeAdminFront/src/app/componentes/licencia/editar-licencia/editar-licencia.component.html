@@ -1,6 +1,5 @@
 <div id="titulo">
-    <mat-icon id="movilidad" class="float-left">open_with</mat-icon>
-    <span cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+    <span>
         MODIFICAR LICENCIA
     </span>
     <mat-icon class="float-right" id="cerrar" (click)="Cancelar(1)" matSuffix matTooltipPosition="right"
@@ -37,8 +36,7 @@
                             <mat-label>Fecha Desactivación</mat-label>
                             <input matInput [matDatepicker]="picker2" placeholder="dd/mm/aaaa"
                                 [formControl]="licenciaFechaDesactivacionForm" required>
-                            <mat-datepicker-toggle matSuffix [for]="picker2" id="i-cursor"
-                                matTooltipPosition="right"
+                            <mat-datepicker-toggle matSuffix [for]="picker2" id="i-cursor" matTooltipPosition="right"
                                 matTooltip="Indicar la fecha de finalización de licencia. Seleccione la fecha dando click en el icono de calendario o puede escribir la fecha con el formato  día/mes/año. Ejemplo: 12/04/1993">
                             </mat-datepicker-toggle>
                             <mat-datepicker touchUi #picker2></mat-datepicker>
@@ -49,7 +47,7 @@
 
             <div class="d-flex flex-wrap justify-content-center">
                 <button type="button" id="btn-raised" class="btn btn-sm" [disabled]="!LicenciaForm.valid"
-                (click)="ValidarDatosLicencia(LicenciaForm.value)" value="Guardar">
+                    (click)="ValidarDatosLicencia(LicenciaForm.value)" value="Guardar">
                     Guardar
                 </button>
             </div>

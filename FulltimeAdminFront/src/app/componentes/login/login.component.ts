@@ -109,8 +109,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/home']);
         }
       },
-      error: (e) => {
-        console.log('ERROR LOGIN', e);
+      error: () => {
         this.toastr.error(
           'Verifique usuario o contraseña.',
           'Error.',

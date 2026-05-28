@@ -29,9 +29,6 @@ class AccesoControlador {
             );
 
             if(EMPRESA.rowCount != 0){
-                let id_empresa_bdd_database = EMPRESA.rows[0].id_empresa_bdd;
-                let id_empresa_database = EMPRESA.rows[0].id_empresa;
-                
                 let empresa_bdd_nombre_database = EMPRESA.rows[0].empresa_bdd_nombre;
                 let empresa_bdd_host_database = EMPRESA.rows[0].empresa_bdd_host;
                 let empresa_bdd_password_database = FUNCIONES_LLAVES.desencriptarDatos(EMPRESA.rows[0].empresa_bdd_contrasena);
@@ -58,8 +55,6 @@ class AccesoControlador {
 
                 res.jsonp({ message: 'Registros actualizados.' });
 
-                //res.status(500).jsonp({ message: 'error' });
-                //return { error: 'Error en la actualizacion de Acceso a la aplicacion web.'}
             }
         } catch (error) {
             res.status(500).jsonp({ message: error });

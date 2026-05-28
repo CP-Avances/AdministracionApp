@@ -32,15 +32,11 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { LoginComponent } from './componentes/login/login.component';
 import { HomeComponent } from './componentes/home/home.component';
 import { MainNavComponent } from './componentes/main-nav/main-nav.component';
-import { ButtonOpcionesComponent } from './componentes/main-nav/button-opciones/button-opciones.component';
 
 //SERVICIOS
 import { LoginService } from './servicios/login/login.service';
 import { TokenInterceptorService } from './servicios/login/token-interceptor.service';
 import { AuthGuard } from './servicios/guards/auth.guard';
-import { MainNavService } from './componentes/main-nav/main-nav.service';
-import { SettingsComponent } from './componentes/settings/settings.component';
-import { ConexionBaseDatosComponent } from './componentes/conexion-base-datos/conexion-base-datos.component';
 import { RegistroEmpresaComponent } from './componentes/empresa/registro-empresa/registro-empresa.component';
 import { ListaEmpresasComponent } from './componentes/empresa/lista-empresas/lista-empresas.component';
 import { MetodosComponent } from './componentes/metodoEliminar/metodos.component';
@@ -49,7 +45,7 @@ import { EditarEmpresaComponent } from './componentes/empresa/editar-empresa/edi
 import { EditarBaseComponent } from './componentes/base/editar-base/editar-base.component';
 import { RegistroBaseComponent } from './componentes/base/registro-base/registro-base.component';
 import { EditarLicenciaComponent } from './componentes/licencia/editar-licencia/editar-licencia.component';
-import { EditarModulosComponent } from './componentes/modulos/editar-modulos/editar-modulos.component';
+import { EditarModulosComponent } from './componentes/empresa/editar-modulos/editar-modulos.component';
 import { RegistroLicenciaComponent } from './componentes/licencia/registro-licencia/registro-licencia.component';
 
 @NgModule({
@@ -59,9 +55,6 @@ import { RegistroLicenciaComponent } from './componentes/licencia/registro-licen
     FooterComponent,
     HomeComponent,
     MainNavComponent,
-    ButtonOpcionesComponent,
-    SettingsComponent,
-    ConexionBaseDatosComponent,
     RegistroEmpresaComponent,
     ListaEmpresasComponent,
     MetodosComponent,
@@ -99,12 +92,11 @@ import { RegistroLicenciaComponent } from './componentes/licencia/registro-licen
     {
       provide: LOCALE_ID, useValue: 'es-EC'
     },
-    { 
-      provide: MatPaginatorIntl, 
-      useClass: MatPaginatorIntl 
+    {
+      provide: MatPaginatorIntl,
+      useClass: MatPaginatorIntl
     },
-    LoginService,
-    MainNavService
+    LoginService
   ],
   bootstrap: [AppComponent]
 })

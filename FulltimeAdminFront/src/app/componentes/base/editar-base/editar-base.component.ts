@@ -1,8 +1,6 @@
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { Component, OnInit, Input } from '@angular/core';
-import { startWith, map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
 import { VerEmpresaComponent } from '../../empresa/ver-empresa/ver-empresa.component';
 import { BaseService } from 'src/app/servicios/base/base.service';
 
@@ -11,6 +9,7 @@ import { BaseService } from 'src/app/servicios/base/base.service';
   templateUrl: './editar-base.component.html',
   styleUrl: './editar-base.component.css'
 })
+
 export class EditarBaseComponent implements OnInit {
 
   @Input() base: any;
@@ -40,7 +39,7 @@ export class EditarBaseComponent implements OnInit {
     public componentev: VerEmpresaComponent,
     private toastr: ToastrService,
     private restBase: BaseService
-  ){
+  ) {
   }
 
   public BaseForm = new FormGroup({
@@ -51,7 +50,7 @@ export class EditarBaseComponent implements OnInit {
     baseUsuarioForm: this.baseUsuarioForm,
     baseContrasenaForm: this.baseContrasenaForm,
   });
-  
+
   ngOnInit(): void {
     this.ip = localStorage.getItem('ip');
     this.idEmpresa = this.base[0].id_empresa;
@@ -70,21 +69,20 @@ export class EditarBaseComponent implements OnInit {
     }
   }
 
-  InicializarValores(){
+  InicializarValores() {
     this.baseDescripcionForm.setValue(this.base[0].empresa_bdd_descripcion);
     this.baseNombreForm.setValue(this.base[0].empresa_bdd_nombre);
     this.baseHostForm.setValue(this.base[0].empresa_bdd_host);
     this.basePuertoForm.setValue(this.base[0].empresa_bdd_puerto);
     this.baseUsuarioForm.setValue(this.base[0].empresa_bdd_usuario);
-    this.baseContrasenaForm.setValue(this.base[0].empresa_bdd_contrasena);
   }
 
   ValidarDatosBase(form: any) {
-    if(form.baseDescripcionForm === '' || form.baseDescripcionForm === null){
+    if (form.baseDescripcionForm === '' || form.baseDescripcionForm === null) {
       this.toastr.info('Verifique los datos ingresados.', '', {
         timeOut: 6000,
       })
-    }else{
+    } else {
       this.ActualizarBase(form);
     }
   }
@@ -106,13 +104,13 @@ export class EditarBaseComponent implements OnInit {
   GuardarDatos(datos: any) {
     this.restBase.ActualizarBase(datos).subscribe(
       response => {
-        if(response.message === 'Registro actualizado.'){
+        if (response.message === 'Registro actualizado.') {
           this.toastr.success('Operación exitosa.', 'Registro actualizado.', {
             timeOut: 6000,
           });
           this.LimpiarCampos();
           this.Cancelar(2);
-        }else{
+        } else {
           this.toastr.warning('Intente nuevamente.', 'Ups!!! algo salio mal.', {
             timeOut: 6000,
           });

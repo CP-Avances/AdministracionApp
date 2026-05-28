@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -10,13 +10,12 @@ import { ValidacionesService } from 'src/app/servicios/validaciones/validaciones
   templateUrl: './registro-licencia.component.html',
   styleUrl: './registro-licencia.component.css'
 })
-export class RegistroLicenciaComponent implements OnInit {
-  
-  ip: string | null;
+
+export class RegistroLicenciaComponent {
 
   empresaLicenciaFechaActivacionForm = new FormControl('', Validators.required);
   empresaLicenciaFechaDesactivacionForm = new FormControl('', Validators.required);
-  
+
   // ASIGNACION DE VALIDACIONES A INPUTS DEL FORMULARIO
   public formulario = new FormGroup({
     empresaLicenciaFechaActivacionForm: this.empresaLicenciaFechaActivacionForm,
@@ -29,11 +28,7 @@ export class RegistroLicenciaComponent implements OnInit {
     private restLicencia: LicenciaService,
     public validar: ValidacionesService,
     @Inject(MAT_DIALOG_DATA) public datoEmpresa: any
-  ){ }
-
-  ngOnInit(): void {
-    this.ip = localStorage.getItem('ip');
-  }
+  ) { }
 
   // CERRAR VENTANA DE REGISTRO DE CONTRATO
   CerrarVentana() {
@@ -55,29 +50,30 @@ export class RegistroLicenciaComponent implements OnInit {
       fecha_activacion: this.validar.FormatearFecha(form.empresaLicenciaFechaActivacionForm, 'YYYY-MM-DD', 'no'),
       fecha_desactivacion: this.validar.FormatearFecha(form.empresaLicenciaFechaDesactivacionForm, 'YYYY-MM-DD', 'no'),
     }
-    
+
     this.GuardarDatos(datosBase);
   }
 
   GuardarDatos(datos: any) {
     this.restLicencia.InsertarLicencia(datos).subscribe(
-      response => {
-        if(response.message === 'ok') {
-          this.toastr.success('Operación exitosa.', 'Registro ingresado.', {
+      {
+        next: response => {
+          if (response.message === 'ok') {
+            this.toastr.success('Operación exitosa.', 'Registro ingresado.', {
+              timeOut: 6000,
+            });
+          } else {
+            this.toastr.warning('Intente nuevamente.', 'Ups!!! algo salio mal.', {
+              timeOut: 6000,
+            });
+          }
+          this.CerrarVentana();
+        },
+        error: () => {
+          this.toastr.error('Ups!!! algo salio mal.', 'Ups!!! algo salio mal.', {
             timeOut: 6000,
-          });
-        }else{
-          this.toastr.warning('Intente nuevamente.', 'Ups!!! algo salio mal.', {
-            timeOut: 6000,
-          });
+          })
         }
-        this.CerrarVentana();
-      },
-      error => {
-        console.log(error);
-        this.toastr.error('Ups!!! algo salio mal.', 'Ups!!! algo salio mal.', {
-          timeOut: 6000,
-        })
       }
     );
   }

@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "tsc": "tsc -w",
-    "dev": "nodemon ./javascript/server.js"
+  "build": "tsc",
+  "tsc": "tsc -w",
+  "dev": "nodemon ./javascript/server.js",
+  "start": "node ./javascript/server.js"
   },
   "keywords": [],
   "author": "",

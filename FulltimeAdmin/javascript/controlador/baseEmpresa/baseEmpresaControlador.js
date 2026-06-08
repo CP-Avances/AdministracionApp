@@ -105,89 +105,129 @@ class BaseEmpresaControlador {
     ObtenerBaseEmpresasInformacion(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const BDD_ADMINISTRACION = process.env.BDD_ADMINISTRACION || 'administrar_fulltime';
                 const EMPRESAS = yield database_1.default.query(`
-                SELECT 
-                    pg_database.oid AS num_proceso, 
-                    pg_database.datname AS nombre_bdd, 
-                    pg_size_pretty(pg_database_size(pg_database.datname)) AS tamano_bdd, 
-                    empresa.empresa_id, 
-                    empresa.empresa_descripcion, 
-                    empresas_bdd.id_empresa_bdd, 
-                    empresas_bdd.empresa_bdd_descripcion,
-                    empresas_bdd.empresa_bdd_usuario,
-                    empresas_bdd.empresa_bdd_contrasena,
-                    empresa.numero_relojes,
-                    empresa.estado
-                FROM pg_database pg_database 
-                LEFT JOIN empresa_bdd AS empresas_bdd 
-                    ON empresas_bdd.empresa_bdd_nombre = pg_database.datname 
-                INNER JOIN empresa AS empresa 
-                    ON empresa.empresa_id = empresas_bdd.id_empresa 
-                WHERE pg_database.datname NOT IN (
-                    'postgres', 
-                    'template1', 
-                    'template0', 
-                    'ft_v4_login'
-                ) 
-                ORDER BY 
-                    empresa.estado DESC,
-                    pg_database_size(pg_database.datname) DESC;
-                `);
-                if (EMPRESAS.rowCount !== null) {
-                    if (EMPRESAS.rowCount > 0) {
-                        return res.jsonp(EMPRESAS.rows);
-                    }
-                    else {
-                        res.status(404).jsonp({ message: 'vacio' });
-                    }
+            SELECT 
+                pg_database.oid AS num_proceso,
+
+                empresas_bdd.empresa_bdd_nombre AS nombre_bdd,
+
+                CASE 
+                    WHEN pg_database.datname IS NOT NULL 
+                        THEN pg_size_pretty(pg_database_size(pg_database.datname))
+                    ELSE 'Servidor remoto'
+                END AS tamano_bdd,
+
+                empresa.empresa_id,
+                empresa.empresa_descripcion,
+
+                empresas_bdd.id_empresa_bdd,
+                empresas_bdd.empresa_bdd_descripcion,
+                empresas_bdd.empresa_bdd_usuario,
+
+                empresa.numero_relojes,
+                empresa.estado,
+
+                CASE 
+                    WHEN pg_database.datname IS NOT NULL 
+                        THEN 'LOCAL'
+                    ELSE 'REMOTA'
+                END AS tipo_base
+
+            FROM empresa_bdd AS empresas_bdd
+
+            INNER JOIN empresa AS empresa 
+                ON empresa.empresa_id = empresas_bdd.id_empresa
+
+            LEFT JOIN pg_database 
+                ON pg_database.datname = empresas_bdd.empresa_bdd_nombre
+
+            WHERE empresas_bdd.empresa_bdd_nombre NOT IN (
+                'postgres', 
+                'template1', 
+                'template0',
+                $1
+            )
+
+            ORDER BY 
+                empresa.estado DESC,
+                tipo_base ASC,
+                empresa.empresa_descripcion ASC;
+            `, [BDD_ADMINISTRACION]);
+                if (EMPRESAS.rowCount && EMPRESAS.rowCount > 0) {
+                    return res.jsonp(EMPRESAS.rows);
                 }
-                else {
-                    res.status(500).jsonp({ message: 'error' });
-                }
+                return res.status(404).jsonp({ message: 'vacio' });
             }
             catch (error) {
-                res.status(500).jsonp({ message: error });
+                return res.status(500).jsonp({ message: error });
             }
         });
     }
     BuscarBaseEmpresas(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let nombre_bdd_ = '%' + req.body.nombre_bdd + '%';
-                let nombre_empresa_ = '%' + req.body.nombre_empresa + '%';
+                const BDD_ADMINISTRACION = process.env.BDD_ADMINISTRACION || 'administrar_fulltime';
+                const nombre_bdd_ = `%${req.body.nombre_bdd || ''}%`;
+                const nombre_empresa_ = `%${req.body.nombre_empresa || ''}%`;
                 const EMPRESAS = yield database_1.default.query(`
-                SELECT 
-                    pg_database.oid as num_proceso, 
-                    pg_database.datname as nombre_bdd, 
-                    pg_size_pretty(pg_database_size(pg_database.datname)) as tamano_bdd, 
-                    empresa.empresa_id, 
-                    empresa.empresa_descripcion, 
-                    empresas_bdd.id_empresa_bdd, 
-                    empresas_bdd.empresa_bdd_descripcion 
-                FROM pg_database pg_database 
-                LEFT JOIN (SELECT * FROM empresa_bdd) AS empresas_bdd 
-                ON empresas_bdd.empresa_bdd_nombre = pg_database.datname 
-                INNER JOIN (SELECT * FROM empresa) AS empresa 
-                ON empresa.empresa_id = empresas_bdd.id_empresa 
-                WHERE 
-                    pg_database.datname NOT IN ($1, $2, $3, $4) AND 
-                    (empresa.empresa_descripcion ILIKE $5 OR pg_database.datname ILIKE $6)
-                ORDER BY pg_database_size(pg_database.datname) DESC
-                `, ['postgres', 'template1', 'template0', 'ft_v4_login', nombre_bdd_, nombre_empresa_]);
-                if (EMPRESAS.rowCount !== null) {
-                    if (EMPRESAS.rowCount > 0) {
-                        res.jsonp(EMPRESAS.rows);
-                    }
-                    else {
-                        res.status(404).jsonp({ message: 'vacio' });
-                    }
+            SELECT 
+                pg_database.oid AS num_proceso,
+
+                empresas_bdd.empresa_bdd_nombre AS nombre_bdd,
+
+                CASE 
+                    WHEN pg_database.datname IS NOT NULL 
+                        THEN pg_size_pretty(pg_database_size(pg_database.datname))
+                    ELSE 'Servidor remoto'
+                END AS tamano_bdd,
+
+                empresa.empresa_id,
+                empresa.empresa_descripcion,
+
+                empresas_bdd.id_empresa_bdd,
+                empresas_bdd.empresa_bdd_descripcion,
+
+                empresa.numero_relojes,
+                empresa.estado,
+
+                CASE 
+                    WHEN pg_database.datname IS NOT NULL 
+                        THEN 'LOCAL'
+                    ELSE 'REMOTA'
+                END AS tipo_base
+
+            FROM empresa_bdd AS empresas_bdd
+
+            INNER JOIN empresa AS empresa 
+                ON empresa.empresa_id = empresas_bdd.id_empresa
+
+            LEFT JOIN pg_database 
+                ON pg_database.datname = empresas_bdd.empresa_bdd_nombre
+
+            WHERE empresas_bdd.empresa_bdd_nombre NOT IN (
+                'postgres', 
+                'template1', 
+                'template0',
+                $1
+            )
+            AND (
+                empresa.empresa_descripcion ILIKE $2 
+                OR empresas_bdd.empresa_bdd_nombre ILIKE $3
+            )
+
+            ORDER BY 
+                empresa.estado DESC,
+                tipo_base ASC,
+                empresa.empresa_descripcion ASC;
+            `, [BDD_ADMINISTRACION, nombre_empresa_, nombre_bdd_]);
+                if (EMPRESAS.rowCount && EMPRESAS.rowCount > 0) {
+                    return res.jsonp(EMPRESAS.rows);
                 }
-                else {
-                    res.status(500).jsonp({ message: 'error' });
-                }
+                return res.status(404).jsonp({ message: 'vacio' });
             }
             catch (error) {
-                res.status(500).jsonp({ message: error });
+                return res.status(500).jsonp({ message: error });
             }
         });
     }

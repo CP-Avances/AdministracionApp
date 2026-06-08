@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
+
 export class HomeComponent implements OnInit {
 
   fecha: string;

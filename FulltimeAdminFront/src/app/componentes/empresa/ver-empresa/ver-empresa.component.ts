@@ -1,5 +1,6 @@
 // IMPORTAR LIBRERIAS
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -19,6 +20,63 @@ import { RegistroLicenciaComponent } from '../../licencia/registro-licencia/regi
 import { MatRadioChange } from '@angular/material/radio';
 import { WebAccessService } from 'src/app/servicios/web-access/web-access.service';
 import moment from 'moment';
+import { InicializarBaseComponent } from '../../base/inicializar-base/inicializar-base.component';
+
+type ModuloLicencia = {
+  id_licencia_modulo: number;
+  id_licencia: number;
+  estado: string;
+  id_modulo: number;
+  codigo: string;
+  nombre: string;
+  descripcion: string | null;
+  activo: boolean;
+  fecha_activacion: string | null;
+  fecha_desactivacion: string | null;
+  fecha_creacion: string;
+  fecha_actualizacion: string | null;
+};
+
+type GrupoModulosLicencia = {
+  id_licencia: number;
+  estado: string;
+  modulos: ModuloLicencia[];
+};
+
+type LicenciaLimite = {
+  id_licencia_limite: number;
+  id_licencia: number;
+  estado: string;
+  fecha_activacion: string;
+  fecha_desactivacion: string;
+  fecha_activacion_formateada?: string;
+  fecha_desactivacion_formateada?: string;
+  usuarios_web_max: number;
+  usuarios_app_max: number;
+  relojes_max: number;
+  storage_mb_max: number;
+  fecha_creacion: string;
+  fecha_actualizacion: string | null;
+};
+
+type LicenciaStorageUso = {
+  id_storage_uso: number;
+  id_licencia: number;
+  estado: string;
+  fecha_activacion: string;
+  fecha_desactivacion: string;
+  fecha_activacion_formateada?: string;
+  fecha_desactivacion_formateada?: string;
+  storage_mb_usado: number;
+  origen_calculo: string;
+  fecha_registro: string;
+  fecha_registro_formateada?: string;
+  fecha_calculo: string;
+  fecha_calculo_formateada?: string;
+  calculo_exitoso: boolean;
+  mensaje_error: string | null;
+  observacion: string | null;
+};
 
 @Component({
   selector: 'app-ver-empresa',
@@ -43,7 +101,18 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   // VARIABLES DE ALMACENAMIENTO DE DATOS CONSULTADOS
   baseEmpresa: any = [];
   licenciaEmpresa: any = [];
-  modulosEmpresa: any = [];
+  licenciaPageSize = 5;
+  licenciaPageIndex = 0;
+  licenciaPageSizeOptions: number[] = [5];
+  modulosLicencia: ModuloLicencia[] = [];
+  modulosLicenciaAgrupados: GrupoModulosLicencia[] = [];
+
+  modulosPageSize = 5;
+  modulosPageIndex = 0;
+  modulosPageSizeOptions: number[] = [5];
+
+  cargando_modulos_ = false;
+  licencia_actual = 0;
   empresaUno: any = [];
 
   //VER EMPRESA
@@ -66,21 +135,26 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   empresaBddUsuario: string;
 
   //VER LICENCIA EMPRESA
-  idEmpresaLicencia: string;
-  idEmpresaLicenciaBdd: string;
+  idEmpresaLicencia: number;
   empresaLicenciaLlavePublica: string;
   empresaLicenciaFechaActivacion: any;
   empresaLicenciaFechaDesactivacion: any;
+  empresaLicenciaObservacion: string;
+  empresaLicenciaEstado: string;
 
-  //VER MODULOS EMPRESA
-  empresaModuloHoraExtra: boolean = false;
-  empresaModuloAccionPersonal: boolean = false;
-  empresaModuloAlimentacion: boolean = false;
-  empresaModuloPermisos: boolean = false;
-  empresaModuloGeolocalizacion: boolean = false;
-  empresaModuloVacaciones: boolean = false;
-  empresaModuloAppMovil: boolean = false;
-  empresaModuloTimbreWeb: boolean = false;
+  get licenciasPaginadas(): any[] {
+    const inicio = this.licenciaPageIndex * this.licenciaPageSize;
+    const fin = inicio + this.licenciaPageSize;
+
+    return this.licenciaEmpresa.slice(inicio, fin);
+  }
+
+  get modulosLicenciaPaginados(): GrupoModulosLicencia[] {
+    const inicio = this.modulosPageIndex * this.modulosPageSize;
+    const fin = inicio + this.modulosPageSize;
+
+    return this.modulosLicenciaAgrupados.slice(inicio, fin);
+  }
 
   //BASES Y LICENCIAS
   agregar_base_: boolean = false;
@@ -104,6 +178,50 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   acceso_editar: any = [];
 
   valorAccesoWeb: boolean;
+
+  // LIMITES USUARIOS
+  limitesLicencia: LicenciaLimite[] = [];
+
+  limitePageSize = 5;
+  limitePageIndex = 0;
+  limitePageSizeOptions: number[] = [5];
+
+  cargando_limites_ = false;
+  agregar_limite_ = false;
+  editar_limite_ = false;
+  registrar_limite_ = false;
+  modificar_limite_ = false;
+
+  limite_editar: LicenciaLimite | null = null;
+  licencia_limite_actual = 0;
+
+  get limitesPaginados(): LicenciaLimite[] {
+    const inicio = this.limitePageIndex * this.limitePageSize;
+    const fin = inicio + this.limitePageSize;
+
+    return this.limitesLicencia.slice(inicio, fin);
+  }
+
+  // STORAGE USO
+  storageLicencia: LicenciaStorageUso[] = [];
+
+  storagePageSize = 5;
+  storagePageIndex = 0;
+  storagePageSizeOptions: number[] = [5];
+
+  cargando_storage_ = false;
+  agregar_storage_ = false;
+  modificar_storage_ = false;
+
+  storage_editar: LicenciaStorageUso | null = null;
+  licencia_storage_actual = 0;
+
+  get storagePaginado(): LicenciaStorageUso[] {
+    const inicio = this.storagePageIndex * this.storagePageSize;
+    const fin = inicio + this.storagePageSize;
+
+    return this.storageLicencia.slice(inicio, fin);
+  }
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -168,31 +286,9 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
       this.zonaHorariaEmpresa = this.empresaUno[0].zona_horaria;
       this.instalacionEmpresa = this.empresaUno[0].instalacion;
 
-      //MODULOS
-      this.empresaModuloPermisos = this.empresaUno[0].permisos;
-      this.empresaModuloVacaciones = this.empresaUno[0].vacaciones;
-      this.empresaModuloHoraExtra = this.empresaUno[0].hora_extra;
-      this.empresaModuloGeolocalizacion = this.empresaUno[0].geolocalizacion;
-      this.empresaModuloTimbreWeb = this.empresaUno[0].timbre_web;
-      this.empresaModuloAppMovil = this.empresaUno[0].app_movil;
-      this.empresaModuloAccionPersonal = this.empresaUno[0].accion_personal;
-      this.empresaModuloAlimentacion = this.empresaUno[0].alimentacion;
-
-      //ARMAR JSON MODULOS
-      this.modulosEmpresa = {
-        empresa_id: this.idEmpresa,
-        empresa_modulos_permisos_: this.empresaModuloPermisos,
-        empresa_modulos_vacaciones_: this.empresaModuloVacaciones,
-        empresa_modulos_hora_extra_: this.empresaModuloHoraExtra,
-        empresa_modulos_geolocalizacion_: this.empresaModuloGeolocalizacion,
-        empresa_modulos_timbre_web_: this.empresaModuloTimbreWeb,
-        empresa_modulos_app_movil_: this.empresaModuloAppMovil,
-        empresa_modulos_accion_personal_: this.empresaModuloAccionPersonal,
-        empresa_modulos_alimentacion_: this.empresaModuloAlimentacion
-      }
-
       this.ObtenerBaseEmpresa(this.idEmpresa);
       this.ObtenerLicenciaEmpresa(this.idEmpresa);
+      this.ObtenerTodosModulosLicencia(this.idEmpresa);
 
       this.editar_modulos_ = true;
       this.editar_acceso_ = true;
@@ -279,10 +375,11 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   }
 
   // METODO DE EDICION DE MODULOS
-  AbrirVentanaEditarModulos(dataLicencia: any) {
+  AbrirVentanaEditarModulos(idEmpresa: string, idLicencia: number): void {
     this.editar_modulos_ = false;
     this.modificar_modulos_ = true;
-    this.modulos_editar = dataLicencia;
+    this.modulos_editar = idEmpresa;
+    this.licencia_actual = idLicencia;
     this.pagina_base = 'ver-empresa';
   }
 
@@ -319,28 +416,76 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
       });
   }
 
-  ObtenerLicenciaEmpresa(id_empresa: string) {
-    let id_empresa_mod = Number(id_empresa);
+  ObtenerLicenciaEmpresa(id_empresa: string): void {
+    const id_empresa_mod = Number(id_empresa);
+
     this.licenciaEmpresa = [];
-    this.restLicencia.BuscarDatosLicenciaPorIdEmpresa(id_empresa_mod).subscribe(
-      {
-        next: (res) => {
-          this.licenciaEmpresa = res;
+    this.licenciaPageIndex = 0;
+    this.licencia_limite_actual = 0;
+    this.agregar_limite_ = false;
 
-          this.idEmpresaLicencia = this.licenciaEmpresa[0].id_empresa_licencia;
-          this.idEmpresaBdd = this.licenciaEmpresa[0].id_empresa_bdd;
-          this.empresaLicenciaLlavePublica = this.licenciaEmpresa[0].llave_publica;
-          this.empresaLicenciaFechaActivacion = this.validar.FormatearFecha(this.licenciaEmpresa[0].fecha_activacion, 'YYYY-MM-DD', this.validar.dia_abreviado);
-          this.empresaLicenciaFechaDesactivacion = this.validar.FormatearFecha(this.licenciaEmpresa[0].fecha_desactivacion, 'YYYY-MM-DD', this.validar.dia_abreviado);
+    this.restLicencia.BuscarDatosLicenciaPorIdEmpresa(id_empresa_mod).subscribe({
+      next: (res: any) => {
+        this.licenciaEmpresa = Array.isArray(res)
+          ? res.map((licencia) => ({
+            ...licencia,
+            fecha_activacion_formateada: this.validar.FormatearFecha(
+              licencia.fecha_activacion,
+              'YYYY-MM-DD',
+              this.validar.dia_abreviado
+            ),
+            fecha_desactivacion_formateada: this.validar.FormatearFecha(
+              licencia.fecha_desactivacion,
+              'YYYY-MM-DD',
+              this.validar.dia_abreviado
+            )
+          }))
+          : [];
 
-          this.editar_licencia_ = true;
-          this.agregar_licencia_ = false;
-        },
-        error: () => {
-          this.editar_licencia_ = false;
-          this.agregar_licencia_ = true;
+        const licenciaActiva = this.licenciaEmpresa.find((licencia) =>
+          licencia.estado === 'ACTIVA'
+        );
+
+        this.agregar_licencia_ = !licenciaActiva;
+        this.editar_licencia_ = this.licenciaEmpresa.length > 0;
+
+        if (this.licenciaEmpresa.length > 0) {
+          const licenciaActual = licenciaActiva ?? this.licenciaEmpresa[0];
+
+          this.empresaLicenciaEstado = licenciaActual.estado;
+          this.empresaLicenciaObservacion = licenciaActual.observacion;
+          this.idEmpresaLicencia = licenciaActual.id_licencia;
+          this.empresaLicenciaLlavePublica = licenciaActual.llave_publica;
+          this.empresaLicenciaFechaActivacion = licenciaActual.fecha_activacion_formateada;
+          this.empresaLicenciaFechaDesactivacion = licenciaActual.fecha_desactivacion_formateada;
+
+          this.licencia_limite_actual = licenciaActiva?.id_licencia ?? 0;
+          this.licencia_storage_actual = licenciaActiva?.id_licencia ?? 0;
         }
-      });
+
+        this.ObtenerTodosLimitesLicencia(this.idEmpresa);
+        this.ObtenerTodosStorageLicencia(this.idEmpresa);
+      },
+      error: () => {
+        this.licenciaEmpresa = [];
+        this.licenciaPageIndex = 0;
+        this.editar_licencia_ = false;
+        this.agregar_licencia_ = true;
+        this.licencia_limite_actual = 0;
+        this.licencia_storage_actual = 0;
+        this.ObtenerTodosStorageLicencia(this.idEmpresa);
+        this.ObtenerTodosLimitesLicencia(this.idEmpresa);
+      }
+    });
+  }
+
+  ManejarPaginaLicencias(event: PageEvent): void {
+    this.licenciaPageIndex = event.pageIndex;
+    this.licenciaPageSize = event.pageSize;
+  }
+
+  TrackByLicencia(index: number, licencia: any): number {
+    return licencia.id_licencia || index;
   }
 
   AbrirVentanaCrearBase(): void {
@@ -353,12 +498,13 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
   }
 
   AbrirVentanaCrearLicencia(): void {
-    this.ventana.open(RegistroLicenciaComponent, { width: '900px', data: this.idEmpresaBdd }).
-      afterClosed().subscribe(item => {
-        this.LeerDatosIniciales();
-        this.editar_licencia_ = true;
-      }
-      );
+    this.ventana.open(RegistroLicenciaComponent, {
+      width: '900px',
+      data: this.idEmpresa
+    }).afterClosed().subscribe(() => {
+      this.LeerDatosIniciales();
+      this.editar_licencia_ = true;
+    });
   }
 
   //CAMBIAR VALOR DE VARIABLE QUE CONTROLA ACCESO WEB
@@ -382,7 +528,7 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
           }
         },
         error => {
-          this.toastr.error(error.error.message, 'Upss!!! algo salió mal.', {
+          this.toastr.error('Verifique base de datos.', 'Upss!!! algo salió mal.', {
             timeOut: 6000,
           });
         }
@@ -394,105 +540,772 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
     }
   }
 
+  ObtenerTodosModulosLicencia(id_empresa: string): void {
+    const idEmpresaNumero = Number(id_empresa);
+
+    if (!idEmpresaNumero) {
+      this.modulosLicencia = [];
+      this.modulosLicenciaAgrupados = [];
+      return;
+    }
+
+    this.cargando_modulos_ = true;
+    this.modulosPageIndex = 0;
+
+    this.restLicencia.BuscarTodosModulosActivos(idEmpresaNumero).subscribe({
+      next: (res: unknown) => {
+        const modulos = Array.isArray(res) ? res as ModuloLicencia[] : [];
+
+        this.modulosLicencia = modulos;
+        this.modulosLicenciaAgrupados = this.AgruparModulosPorLicencia(modulos);
+        this.cargando_modulos_ = false;
+      },
+      error: () => {
+        this.modulosLicencia = [];
+        this.modulosLicenciaAgrupados = [];
+        this.cargando_modulos_ = false;
+      }
+    });
+  }
+
+  private AgruparModulosPorLicencia(modulos: ModuloLicencia[]): GrupoModulosLicencia[] {
+    const grupos = new Map<number, GrupoModulosLicencia>();
+
+    for (const modulo of modulos) {
+      const idLicencia = Number(modulo.id_licencia);
+
+      if (!grupos.has(idLicencia)) {
+        grupos.set(idLicencia, {
+          id_licencia: idLicencia,
+          estado: modulo.estado,
+          modulos: []
+        });
+      }
+
+      grupos.get(idLicencia)?.modulos.push(modulo);
+    }
+
+    return Array.from(grupos.values());
+  }
+
+  ManejarPaginaModulos(event: PageEvent): void {
+    this.modulosPageIndex = event.pageIndex;
+    this.modulosPageSize = event.pageSize;
+  }
+
+  TrackByGrupoLicencia(index: number, grupo: GrupoModulosLicencia): number {
+    return grupo.id_licencia || index;
+  }
+
+  TrackByModuloLicencia(index: number, modulo: ModuloLicencia): number {
+    return modulo.id_licencia_modulo || modulo.id_modulo || index;
+  }
+
+  ObtenerIconoModulo(codigo: string): string {
+    const iconos: Record<string, string> = {
+      PERMISOS: 'assignment',
+      VACACIONES: 'beach_access',
+      HORAS_EXTRAS: 'schedule',
+      HORA_EXTRA: 'schedule',
+      GEOLOCALIZACION: 'location_on',
+      GEOLOCALIZACIÓN: 'location_on',
+      TIMBRE_WEB: 'fingerprint',
+      TIMBRE_VIRTUAL: 'fingerprint',
+      APP_MOVIL: 'phone_iphone',
+      APLICACION_MOVIL: 'phone_iphone',
+      APLICACIÓN_MÓVIL: 'phone_iphone',
+      ACCION_PERSONAL: 'badge',
+      ACCIÓN_PERSONAL: 'badge',
+      ALIMENTACION: 'restaurant',
+      ALIMENTACIÓN: 'restaurant'
+    };
+
+    return iconos[codigo?.toUpperCase()] ?? 'apps';
+  }
+
+  ObtenerLicenciaActivaId(): number {
+  const licenciaActiva = this.licenciaEmpresa.find((licencia: any) =>
+    licencia.estado === 'ACTIVA'
+  );
+
+  return Number(licenciaActiva?.id_licencia ?? 0);
+}
+
+AbrirConfiguracionModulosLicenciaActiva(): void {
+  const idLicenciaActiva = this.ObtenerLicenciaActivaId();
+
+  if (!idLicenciaActiva) {
+    this.toastr.warning('No existe una licencia activa para configurar módulos.', 'Atención', {
+      timeOut: 6000,
+    });
+    return;
+  }
+
+  this.VerModulosEdicion(false);
+  this.AbrirVentanaEditarModulos(this.idEmpresa, idLicenciaActiva);
+}
+
+  // METODOS DE LIMITES DE USUARIOS
+  ObtenerTodosLimitesLicencia(id_empresa: string): void {
+    const idEmpresaNumero = Number(id_empresa);
+
+    if (!idEmpresaNumero) {
+      this.limitesLicencia = [];
+      this.agregar_limite_ = false;
+      return;
+    }
+
+    this.cargando_limites_ = true;
+    this.limitePageIndex = 0;
+
+    this.restLicencia.BuscarTodosLimitesLicencia(idEmpresaNumero).subscribe({
+      next: (res: unknown) => {
+        const limites = Array.isArray(res) ? res as LicenciaLimite[] : [];
+
+        this.limitesLicencia = limites.map((limite) => ({
+          ...limite,
+          fecha_activacion_formateada: this.validar.FormatearFecha(
+            limite.fecha_activacion,
+            'YYYY-MM-DD',
+            this.validar.dia_abreviado
+          ),
+          fecha_desactivacion_formateada: this.validar.FormatearFecha(
+            limite.fecha_desactivacion,
+            'YYYY-MM-DD',
+            this.validar.dia_abreviado
+          )
+        }));
+
+        this.DefinirPermisoAgregarLimite();
+        this.cargando_limites_ = false;
+      },
+      error: () => {
+        this.limitesLicencia = [];
+        this.DefinirPermisoAgregarLimite();
+        this.cargando_limites_ = false;
+      }
+    });
+  }
+
+  private DefinirPermisoAgregarLimite(): void {
+    const licenciaActiva = this.licenciaEmpresa.find((licencia: any) =>
+      licencia.estado === 'ACTIVA'
+    );
+
+    const limiteActivoRegistrado = this.limitesLicencia.some((limite) =>
+      limite.estado === 'ACTIVA'
+    );
+
+    this.licencia_limite_actual = licenciaActiva?.id_licencia ?? 0;
+    this.agregar_limite_ = Boolean(licenciaActiva) && !limiteActivoRegistrado;
+  }
+
+  ManejarPaginaLimites(event: PageEvent): void {
+    this.limitePageIndex = event.pageIndex;
+    this.limitePageSize = event.pageSize;
+  }
+
+  TrackByLimiteLicencia(index: number, limite: LicenciaLimite): number {
+    return limite.id_licencia_limite || index;
+  }
+
+  AbrirRegistroLimiteUsuarios(): void {
+    if (!this.licencia_limite_actual) {
+      this.toastr.warning('No existe una licencia activa para registrar límites.', 'Atención', {
+        timeOut: 6000,
+      });
+      return;
+    }
+
+    this.registrar_limite_ = true;
+    this.modificar_limite_ = false;
+    this.editar_limite_ = false;
+    this.pagina_base = 'ver-empresa';
+  }
+
+  AbrirEdicionLimiteUsuarios(limite: LicenciaLimite): void {
+    this.limite_editar = limite;
+    this.modificar_limite_ = true;
+    this.registrar_limite_ = false;
+    this.editar_limite_ = false;
+    this.pagina_base = 'ver-empresa';
+  }
+
+  CerrarFormularioLimites(refrescar: boolean): void {
+    this.registrar_limite_ = false;
+    this.modificar_limite_ = false;
+    this.editar_limite_ = true;
+
+    if (refrescar) {
+      this.LeerDatosIniciales();
+    }
+  }
+
+  // METODOS DE STORAGE USO
+  ObtenerTodosStorageLicencia(id_empresa: string): void {
+    const idEmpresaNumero = Number(id_empresa);
+
+    if (!idEmpresaNumero) {
+      this.storageLicencia = [];
+      this.agregar_storage_ = false;
+      return;
+    }
+
+    this.cargando_storage_ = true;
+    this.storagePageIndex = 0;
+
+    this.restLicencia.BuscarTodosStorageLicencia(idEmpresaNumero).subscribe({
+      next: (res: unknown) => {
+        const storage = Array.isArray(res) ? res as LicenciaStorageUso[] : [];
+
+        this.storageLicencia = storage.map((item) => ({
+          ...item,
+          fecha_activacion_formateada: this.validar.FormatearFecha(
+            item.fecha_activacion,
+            'YYYY-MM-DD',
+            this.validar.dia_abreviado
+          ),
+          fecha_desactivacion_formateada: this.validar.FormatearFecha(
+            item.fecha_desactivacion,
+            'YYYY-MM-DD',
+            this.validar.dia_abreviado
+          ),
+          fecha_registro_formateada: this.validar.FormatearFecha(
+            item.fecha_registro,
+            'YYYY-MM-DD',
+            this.validar.dia_abreviado
+          ),
+          fecha_calculo_formateada: this.validar.FormatearFecha(
+            item.fecha_calculo,
+            'YYYY-MM-DD',
+            this.validar.dia_abreviado
+          )
+        }));
+
+        this.DefinirPermisoAgregarStorage();
+        this.cargando_storage_ = false;
+      },
+      error: () => {
+        this.storageLicencia = [];
+        this.DefinirPermisoAgregarStorage();
+        this.cargando_storage_ = false;
+      }
+    });
+  }
+
+  private DefinirPermisoAgregarStorage(): void {
+    const licenciaActiva = this.licenciaEmpresa.find((licencia: any) =>
+      licencia.estado === 'ACTIVA'
+    );
+
+    const storageActivoRegistrado = this.storageLicencia.some((storage) =>
+      storage.estado === 'ACTIVA'
+    );
+
+    this.licencia_storage_actual = licenciaActiva?.id_licencia ?? 0;
+    this.agregar_storage_ = Boolean(licenciaActiva) && !storageActivoRegistrado;
+  }
+
+  ManejarPaginaStorage(event: PageEvent): void {
+    this.storagePageIndex = event.pageIndex;
+    this.storagePageSize = event.pageSize;
+  }
+
+  TrackByStorageLicencia(index: number, storage: LicenciaStorageUso): number {
+    return storage.id_storage_uso || index;
+  }
+
+  AbrirFormularioStorage(storage: LicenciaStorageUso | null): void {
+    if (!this.licencia_storage_actual && !storage) {
+      this.toastr.warning('No existe una licencia activa para registrar storage.', 'Atención', {
+        timeOut: 6000,
+      });
+      return;
+    }
+
+    this.storage_editar = storage;
+    this.modificar_storage_ = true;
+    this.agregar_storage_ = false;
+    this.pagina_base = 'ver-empresa';
+  }
+
+  CerrarFormularioStorage(refrescar: boolean): void {
+    this.modificar_storage_ = false;
+    this.storage_editar = null;
+
+    if (refrescar) {
+      this.LeerDatosIniciales();
+    }
+  }
+
+  // METODO PARA INCIALIZAR BASE DE DATOS
+  AbrirVentanaInicializarBase(): void {
+    if (!this.idEmpresa || !this.codigoEmpresa) {
+      this.toastr.warning('No se pudo identificar la empresa.', 'Atención', {
+        timeOut: 6000,
+      });
+      return;
+    }
+
+    if (!this.empresaBddNombre) {
+      this.toastr.warning('Primero debe registrar la base de datos de la empresa.', 'Atención', {
+        timeOut: 6000,
+      });
+      return;
+    }
+
+    this.ventana.open(InicializarBaseComponent, {
+      width: '950px',
+      maxHeight: '90vh',
+      disableClose: true,
+      data: {
+        id_empresa: Number(this.idEmpresa),
+        empresa_codigo: this.codigoEmpresa,
+        empresa_descripcion: this.descripcionEmpresa,
+        nombre_base: this.empresaBddNombre
+      }
+    }).afterClosed().subscribe((refrescar: boolean) => {
+      if (refrescar) {
+        this.LeerDatosIniciales();
+      }
+    });
+  }
+
   /** ****************************************************************************************** **
    ** **                               PARA LA GENERACION DE PDFs                             ** **                                           *
    ** ****************************************************************************************** **/
   GenerarPdf(action = 'open') {
+    if (!this.descripcionEmpresa || !this.codigoEmpresa) {
+      this.toastr.warning('La información de la empresa aún no se encuentra cargada.', 'Atención', {
+        timeOut: 6000,
+      });
+      return;
+    }
+
     const documentDefinition = this.GetDocumentDefinicion();
+
     switch (action) {
-      case 'open': pdfMake.createPdf(documentDefinition).open(); break;
-      case 'print': pdfMake.createPdf(documentDefinition).print(); break;
-      default: pdfMake.createPdf(documentDefinition).open(); break;
+      case 'open':
+        pdfMake.createPdf(documentDefinition).open();
+        break;
+      case 'print':
+        pdfMake.createPdf(documentDefinition).print();
+        break;
+      default:
+        pdfMake.createPdf(documentDefinition).open();
+        break;
     }
   }
 
   GetDocumentDefinicion() {
     return {
-      // ENCABEZADO DE LA PAGINA
-      pageOrientation: 'portrait',
-      watermark: { text: 'Administración Fulltime', color: 'blue', opacity: 0.1, bold: true, italics: false },
-      header: { text: 'Impreso por:  admin desde: ' + this.ip, margin: 10, fontSize: 9, opacity: 0.3, alignment: 'right' },
-      // PIE DE PAGINA
-      footer: function (currentPage: any, pageCount: any, fecha: any, hora: any) {
-        var f = moment();
-        fecha = f.format('YYYY-MM-DD');
-        hora = f.format('HH:mm:ss');
+      pageOrientation: 'landscape',
+      pageSize: 'A4',
+      pageMargins: [25, 55, 25, 45],
+
+      watermark: {
+        text: 'Administración Fulltime',
+        color: 'blue',
+        opacity: 0.06,
+        bold: true,
+        italics: false
+      },
+
+      header: {
+        margin: [25, 15, 25, 0],
+        columns: [
+          {
+            text: 'REPORTE HISTÓRICO DE EMPRESA',
+            fontSize: 10,
+            bold: true,
+            color: '#0f4c81'
+          },
+          {
+            text: 'Impreso por: admin desde: ' + (this.ip ?? ''),
+            fontSize: 8,
+            opacity: 0.45,
+            alignment: 'right'
+          }
+        ]
+      },
+
+      footer: function (currentPage: any, pageCount: any) {
+        const f = moment();
+        const fecha = f.format('YYYY-MM-DD');
+        const hora = f.format('HH:mm:ss');
+
         return {
-          margin: 10,
+          margin: [25, 0, 25, 10],
           columns: [
-            { text: 'Fecha: ' + fecha + ' Hora: ' + hora, opacity: 0.3 },
             {
-              text: [
-                {
-                  text: '© Pag ' + currentPage.toString() + ' of ' + pageCount,
-                  alignment: 'right', opacity: 0.3
-                }
-              ],
+              text: 'Fecha: ' + fecha + ' Hora: ' + hora,
+              opacity: 0.45,
+              fontSize: 8
+            },
+            {
+              text: 'Página ' + currentPage.toString() + ' de ' + pageCount,
+              alignment: 'right',
+              opacity: 0.45,
+              fontSize: 8
             }
-          ], fontSize: 10
+          ]
+        };
+      },
+
+      content: [
+        this.PdfTituloPrincipal(),
+
+        { text: '1. INFORMACIÓN GENERAL DE LA EMPRESA', style: 'sectionHeader' },
+        this.PresentarDataPDFEmpresa(),
+
+        { text: '2. BASE DE DATOS ASOCIADA', style: 'sectionHeader' },
+        this.PresentarDataPDFbaseEmpresa(),
+
+        { text: '3. HISTORIAL DE LICENCIAS', style: 'sectionHeader' },
+        this.PresentarDataPDFLicenciasHistorial(),
+
+        { text: '4. MÓDULOS POR LICENCIA', style: 'sectionHeader' },
+        this.PresentarDataPDFModulosLicencia(),
+
+        { text: '5. LÍMITES POR LICENCIA', style: 'sectionHeader' },
+        this.PresentarDataPDFLimitesLicencia(),
+
+        { text: '6. USO DE STORAGE POR LICENCIA', style: 'sectionHeader' },
+        this.PresentarDataPDFStorageLicencia()
+      ],
+
+      info: {
+        title: 'Reporte_Empresa_' + this.descripcionEmpresa,
+        author: 'admin',
+        subject: 'Historial completo de empresa',
+        keywords: 'Empresa, Base de datos, Licencias, Modulos, Limites, Storage'
+      },
+
+      styles: {
+        tituloPrincipal: {
+          fontSize: 15,
+          bold: true,
+          color: '#0f4c81',
+          margin: [0, 0, 0, 4]
+        },
+        subtituloPrincipal: {
+          fontSize: 9,
+          color: '#475569',
+          margin: [0, 0, 0, 14]
+        },
+        sectionHeader: {
+          fontSize: 11,
+          bold: true,
+          color: '#0f4c81',
+          margin: [0, 16, 0, 7]
+        },
+        tableHeader: {
+          fontSize: 8,
+          bold: true,
+          alignment: 'center',
+          color: '#ffffff',
+          fillColor: '#0f4c81',
+          margin: [2, 4, 2, 4]
+        },
+        tableCell: {
+          fontSize: 8,
+          alignment: 'left',
+          margin: [2, 3, 2, 3]
+        },
+        tableCellCenter: {
+          fontSize: 8,
+          alignment: 'center',
+          margin: [2, 3, 2, 3]
+        },
+        estadoActivo: {
+          fontSize: 8,
+          bold: true,
+          color: '#047857'
+        },
+        estadoInactivo: {
+          fontSize: 8,
+          bold: true,
+          color: '#b91c1c'
+        },
+        textoPequeno: {
+          fontSize: 7,
+          color: '#475569'
         }
       },
-      content: [
-        {
-          text: (this.descripcionEmpresa).toUpperCase(),
-          bold: true, fontSize: 14,
-          alignment: 'left',
-          margin: [0, 15, 0, 18]
-        },
-        {
-          columns: [
-            [
-              { text: 'Id de empresa: ' + this.empresaUno[0].empresa_id, style: 'item' },
-              { text: 'Código de la empresa: ' + this.codigoEmpresa, style: 'item' },
-              { text: 'Número de relojes: ' + this.numeroRelojesEmpresa, style: 'item' }
-            ]
-          ]
-        },
-        { text: 'MÓDULOS ', style: 'header' },
-        this.PresentarDataPDFmodulosEmpresaParte1(),
-        this.PresentarDataPDFmodulosEmpresaParte2(),
-        { text: 'BASE DE DATOS ASOCIADA A LA EMPRESA', style: 'header' },
-        this.PresentarDataPDFbaseEmpresa(),
-        { text: 'LICENCIA ASOCIADA A LA EMPRESA', style: 'header' },
-        this.PresentarDataPDFlicenciaEmpresa()
-      ],
-      info: {
-        title: 'Datos_Empresa_' + this.descripcionEmpresa,
-        author: 'admin',
-        subject: 'Perfil',
-        keywords: 'Perfil, Empresa',
-      },
-      styles: {
-        header: { fontSize: 12, bold: true, margin: [0, 20, 0, 10] },
-        name: { fontSize: 12, bold: true },
-        item: { fontSize: 11, bold: false },
-        tableHeader: { fontSize: 10, bold: true, alignment: 'center', fillColor: '#8adff9' },
-        tableCell: { fontSize: 10, alignment: 'center' }
+
+      defaultStyle: {
+        fontSize: 8
       }
     };
   }
 
-  PresentarDataPDFbaseEmpresa() {
+  private PdfTituloPrincipal() {
+    return {
+      stack: [
+        {
+          text: (this.descripcionEmpresa ?? 'EMPRESA').toUpperCase(),
+          style: 'tituloPrincipal'
+        },
+        {
+          text: 'Código: ' + (this.codigoEmpresa ?? '-') +
+            ' | ID Empresa: ' + (this.idEmpresa ?? '-') +
+            ' | Instalación: ' + (this.instalacionEmpresa ?? '-'),
+          style: 'subtituloPrincipal'
+        }
+      ]
+    };
+  }
+
+  private ValorPDF(valor: any): string {
+    if (valor === null || valor === undefined || valor === '') {
+      return '-';
+    }
+
+    return String(valor);
+  }
+
+  private EstadoPDF(estado: any) {
+    const texto = this.ValorPDF(estado);
+
+    return {
+      text: texto,
+      style: texto === 'ACTIVA' || texto === 'Activo' || texto === 'true'
+        ? 'estadoActivo'
+        : 'estadoInactivo'
+    };
+  }
+
+  private BooleanPDF(valor: boolean): string {
+    return valor ? 'Sí' : 'No';
+  }
+
+  PresentarDataPDFEmpresa() {
     return {
       table: {
-        widths: [125, 125, 90, 50, 100],
+        widths: ['18%', '22%', '18%', '22%', '20%'],
+        body: [
+          [
+            { text: 'ID EMPRESA', style: 'tableHeader' },
+            { text: 'CÓDIGO', style: 'tableHeader' },
+            { text: 'ESTADO', style: 'tableHeader' },
+            { text: 'ZONA HORARIA', style: 'tableHeader' },
+            { text: 'INSTALACIÓN', style: 'tableHeader' }
+          ],
+          [
+            { text: this.ValorPDF(this.idEmpresa), style: 'tableCellCenter' },
+            { text: this.ValorPDF(this.codigoEmpresa), style: 'tableCellCenter' },
+            { text: this.estadoEmpresa ? 'Activa' : 'Inactiva', style: 'tableCellCenter' },
+            { text: this.ValorPDF(this.zonaHorariaEmpresa), style: 'tableCellCenter' },
+            { text: this.ValorPDF(this.instalacionEmpresa), style: 'tableCellCenter' }
+          ]
+        ]
+      },
+      layout: 'lightHorizontalLines'
+    };
+  }
+
+  PresentarDataPDFbaseEmpresa() {
+    if (!this.baseEmpresa || this.baseEmpresa.length === 0) {
+      return { text: 'No existe base de datos registrada para esta empresa.', style: 'textoPequeno' };
+    }
+
+    return {
+      table: {
+        widths: ['22%', '22%', '22%', '10%', '24%'],
         body: [
           [
             { text: 'DESCRIPCIÓN', style: 'tableHeader' },
-            { text: 'NOMBRE', style: 'tableHeader' },
+            { text: 'NOMBRE BASE', style: 'tableHeader' },
             { text: 'HOST', style: 'tableHeader' },
             { text: 'PUERTO', style: 'tableHeader' },
             { text: 'USUARIO', style: 'tableHeader' }
           ],
           [
-            { text: this.empresaBddDescripcion, style: 'tableCell' },
-            { text: this.empresaBddNombre, style: 'tableCell' },
-            { text: this.empresaBddHost, style: 'tableCell' },
-            { text: this.empresaBddPuerto, style: 'tableCell' },
-            { text: this.empresaBddUsuario, style: 'tableCell' }
+            { text: this.ValorPDF(this.empresaBddDescripcion), style: 'tableCell' },
+            { text: this.ValorPDF(this.empresaBddNombre), style: 'tableCell' },
+            { text: this.ValorPDF(this.empresaBddHost), style: 'tableCell' },
+            { text: this.ValorPDF(this.empresaBddPuerto), style: 'tableCellCenter' },
+            { text: this.ValorPDF(this.empresaBddUsuario), style: 'tableCell' }
           ]
         ]
-      }
+      },
+      layout: 'lightHorizontalLines'
+    };
+  }
+
+  PresentarDataPDFLicenciasHistorial() {
+    if (!this.licenciaEmpresa || this.licenciaEmpresa.length === 0) {
+      return { text: 'No existen licencias registradas.', style: 'textoPequeno' };
+    }
+
+    const body = [
+      [
+        { text: 'ID', style: 'tableHeader' },
+        { text: 'ESTADO', style: 'tableHeader' },
+        { text: 'LLAVE PÚBLICA', style: 'tableHeader' },
+        { text: 'ACTIVACIÓN', style: 'tableHeader' },
+        { text: 'DESACTIVACIÓN', style: 'tableHeader' },
+        { text: 'OBSERVACIÓN', style: 'tableHeader' }
+      ],
+      ...this.licenciaEmpresa.map((licencia: any) => [
+        { text: this.ValorPDF(licencia.id_licencia), style: 'tableCellCenter' },
+        this.EstadoPDF(licencia.estado),
+        { text: this.ValorPDF(licencia.llave_publica), style: 'tableCell' },
+        { text: this.ValorPDF(licencia.fecha_activacion_formateada), style: 'tableCellCenter' },
+        { text: this.ValorPDF(licencia.fecha_desactivacion_formateada), style: 'tableCellCenter' },
+        { text: this.ValorPDF(licencia.observacion), style: 'tableCell' }
+      ])
+    ];
+
+    return {
+      table: {
+        headerRows: 1,
+        widths: ['6%', '10%', '38%', '13%', '13%', '20%'],
+        body
+      },
+      layout: 'lightHorizontalLines'
+    };
+  }
+
+  PresentarDataPDFModulosLicencia() {
+    if (!this.modulosLicenciaAgrupados || this.modulosLicenciaAgrupados.length === 0) {
+      return { text: 'No existen módulos configurados por licencia.', style: 'textoPequeno' };
+    }
+
+    const contenido: any[] = [];
+
+    this.modulosLicenciaAgrupados.forEach((grupo) => {
+      contenido.push({
+        text: 'Licencia ID: ' + grupo.id_licencia + ' | Estado: ' + grupo.estado,
+        bold: true,
+        fontSize: 9,
+        color: '#0f4c81',
+        margin: [0, 8, 0, 4]
+      });
+
+      const body = [
+        [
+          { text: 'CÓDIGO', style: 'tableHeader' },
+          { text: 'MÓDULO', style: 'tableHeader' },
+          { text: 'DESCRIPCIÓN', style: 'tableHeader' },
+          { text: 'ACTIVO', style: 'tableHeader' },
+          { text: 'FECHA ACTIVACIÓN', style: 'tableHeader' },
+          { text: 'FECHA DESACTIVACIÓN', style: 'tableHeader' }
+        ],
+        ...grupo.modulos.map((modulo) => [
+          { text: this.ValorPDF(modulo.codigo), style: 'tableCellCenter' },
+          { text: this.ValorPDF(modulo.nombre), style: 'tableCell' },
+          { text: this.ValorPDF(modulo.descripcion), style: 'tableCell' },
+          { text: this.BooleanPDF(modulo.activo), style: 'tableCellCenter' },
+          {
+            text: modulo.fecha_activacion
+              ? this.validar.FormatearFecha(modulo.fecha_activacion, 'YYYY-MM-DD', this.validar.dia_abreviado)
+              : '-',
+            style: 'tableCellCenter'
+          },
+          {
+            text: modulo.fecha_desactivacion
+              ? this.validar.FormatearFecha(modulo.fecha_desactivacion, 'YYYY-MM-DD', this.validar.dia_abreviado)
+              : '-',
+            style: 'tableCellCenter'
+          }
+        ])
+      ];
+
+      contenido.push({
+        table: {
+          headerRows: 1,
+          widths: ['12%', '20%', '32%', '8%', '14%', '14%'],
+          body
+        },
+        layout: 'lightHorizontalLines'
+      });
+    });
+
+    return {
+      stack: contenido
+    };
+  }
+
+  PresentarDataPDFLimitesLicencia() {
+    if (!this.limitesLicencia || this.limitesLicencia.length === 0) {
+      return { text: 'No existen límites registrados por licencia.', style: 'textoPequeno' };
+    }
+
+    const body = [
+      [
+        { text: 'ID LICENCIA', style: 'tableHeader' },
+        { text: 'ESTADO', style: 'tableHeader' },
+        { text: 'ACTIVACIÓN', style: 'tableHeader' },
+        { text: 'DESACTIVACIÓN', style: 'tableHeader' },
+        { text: 'USUARIOS WEB', style: 'tableHeader' },
+        { text: 'USUARIOS APP', style: 'tableHeader' },
+        { text: 'RELOJES', style: 'tableHeader' },
+        { text: 'STORAGE MB', style: 'tableHeader' }
+      ],
+      ...this.limitesLicencia.map((limite) => [
+        { text: this.ValorPDF(limite.id_licencia), style: 'tableCellCenter' },
+        this.EstadoPDF(limite.estado),
+        { text: this.ValorPDF(limite.fecha_activacion_formateada), style: 'tableCellCenter' },
+        { text: this.ValorPDF(limite.fecha_desactivacion_formateada), style: 'tableCellCenter' },
+        { text: this.ValorPDF(limite.usuarios_web_max), style: 'tableCellCenter' },
+        { text: this.ValorPDF(limite.usuarios_app_max), style: 'tableCellCenter' },
+        { text: this.ValorPDF(limite.relojes_max), style: 'tableCellCenter' },
+        { text: this.ValorPDF(limite.storage_mb_max), style: 'tableCellCenter' }
+      ])
+    ];
+
+    return {
+      table: {
+        headerRows: 1,
+        widths: ['10%', '10%', '13%', '13%', '13%', '13%', '10%', '18%'],
+        body
+      },
+      layout: 'lightHorizontalLines'
+    };
+  }
+
+  PresentarDataPDFStorageLicencia() {
+    if (!this.storageLicencia || this.storageLicencia.length === 0) {
+      return { text: 'No existen registros de uso de storage.', style: 'textoPequeno' };
+    }
+
+    const body = [
+      [
+        { text: 'ID LICENCIA', style: 'tableHeader' },
+        { text: 'ESTADO', style: 'tableHeader' },
+        { text: 'STORAGE USADO MB', style: 'tableHeader' },
+        { text: 'ORIGEN', style: 'tableHeader' },
+        { text: 'FECHA REGISTRO', style: 'tableHeader' },
+        { text: 'FECHA CÁLCULO', style: 'tableHeader' },
+        { text: 'RESULTADO', style: 'tableHeader' },
+        { text: 'OBSERVACIÓN / ERROR', style: 'tableHeader' }
+      ],
+      ...this.storageLicencia.map((storage) => [
+        { text: this.ValorPDF(storage.id_licencia), style: 'tableCellCenter' },
+        this.EstadoPDF(storage.estado),
+        { text: this.ValorPDF(storage.storage_mb_usado) + ' MB', style: 'tableCellCenter' },
+        { text: this.ValorPDF(storage.origen_calculo), style: 'tableCellCenter' },
+        { text: this.ValorPDF(storage.fecha_registro_formateada), style: 'tableCellCenter' },
+        { text: this.ValorPDF(storage.fecha_calculo_formateada), style: 'tableCellCenter' },
+        {
+          text: storage.calculo_exitoso ? 'Exitoso' : 'Con error',
+          style: storage.calculo_exitoso ? 'estadoActivo' : 'estadoInactivo'
+        },
+        {
+          text: this.ValorPDF(storage.mensaje_error || storage.observacion),
+          style: 'tableCell'
+        }
+      ])
+    ];
+
+    return {
+      table: {
+        headerRows: 1,
+        widths: ['9%', '9%', '13%', '10%', '12%', '12%', '10%', '25%'],
+        body
+      },
+      layout: 'lightHorizontalLines'
     };
   }
 
@@ -510,50 +1323,6 @@ export class VerEmpresaComponent implements OnInit, AfterViewInit {
             { text: this.empresaLicenciaLlavePublica, style: 'tableCell' },
             { text: this.empresaLicenciaFechaActivacion, style: 'tableCell' },
             { text: this.empresaLicenciaFechaDesactivacion, style: 'tableCell' }
-          ]
-        ]
-      }
-    };
-  }
-
-  PresentarDataPDFmodulosEmpresaParte1() {
-    return {
-      table: {
-        widths: [125, 125, 125, 125],
-        body: [
-          [
-            { text: 'PERMISOS', style: 'tableHeader' },
-            { text: 'VACACIONES', style: 'tableHeader' },
-            { text: 'HORAS EXTRAS', style: 'tableHeader' },
-            { text: 'GEOLOCALIZACIÓN', style: 'tableHeader' }
-          ],
-          [
-            { text: this.empresaModuloPermisos === true ? 'Activo' : 'Inactivo', style: 'tableCell' },
-            { text: this.empresaModuloVacaciones === true ? 'Activo' : 'Inactivo', style: 'tableCell' },
-            { text: this.empresaModuloHoraExtra === true ? 'Activo' : 'Inactivo', style: 'tableCell' },
-            { text: this.empresaModuloGeolocalizacion === true ? 'Activo' : 'Inactivo', style: 'tableCell' }
-          ]
-        ]
-      }
-    };
-  }
-
-  PresentarDataPDFmodulosEmpresaParte2() {
-    return {
-      table: {
-        widths: [125, 125, 125, 125],
-        body: [
-          [
-            { text: 'TIMBRE VIRTUAL', style: 'tableHeader' },
-            { text: 'APLICACIÓN MÓVIL', style: 'tableHeader' },
-            { text: 'ACCIONES DE PERSONAL', style: 'tableHeader' },
-            { text: 'ALIMENTACIÓN', style: 'tableHeader' }
-          ],
-          [
-            { text: this.empresaModuloTimbreWeb === true ? 'Activo' : 'Inactivo', style: 'tableCell' },
-            { text: this.empresaModuloAppMovil === true ? 'Activo' : 'Inactivo', style: 'tableCell' },
-            { text: this.empresaModuloAccionPersonal === true ? 'Activo' : 'Inactivo', style: 'tableCell' },
-            { text: this.empresaModuloAlimentacion === true ? 'Activo' : 'Inactivo', style: 'tableCell' }
           ]
         ]
       }

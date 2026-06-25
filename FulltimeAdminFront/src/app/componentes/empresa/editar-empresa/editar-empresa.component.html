@@ -5,16 +5,20 @@
 <div>
     <mat-horizontal-stepper [linear]="isLinear" #stepper>
         <mat-step [stepControl]="primeroFormGroup">
+
             <ng-template matStepLabel>
-                <mat-icon id="seccion_emple" matSuffix matTooltipPosition="right" matTooltip="Datos de Conexión">add
+                <mat-icon id="seccion_emple" matSuffix matTooltipPosition="right"
+                    matTooltip="Sección 1: Datos Empresariales">
+                    business
                 </mat-icon>
             </ng-template>
+
             <div class="subtitulo">
-                <span>Datos de Conexión</span>
+                <span>Datos Iniciales de la Empresa</span>
             </div>
-            <br>
+
             <div class="nota">
-                <span>Por favor llenar todos los campos obligatorios (*) del formulario y dar click en Siguiente
+                <span>Por favor llenar todos los campos obligatorios (*) del formulario y dar click en Guardar
                     para continuar.</span>
             </div>
             <form [formGroup]="primeroFormGroup">
@@ -30,15 +34,7 @@
                                     description
                                 </mat-icon>
                             </mat-form-field>
-                            <mat-form-field>
-                                <mat-label>Número de Relojes</mat-label>
-                                <input matInput placeholder="Ej: 1" type="text"
-                                    formControlName="empresaNumeroRelojesForm" required>
-                                <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
-                                    matTooltip="Es obligatorio ingresar la dirección URL de la nueva empresa">
-                                    fingerprint
-                                </mat-icon>
-                            </mat-form-field>
+
                             <mat-form-field>
                                 <mat-label>Instalación sistema *</mat-label>
                                 <mat-select formControlName="empresaInstalacionForm" required>
@@ -67,13 +63,18 @@
                         <div class="d-flex flex-wrap justify-content-center">
                             <mat-form-field>
                                 <mat-label>Zona horaria</mat-label>
-                                <mat-select formControlName="empresaZonaHorariaForm" required>
-                                    @for (option of zonas; track option) {
+
+                                <input type="text" matInput formControlName="empresaZonaHorariaForm"
+                                    [matAutocomplete]="autoZona" placeholder="Buscar zona horaria" required>
+
+                                <mat-autocomplete #autoZona="matAutocomplete">
+                                    @for (option of zonasFiltradas | async; track option.nombre_general) {
                                     <mat-option [value]="option.nombre_general">
                                         {{ option.nombre_general }}
                                     </mat-option>
                                     }
-                                </mat-select>
+                                </mat-autocomplete>
+
                                 <mat-icon id="i-cursor" matSuffix matTooltipPosition="right"
                                     matTooltip="Seleccionar la zona horaria de la empresa.">
                                     public

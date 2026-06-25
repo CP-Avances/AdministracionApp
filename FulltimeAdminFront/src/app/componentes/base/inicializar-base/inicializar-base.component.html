@@ -1,0 +1,215 @@
+<div class="titulo-modal">
+    <div class="titulo-izquierda">
+        <mat-icon>storage</mat-icon>
+        <span>INICIALIZAR BASE DE DATOS</span>
+    </div>
+
+    <button type="button" class="btn-cerrar-modal" (click)="Cerrar(false)" matTooltip="Salir">
+        <mat-icon>highlight_off</mat-icon>
+    </button>
+</div>
+
+<div class="inicializar-contenedor">
+
+    <mat-card class="card-panel mat-elevation-z4">
+        <div class="card-panel-header">
+            <div>
+                <h4>{{ data.empresa_descripcion }}</h4>
+                <span>Creación de base de datos y ejecución de scripts iniciales</span>
+            </div>
+        </div>
+
+        <mat-card-content>
+            <div class="info-grid">
+                <div class="info-item">
+                    <mat-icon>pin</mat-icon>
+                    <div>
+                        <span>ID Empresa</span>
+                        <strong>{{ data.id_empresa }}</strong>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <mat-icon>qr_code_2</mat-icon>
+                    <div>
+                        <span>Código</span>
+                        <strong>{{ data.empresa_codigo }}</strong>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <mat-icon>storage</mat-icon>
+                    <div>
+                        <span>Nombre base</span>
+                        <strong>{{ data.nombre_base }}</strong>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="card-panel mat-elevation-z4">
+        <div class="card-panel-header">
+            <div>
+                <h4>Paso 1: Crear base de datos</h4>
+                <span>Se conectará al servidor PostgreSQL configurado en el backend.</span>
+            </div>
+
+            <button mat-raised-button color="primary" type="button" [disabled]="creandoBase || ejecutandoScripts"
+                (click)="CrearBaseDatos()">
+                <mat-icon>{{ creandoBase ? 'hourglass_top' : 'add_circle' }}</mat-icon>
+                {{ creandoBase ? 'Creando...' : 'Crear base' }}
+            </button>
+        </div>
+    </mat-card>
+
+    <mat-card class="card-panel mat-elevation-z4">
+        <div class="card-panel-header">
+            <div>
+                <h4>Paso 2: Cargar scripts SQL</h4>
+                <span>Seleccione los scripts de tablas, vistas y datos iniciales.</span>
+            </div>
+        </div>
+
+        <mat-card-content>
+            <div class="scripts-grid">
+
+                <div class="script-item">
+                    <mat-icon>table_chart</mat-icon>
+                    <strong>Script de tablas</strong>
+                    <span>{{ scriptTablas?.name || 'No seleccionado' }}</span>
+
+                    <label class="btn-upload">
+                        Seleccionar
+                        <input type="file" accept=".sql" hidden (change)="SeleccionarArchivo($event, 'TABLAS')">
+                    </label>
+                </div>
+
+                <div class="script-item">
+                    <mat-icon>visibility</mat-icon>
+                    <strong>Script de vistas</strong>
+                    <span>{{ scriptVistas?.name || 'No seleccionado' }}</span>
+
+                    <label class="btn-upload">
+                        Seleccionar
+                        <input type="file" accept=".sql" hidden (change)="SeleccionarArchivo($event, 'VISTAS')">
+                    </label>
+                </div>
+
+                <div class="script-item">
+                    <mat-icon>playlist_add_check</mat-icon>
+                    <strong>Datos iniciales</strong>
+                    <span>{{ scriptDatosIniciales?.name || 'No seleccionado' }}</span>
+
+                    <label class="btn-upload">
+                        Seleccionar
+                        <input type="file" accept=".sql" hidden (change)="SeleccionarArchivo($event, 'DATOS')">
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="acciones-scripts">
+                <button mat-raised-button color="accent" type="button"
+                    [disabled]="ejecutandoScripts || creandoBase || !scriptTablas || !scriptVistas || !scriptDatosIniciales"
+                    (click)="EjecutarScripts()">
+                    <mat-icon>{{ ejecutandoScripts ? 'hourglass_top' : 'play_circle' }}</mat-icon>
+                    {{ ejecutandoScripts ? 'Ejecutando...' : 'Ejecutar scripts' }}
+                </button>
+
+                <button mat-stroked-button color="warn" type="button" [disabled]="ejecutandoScripts"
+                    (click)="LimpiarArchivos()">
+                    <mat-icon>delete_sweep</mat-icon>
+                    Limpiar selección
+                </button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="card-panel mat-elevation-z4">
+        <div class="card-panel-header">
+            <div>
+                <h4>Historial de inicialización</h4>
+                <span>Resultado de creación de base y ejecución de scripts.</span>
+            </div>
+
+            <button mat-icon-button color="primary" type="button" (click)="ObtenerHistorial()"
+                matTooltip="Actualizar historial">
+                <mat-icon>refresh</mat-icon>
+            </button>
+        </div>
+
+        <mat-card-content>
+            <div *ngIf="cargandoHistorial" class="sin-registros">
+                <mat-icon>sync</mat-icon>
+                <strong>Cargando historial...</strong>
+            </div>
+
+            <div *ngIf="!cargandoHistorial && historial.length === 0" class="sin-registros">
+                <mat-icon>history</mat-icon>
+                <strong>No existen registros de inicialización.</strong>
+                <span>Cuando cree la base o ejecute scripts, aparecerán en esta sección.</span>
+            </div>
+
+            <div class="tabla-contenedor" *ngIf="!cargandoHistorial && historial.length > 0">
+                <table mat-table [dataSource]="historial" class="mat-elevation-z1">
+
+                    <ng-container matColumnDef="fecha_registro">
+                        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                        <td mat-cell *matCellDef="let item">
+                            {{ item.fecha_registro | date:'yyyy-MM-dd HH:mm:ss' }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="paso">
+                        <th mat-header-cell *matHeaderCellDef>Paso</th>
+                        <td mat-cell *matCellDef="let item">
+                            {{ item.paso }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="archivo">
+                        <th mat-header-cell *matHeaderCellDef>Archivo</th>
+                        <td mat-cell *matCellDef="let item">
+                            {{ item.archivo || '-' }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="exitoso">
+                        <th mat-header-cell *matHeaderCellDef>Resultado</th>
+                        <td mat-cell *matCellDef="let item">
+                            <span class="badge" [ngClass]="item.exitoso ? 'badge-activo' : 'badge-inactivo'">
+                                {{ item.exitoso ? 'Exitoso' : 'Error' }}
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="mensaje">
+                        <th mat-header-cell *matHeaderCellDef>Mensaje</th>
+                        <td mat-cell *matCellDef="let item" class="texto-largo">
+                            {{ item.mensaje || '-' }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="usuario_registra">
+                        <th mat-header-cell *matHeaderCellDef>Usuario</th>
+                        <td mat-cell *matCellDef="let item">
+                            {{ item.usuario_registra || '-' }}
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columnasHistorial"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columnasHistorial;"></tr>
+                </table>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <div class="acciones-finales">
+        <button mat-raised-button color="primary" type="button" (click)="Cerrar(true)">
+            <mat-icon>check</mat-icon>
+            Finalizar
+        </button>
+    </div>
+
+</div>

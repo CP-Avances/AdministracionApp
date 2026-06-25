@@ -1,55 +1,126 @@
-<div id="titulo">
-    <mat-icon id="movilidad" class="float-left">open_with</mat-icon>
-    <span cdkDrag cdkDragRootElement=".cdk-overlay-pane">
-        REGISTRAR LICENCIA PARA ...
-    </span>
-    <mat-icon class="float-right" id="cerrar" (click)="CerrarVentana()" matSuffix matTooltipPosition="right"
-        matTooltip="Salir">
-        highlight_off
+<div id="titulo" class="titulo-modal">
+  <div class="titulo-izquierda">
+    <mat-icon id="movilidad" cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+      open_with
     </mat-icon>
+
+    <span cdkDrag cdkDragRootElement=".cdk-overlay-pane">
+      REGISTRAR LICENCIA
+    </span>
+  </div>
+
+  <button
+    type="button"
+    class="btn-cerrar-modal"
+    (click)="CerrarVentana()"
+    matTooltipPosition="left"
+    matTooltip="Salir">
+    <mat-icon>highlight_off</mat-icon>
+  </button>
 </div>
-<div>
-    <!-- FORMULARIO COMPLETO -->
-    <mat-card-content>
-        <div class="container" style="text-align: center">
-            <div class="nota" style="text-align: justify;">
-                <span>
-                    NOTA: Por favor llenar todos los campos obligatorios (*) del formulario para activar el botón
-                    Guardar.
-                </span>
-            </div>
-            <form [formGroup]="formulario">
-                <div class="row">
-                    <div class="col-md">
-                        <div class="d-flex flex-wrap justify-content-around">
-                            <mat-form-field id="fechas">
-                                <mat-label>Fecha Activación</mat-label>
-                                <input matInput [matDatepicker]="picker" placeholder="dd/mm/aaaa"
-                                    [formControl]="empresaLicenciaFechaActivacionForm" min="1950-01-31" max="2050-01-31" required>
-                                <mat-datepicker-toggle matSuffix [for]="picker" id="i-cursor" matTooltipPosition="right"
-                                    matTooltip="Indicar la fecha de activación de la licencia. Seleccione la fecha dando click en el icono de calendario o puede escribir la fecha con el formato  día/mes/año. Ejemplo: 12/04/1993">
-                                </mat-datepicker-toggle>
-                                <mat-datepicker touchUi #picker></mat-datepicker>
-                            </mat-form-field>
-                            <mat-form-field id="fechas">
-                                <mat-label>Fecha Desactivación</mat-label>
-                                <input matInput [matDatepicker]="picker2" placeholder="dd/mm/aaaa"
-                                    [formControl]="empresaLicenciaFechaDesactivacionForm" min="1950-01-31" max="2050-01-31" required>
-                                <mat-datepicker-toggle matSuffix [for]="picker2" id="i-cursor" matTooltipPosition="right"
-                                    matTooltip="Indicar la fecha de desactivación de la licencia. Seleccione la fecha dando click en el icono de calendario o puede escribir la fecha con el formato  día/mes/año. Ejemplo: 12/04/1993">
-                                </mat-datepicker-toggle>
-                                <mat-datepicker touchUi #picker2></mat-datepicker>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-            </form>
+
+<div class="licencia-contenedor">
+  <mat-card-content>
+    <div class="licencia-card">
+
+      <div class="nota">
+        <mat-icon>info</mat-icon>
+        <span>
+          Por favor llenar todos los campos obligatorios (*) del formulario para activar el botón Guardar.
+        </span>
+      </div>
+
+      <form [formGroup]="formulario" class="licencia-form">
+
+        <div class="form-grid">
+
+          <mat-form-field appearance="outline" class="campo-fecha">
+            <mat-label>Fecha Activación</mat-label>
+
+            <mat-icon matPrefix>event_available</mat-icon>
+
+            <input
+              matInput
+              [matDatepicker]="picker"
+              placeholder="dd/mm/aaaa"
+              [formControl]="empresaLicenciaFechaActivacionForm"
+              min="1950-01-31"
+              max="2050-01-31"
+              required>
+
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+              matTooltipPosition="right"
+              matTooltip="Indicar la fecha de activación de la licencia.">
+            </mat-datepicker-toggle>
+
+            <mat-datepicker touchUi #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="campo-fecha">
+            <mat-label>Fecha Desactivación</mat-label>
+
+            <mat-icon matPrefix>event_busy</mat-icon>
+
+            <input
+              matInput
+              [matDatepicker]="picker2"
+              placeholder="dd/mm/aaaa"
+              [formControl]="empresaLicenciaFechaDesactivacionForm"
+              min="1950-01-31"
+              max="2050-01-31"
+              required>
+
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker2"
+              matTooltipPosition="right"
+              matTooltip="Indicar la fecha de desactivación de la licencia.">
+            </mat-datepicker-toggle>
+
+            <mat-datepicker touchUi #picker2></mat-datepicker>
+          </mat-form-field>
+
         </div>
-    </mat-card-content>
-    <div class="d-flex flex-wrap justify-content-center" style="padding-top: 2%; margin-bottom: 2%;">
-        <mat-card-actions style="text-align: center">
-            <button id="btn-raised" class="btn btn-sm" [disabled]="!formulario.valid"
-            (click)="ValidarDatosLicencia(formulario.value)" value="Guardar">Guardar</button>
-        </mat-card-actions>
+
+        <mat-form-field appearance="outline" class="campo-observacion">
+          <mat-label>Observación</mat-label>
+
+          <mat-icon
+            matPrefix
+            matTooltipPosition="right"
+            matTooltip="Observación adicional de la licencia. Máximo 300 caracteres.">
+            notes
+          </mat-icon>
+
+          <textarea
+            matInput
+            rows="4"
+            maxlength="300"
+            placeholder="Ingrese una observación relacionada con la licencia."
+            [formControl]="empresaLicenciaObservacionForm">
+          </textarea>
+
+          <mat-hint align="end">
+            {{ empresaLicenciaObservacionForm.value?.length || 0 }}/300
+          </mat-hint>
+        </mat-form-field>
+
+      </form>
+
     </div>
+  </mat-card-content>
+
+  <div class="acciones">
+    <button
+      id="btn-raised"
+      class="btn btn-sm"
+      type="button"
+      [disabled]="formulario.invalid"
+      (click)="ValidarDatosLicencia()">
+      <mat-icon>save</mat-icon>
+      Guardar
+    </button>
+  </div>
 </div>

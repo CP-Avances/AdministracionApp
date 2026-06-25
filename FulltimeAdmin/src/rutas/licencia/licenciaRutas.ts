@@ -6,19 +6,24 @@ class LicenciaRutas {
 
     public router: Router = Router();
 
-    constructor(){
+    constructor() {
         this.configuracion();
     }
 
     configuracion(): void {
-        this.router.post('/registro-licencia', TokenValidation, LICENCIA_CONTROLADOR.RegistrarLicencia);
-        this.router.get('/licencias', TokenValidation, LICENCIA_CONTROLADOR.ObtenerLicencias);
-        this.router.get('/licencias-empresas', TokenValidation, LICENCIA_CONTROLADOR.ObtenerLicenciasEmpresas);
-        this.router.get('/licencias-empresas/:id', TokenValidation, LICENCIA_CONTROLADOR.BuscarLicenciaPorId);
-        this.router.put('/actualizar-licencia', TokenValidation, LICENCIA_CONTROLADOR.ActualizarLicencia);
-        this.router.post('/eliminar-licencia', TokenValidation, LICENCIA_CONTROLADOR.EliminarLicencia);
+        this.router.post('/registro-licencia', TokenValidation, (req, res) =>
+            LICENCIA_CONTROLADOR.RegistrarLicencia(req, res)
+        );
+
+        this.router.get('/licencias-empresas/:id', TokenValidation, (req, res) =>
+            LICENCIA_CONTROLADOR.BuscarLicenciaPorId(req, res)
+        );
+
+        this.router.put('/actualizar-licencia', TokenValidation, (req, res) =>
+            LICENCIA_CONTROLADOR.ActualizarLicencia(req, res)
+        );
     }
-    
+
 }
 
 const LICENCIA_RUTAS = new LicenciaRutas();

@@ -1,50 +1,64 @@
 mat-form-field {
-    width: 300px;
-    margin: 10px;
+  width: 300px;
+  margin: 10px;
 }
 
 #letraT {
-    font-size: 11px;
+  font-size: 11px;
 }
 
 #icono_emple {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #seccion_emple {
-    color: rgba(8, 10, 124, 0.828);
+  color: rgba(8, 10, 124, 0.828);
 }
 
 .container {
-    padding-top: 15px;
+  padding-top: 15px;
 }
 
 .btn {
-    margin-left: 15px;
-    background-color: rgb(80, 87, 97);
-    color: white;
+  margin-left: 15px;
+  background-color: rgb(80, 87, 97);
+  color: white;
 }
 
 .subtitulo {
-    position: relative;
-    float: left;
-    font-size: 19px;
-    font-weight: bold;
-    text-align: center;
-    color: rgb(0, 0, 0);
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f4c81;
+  margin: 0 0 14px 0;
 }
 
 .scrollbar {
-    float: left;
-    height: 500px;
-    width: 100%;
-    background: #fff;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    margin-bottom: 25px;
+  float: left;
+  height: 500px;
+  width: 100%;
+  background: #fff;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  margin-bottom: 25px;
 }
 
 .scrollbar-primary::-webkit-scrollbar {
-    width: 12px;
-    background-color: #F5F5F5;
+  width: 12px;
+  background-color: #f5f5f5;
+}
+
+/* =========================
+   STEPPER
+========================= */
+
+::ng-deep .mat-horizontal-content-container {
+  padding: 26px 24px 30px 24px !important;
+}
+
+::ng-deep .mat-horizontal-stepper-header-container {
+  padding: 10px 22px 0 22px;
+}
+
+#seccion_emple {
+  color: #0f75bc;
 }

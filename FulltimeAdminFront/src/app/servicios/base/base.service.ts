@@ -24,7 +24,7 @@ export class BaseService {
   }
 
   ActualizarBase(data: any){
-    return this.http.put<any>(`${environment.url}/base-empresa/actualizar-empresas/`, data);
+    return this.http.put<any>(`${environment.url}/base-empresa/actualizar-empresas`, data);
   }
 
   InsertarBase(data: any){

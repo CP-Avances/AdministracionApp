@@ -27,6 +27,11 @@
                         Atrás
                     </button>
 
+                    <button mat-raised-button color="warn" type="button" (click)="AbrirVentanaInicializarBase()">
+                        <mat-icon>storage</mat-icon>
+                        Inicializar Base
+                    </button>
+
                     <button mat-raised-button color="accent" (click)="GenerarPdf('open')">
                         <mat-icon>picture_as_pdf</mat-icon>
                         Abrir PDF
@@ -79,14 +84,6 @@
                         </div>
 
                         <div class="info-item">
-                            <mat-icon>fingerprint</mat-icon>
-                            <div>
-                                <span>Número relojes</span>
-                                <strong>{{ numeroRelojesEmpresa }}</strong>
-                            </div>
-                        </div>
-
-                        <div class="info-item">
                             <mat-icon>public</mat-icon>
                             <div>
                                 <span>Zona horaria</span>
@@ -113,11 +110,11 @@
         </div>
     </mat-tab>
 
-    <!-- BASE REGISTRADA Y LICENCIAS -->
+    <!-- BASE REGISTRADA-->
     <mat-tab label="bases">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">storage</mat-icon>
-            <h6 id="items">Base de Datos y Licencia</h6>
+            <h6 id="items">Base de Datos</h6>
         </ng-template>
 
         <div class="empresa-page">
@@ -126,121 +123,451 @@
                 <app-editar-base [base]="base_editar" [pagina]="pagina_base"></app-editar-base>
             </div>
 
+            <!-- BASE ACTUAL -->
+            <mat-card class="card-panel mat-elevation-z6">
+                <div class="card-panel-header">
+                    <div>
+                        <h4>Base Actual</h4>
+                        <span>Conexión principal de la empresa</span>
+                    </div>
+
+                    <button mat-raised-button color="primary" *ngIf="agregar_base_" (click)="AbrirVentanaCrearBase()">
+                        <mat-icon>add</mat-icon>
+                        Añadir
+                    </button>
+                </div>
+
+                <mat-card-content>
+                    <div class="info-list">
+
+                        <div class="info-line">
+                            <mat-icon>storage</mat-icon>
+                            <span>Nombre Base de Datos</span>
+                            <strong>{{ empresaBddNombre }}</strong>
+                        </div>
+
+                        <div class="info-line">
+                            <mat-icon>description</mat-icon>
+                            <span>Descripción</span>
+                            <strong>{{ empresaBddDescripcion }}</strong>
+                        </div>
+
+                        <div class="info-line">
+                            <mat-icon>dns</mat-icon>
+                            <span>Host</span>
+                            <strong>{{ empresaBddHost }}</strong>
+                        </div>
+
+                        <div class="info-line">
+                            <mat-icon>settings_ethernet</mat-icon>
+                            <span>Puerto</span>
+                            <strong>{{ empresaBddPuerto }}</strong>
+                        </div>
+
+                        <div class="info-line">
+                            <mat-icon>account_circle</mat-icon>
+                            <span>Usuario</span>
+                            <strong>{{ empresaBddUsuario }}</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="acciones-card" *ngIf="editar_base_">
+                        <button mat-stroked-button color="primary"
+                            (click)="VerBaseEdicion(false); AbrirVentanaEditarBase(baseEmpresa)">
+                            <mat-icon>edit</mat-icon>
+                            Editar Base
+                        </button>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+        </div>
+    </mat-tab>
+
+
+    <!-- LICENCIAS -->
+    <mat-tab label="licencias">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">workspace_premium</mat-icon>
+            <h6 id="items">Licencia</h6>
+        </ng-template>
+
+        <div class="empresa-page">
+
             <div class="form-edicion" *ngIf="modificar_licencia_">
                 <app-editar-licencia [licencia]="licencia_editar" [pagina]="pagina_base"></app-editar-licencia>
             </div>
 
-            <div class="cards-doble">
-
-                <!-- BASE ACTUAL -->
-                <mat-card class="card-panel mat-elevation-z6">
-                    <div class="card-panel-header">
-                        <div>
-                            <h4>Base Actual</h4>
-                            <span>Conexión principal de la empresa</span>
-                        </div>
-
-                        <button mat-raised-button color="primary" *ngIf="agregar_base_"
-                            (click)="AbrirVentanaCrearBase()">
-                            <mat-icon>add</mat-icon>
-                            Añadir
-                        </button>
+            <mat-card class="card-panel mat-elevation-z6">
+                <div class="card-panel-header">
+                    <div>
+                        <h4>Licencias registradas</h4>
+                        <span>Historial de activación, vigencia y estado de licencias</span>
                     </div>
 
-                    <mat-card-content>
-                        <div class="info-list">
+                    <button mat-raised-button color="primary" *ngIf="agregar_licencia_"
+                        (click)="AbrirVentanaCrearLicencia()">
+                        <mat-icon>add</mat-icon>
+                        Añadir
+                    </button>
+                </div>
 
-                            <div class="info-line">
-                                <mat-icon>storage</mat-icon>
-                                <span>Nombre Base de Datos</span>
-                                <strong>{{ empresaBddNombre }}</strong>
-                            </div>
+                <mat-card-content>
 
-                            <div class="info-line">
-                                <mat-icon>description</mat-icon>
-                                <span>Descripción</span>
-                                <strong>{{ empresaBddDescripcion }}</strong>
-                            </div>
-
-                            <div class="info-line">
-                                <mat-icon>dns</mat-icon>
-                                <span>Host</span>
-                                <strong>{{ empresaBddHost }}</strong>
-                            </div>
-
-                            <div class="info-line">
-                                <mat-icon>settings_ethernet</mat-icon>
-                                <span>Puerto</span>
-                                <strong>{{ empresaBddPuerto }}</strong>
-                            </div>
-
-                            <div class="info-line">
-                                <mat-icon>account_circle</mat-icon>
-                                <span>Usuario</span>
-                                <strong>{{ empresaBddUsuario }}</strong>
-                            </div>
-
-                        </div>
-
-                        <div class="acciones-card" *ngIf="editar_base_">
-                            <button mat-stroked-button color="primary"
-                                (click)="VerBaseEdicion(false); AbrirVentanaEditarBase(baseEmpresa)">
-                                <mat-icon>edit</mat-icon>
-                                Editar Base
-                            </button>
-                        </div>
-                    </mat-card-content>
-                </mat-card>
-
-                <!-- LICENCIA ACTUAL -->
-                <mat-card class="card-panel mat-elevation-z6">
-                    <div class="card-panel-header">
-                        <div>
-                            <h4>Licencia Actual</h4>
-                            <span>Información de activación y vigencia</span>
-                        </div>
-
-                        <button mat-raised-button color="primary" *ngIf="agregar_licencia_"
-                            (click)="AbrirVentanaCrearLicencia()">
-                            <mat-icon>add</mat-icon>
-                            Añadir
-                        </button>
+                    <div *ngIf="licenciaEmpresa.length === 0" class="sin-registros">
+                        <mat-icon>workspace_premium</mat-icon>
+                        <strong>No existen licencias registradas.</strong>
+                        <span>Puede registrar una nueva licencia para esta empresa.</span>
                     </div>
 
-                    <mat-card-content>
-                        <div class="info-list">
+                    <div class="licencias-grid" *ngIf="licenciaEmpresa.length > 0">
 
-                            <div class="info-line">
-                                <mat-icon>vpn_key</mat-icon>
-                                <span>Llave Pública</span>
-                                <strong class="texto-largo">{{ empresaLicenciaLlavePublica }}</strong>
+                        <div class="licencia-card-item"
+                            *ngFor="let licencia of licenciasPaginadas; trackBy: TrackByLicencia"
+                            [ngClass]="licencia.estado === 'ACTIVA' ? 'licencia-activa' : 'licencia-inactiva'">
+
+                            <div class="licencia-card-header">
+                                <div class="licencia-titulo">
+                                    <mat-icon>
+                                        {{ licencia.estado === 'ACTIVA' ? 'verified' : 'history' }}
+                                    </mat-icon>
+
+                                    <div>
+                                        <strong>Licencia</strong>
+                                        <span>
+                                            ID: {{ licencia.id_licencia}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <span class="badge"
+                                    [ngClass]="licencia.estado === 'ACTIVA' ? 'badge-activo' : 'badge-inactivo'">
+                                    {{ licencia.estado }}
+                                </span>
                             </div>
 
-                            <div class="info-line">
-                                <mat-icon>event_available</mat-icon>
-                                <span>Fecha Activación</span>
-                                <strong>{{ empresaLicenciaFechaActivacion }}</strong>
+                            <div class="licencia-detalle">
+
+                                <div class="info-line licencia-line">
+                                    <mat-icon>vpn_key</mat-icon>
+                                    <span>Llave Pública</span>
+                                    <strong class="texto-largo">
+                                        {{ licencia.llave_publica }}
+                                    </strong>
+                                </div>
+
+                                <div class="info-line licencia-line">
+                                    <mat-icon>event_available</mat-icon>
+                                    <span>Fecha Activación</span>
+                                    <strong>
+                                        {{ licencia.fecha_activacion_formateada }}
+                                    </strong>
+                                </div>
+
+                                <div class="info-line licencia-line">
+                                    <mat-icon>event_busy</mat-icon>
+                                    <span>Fecha Desactivación</span>
+                                    <strong>
+                                        {{ licencia.fecha_desactivacion_formateada }}
+                                    </strong>
+                                </div>
+
+                                <div class="info-line licencia-line">
+                                    <mat-icon>speaker_notes</mat-icon>
+                                    <span>Observación</span>
+                                    <strong class="texto-largo">
+                                        {{ licencia.observacion || 'Sin observación' }}
+                                    </strong>
+                                </div>
+
                             </div>
 
-                            <div class="info-line">
-                                <mat-icon>event_busy</mat-icon>
-                                <span>Fecha Desactivación</span>
-                                <strong>{{ empresaLicenciaFechaDesactivacion}}</strong>
+                            <div class="licencia-acciones">
+                                <button mat-stroked-button color="primary"
+                                    (click)="VerLicenciaEdicion(false); AbrirVentanaEditarLicencia(licencia)">
+                                    <mat-icon>edit</mat-icon>
+                                    Editar
+                                </button>
                             </div>
 
                         </div>
 
-                        <div class="acciones-card" *ngIf="editar_licencia_">
-                            <button mat-stroked-button color="primary"
-                                (click)="VerLicenciaEdicion(false); AbrirVentanaEditarLicencia(licenciaEmpresa)">
-                                <mat-icon>edit</mat-icon>
-                                Editar Licencia
-                            </button>
-                        </div>
-                    </mat-card-content>
-                </mat-card>
+                    </div>
 
+                    <mat-paginator *ngIf="licenciaEmpresa.length > licenciaPageSize" [length]="licenciaEmpresa.length"
+                        [pageSize]="licenciaPageSize" [pageSizeOptions]="licenciaPageSizeOptions"
+                        [pageIndex]="licenciaPageIndex" (page)="ManejarPaginaLicencias($event)" showFirstLastButtons>
+                    </mat-paginator>
+
+                </mat-card-content>
+            </mat-card>
+
+        </div>
+    </mat-tab>
+
+
+    <!-- LÍMITES DE USUARIOS -->
+    <mat-tab label="limites">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">manage_accounts</mat-icon>
+            <h6 id="items">Límites</h6>
+        </ng-template>
+
+        <div class="empresa-page">
+
+            <div class="form-edicion" *ngIf="registrar_limite_">
+                <app-registrar-limite-usuarios [licencia]="licencia_limite_actual" [pagina]="pagina_base">
+                </app-registrar-limite-usuarios>
             </div>
+
+            <div class="form-edicion" *ngIf="modificar_limite_">
+                <app-editar-limite-usuarios [limite]="limite_editar" [pagina]="pagina_base">
+                </app-editar-limite-usuarios>
+            </div>
+
+            <mat-card class="card-panel mat-elevation-z6">
+                <div class="card-panel-header">
+                    <div>
+                        <h4>Límites por licencia</h4>
+                        <span>Control de usuarios web, usuarios app, relojes y almacenamiento contratado</span>
+                    </div>
+
+                    <button mat-raised-button color="primary" *ngIf="agregar_limite_"
+                        (click)="AbrirRegistroLimiteUsuarios()">
+                        <mat-icon>add</mat-icon>
+                        Añadir
+                    </button>
+                </div>
+
+                <mat-card-content>
+
+                    <div *ngIf="cargando_limites_" class="sin-registros">
+                        <mat-icon>sync</mat-icon>
+                        <strong>Cargando límites...</strong>
+                        <span>Espere un momento mientras se consulta la información.</span>
+                    </div>
+
+                    <div *ngIf="!cargando_limites_ && limitesLicencia.length === 0" class="sin-registros">
+                        <mat-icon>manage_accounts</mat-icon>
+                        <strong>No existen límites registrados.</strong>
+                        <span>Puede registrar límites para la licencia activa de esta empresa.</span>
+                    </div>
+
+                    <div class="limites-grid" *ngIf="!cargando_limites_ && limitesLicencia.length > 0">
+
+                        <div class="limite-card-item"
+                            *ngFor="let limite of limitesPaginados; trackBy: TrackByLimiteLicencia"
+                            [ngClass]="limite.estado === 'ACTIVA' ? 'limite-activo' : 'limite-inactivo'">
+
+                            <div class="limite-card-header">
+                                <div class="limite-titulo">
+                                    <mat-icon>
+                                        {{ limite.estado === 'ACTIVA' ? 'verified_user' : 'history' }}
+                                    </mat-icon>
+
+                                    <div>
+                                        <strong>Límites de licencia</strong>
+                                        <span>ID Licencia: {{ limite.id_licencia }}</span>
+                                    </div>
+                                </div>
+
+                                <span class="badge"
+                                    [ngClass]="limite.estado === 'ACTIVA' ? 'badge-activo' : 'badge-inactivo'">
+                                    {{ limite.estado }}
+                                </span>
+                            </div>
+
+                            <div class="limite-resumen-grid">
+
+                                <div class="limite-info-item">
+                                    <mat-icon>desktop_windows</mat-icon>
+                                    <span>Usuarios Web</span>
+                                    <strong>{{ limite.usuarios_web_max }}</strong>
+                                </div>
+
+                                <div class="limite-info-item">
+                                    <mat-icon>smartphone</mat-icon>
+                                    <span>Usuarios App</span>
+                                    <strong>{{ limite.usuarios_app_max }}</strong>
+                                </div>
+
+                                <div class="limite-info-item">
+                                    <mat-icon>fingerprint</mat-icon>
+                                    <span>Relojes</span>
+                                    <strong>{{ limite.relojes_max }}</strong>
+                                </div>
+
+                                <div class="limite-info-item">
+                                    <mat-icon>sd_storage</mat-icon>
+                                    <span>Storage MB</span>
+                                    <strong>{{ limite.storage_mb_max }}</strong>
+                                </div>
+
+                            </div>
+
+                            <div class="limite-acciones">
+                                <button mat-stroked-button color="primary" *ngIf="limite.estado === 'ACTIVA'"
+                                    (click)="AbrirEdicionLimiteUsuarios(limite)">
+                                    <mat-icon>edit</mat-icon>
+                                    Editar
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <mat-paginator *ngIf="limitesLicencia.length > limitePageSize" [length]="limitesLicencia.length"
+                        [pageSize]="limitePageSize" [pageSizeOptions]="limitePageSizeOptions"
+                        [pageIndex]="limitePageIndex" (page)="ManejarPaginaLimites($event)" showFirstLastButtons>
+                    </mat-paginator>
+
+                </mat-card-content>
+            </mat-card>
+
+        </div>
+    </mat-tab>
+
+    <!-- STORAGE USO -->
+    <mat-tab label="storage">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">sd_storage</mat-icon>
+            <h6 id="items">Storage</h6>
+        </ng-template>
+
+        <div class="empresa-page">
+
+            <div class="form-edicion" *ngIf="modificar_storage_">
+                <app-registrar-storage-uso [licencia]="licencia_storage_actual" [storage]="storage_editar"
+                    [pagina]="pagina_base" [codigoEmpresa]="codigoEmpresa">
+                </app-registrar-storage-uso>
+            </div>
+
+            <mat-card class="card-panel mat-elevation-z6">
+                <div class="card-panel-header">
+                    <div>
+                        <h4>Storage por licencia</h4>
+                        <span>Control del almacenamiento usado por licencia</span>
+                    </div>
+
+                    <button mat-raised-button color="primary" *ngIf="agregar_storage_"
+                        (click)="AbrirFormularioStorage(null)">
+                        <mat-icon>add</mat-icon>
+                        Añadir
+                    </button>
+                </div>
+
+                <mat-card-content>
+
+                    <div *ngIf="cargando_storage_" class="sin-registros">
+                        <mat-icon>sync</mat-icon>
+                        <strong>Cargando storage...</strong>
+                        <span>Espere un momento mientras se consulta la información.</span>
+                    </div>
+
+                    <div *ngIf="!cargando_storage_ && storageLicencia.length === 0" class="sin-registros">
+                        <mat-icon>sd_storage</mat-icon>
+                        <strong>No existen datos de storage registrados.</strong>
+                        <span>Puede registrar el uso de storage para la licencia activa de esta empresa.</span>
+                    </div>
+
+                    <div class="storage-grid" *ngIf="!cargando_storage_ && storageLicencia.length > 0">
+
+                        <div class="storage-card-item"
+                            *ngFor="let storage of storagePaginado; trackBy: TrackByStorageLicencia"
+                            [ngClass]="storage.estado === 'ACTIVA' ? 'storage-activo' : 'storage-inactivo'">
+
+                            <div class="storage-card-header">
+                                <div class="storage-titulo">
+                                    <mat-icon>
+                                        {{ storage.estado === 'ACTIVA' ? 'sd_storage' : 'history' }}
+                                    </mat-icon>
+
+                                    <div>
+                                        <strong>Storage de licencia</strong>
+                                        <span>ID Licencia: {{ storage.id_licencia }}</span>
+                                    </div>
+                                </div>
+
+                                <span class="badge"
+                                    [ngClass]="storage.estado === 'ACTIVA' ? 'badge-activo' : 'badge-inactivo'">
+                                    {{ storage.estado }}
+                                </span>
+                            </div>
+
+                            <div class="storage-resumen-grid">
+
+                                <div class="storage-info-item">
+                                    <mat-icon>sd_storage</mat-icon>
+                                    <span>Storage usado</span>
+                                    <strong>{{ storage.storage_mb_usado }} MB</strong>
+                                </div>
+
+                                <div class="storage-info-item">
+                                    <mat-icon>settings_suggest</mat-icon>
+                                    <span>Origen cálculo</span>
+                                    <strong>{{ storage.origen_calculo }}</strong>
+                                </div>
+
+                                <div class="storage-info-item">
+                                    <mat-icon>event</mat-icon>
+                                    <span>Fecha registro</span>
+                                    <strong>{{ storage.fecha_registro_formateada }}</strong>
+                                </div>
+
+                                <div class="storage-info-item">
+                                    <mat-icon>
+                                        {{ storage.calculo_exitoso ? 'check_circle' : 'error' }}
+                                    </mat-icon>
+                                    <span>Resultado</span>
+                                    <strong>
+                                        {{ storage.calculo_exitoso ? 'Exitoso' : 'Con error' }}
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                            <div class="info-list storage-detalle">
+                                <div class="info-line storage-line">
+                                    <mat-icon>schedule</mat-icon>
+                                    <span>Fecha cálculo</span>
+                                    <strong>{{ storage.fecha_calculo_formateada }}</strong>
+                                </div>
+
+                                <div class="info-line storage-line">
+                                    <mat-icon>speaker_notes</mat-icon>
+                                    <span>Observación</span>
+                                    <strong>{{ storage.observacion || 'Sin observación' }}</strong>
+                                </div>
+
+                                <div class="info-line storage-line" *ngIf="storage.mensaje_error">
+                                    <mat-icon>report_problem</mat-icon>
+                                    <span>Mensaje error</span>
+                                    <strong class="texto-largo">{{ storage.mensaje_error }}</strong>
+                                </div>
+                            </div>
+
+                            <div class="storage-acciones">
+                                <button mat-stroked-button color="primary" *ngIf="storage.estado === 'ACTIVA'"
+                                    (click)="AbrirFormularioStorage(storage)">
+                                    <mat-icon>edit</mat-icon>
+                                    Editar
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <mat-paginator *ngIf="storageLicencia.length > storagePageSize" [length]="storageLicencia.length"
+                        [pageSize]="storagePageSize" [pageSizeOptions]="storagePageSizeOptions"
+                        [pageIndex]="storagePageIndex" (page)="ManejarPaginaStorage($event)" showFirstLastButtons>
+                    </mat-paginator>
+
+                </mat-card-content>
+            </mat-card>
+
         </div>
     </mat-tab>
 
@@ -254,83 +581,113 @@
         <div class="empresa-page">
 
             <div class="form-edicion" *ngIf="modificar_modulos_">
-                <app-editar-modulos [modulos]="modulos_editar" [pagina]="pagina_base"></app-editar-modulos>
+                <app-editar-modulos [modulos]="modulos_editar" [licencia]="licencia_actual" [pagina]="pagina_base">
+                </app-editar-modulos>
             </div>
 
             <mat-card class="card-panel mat-elevation-z6">
                 <div class="card-panel-header">
                     <div>
-                        <h4>Módulos Actuales</h4>
-                        <span>Módulos habilitados para esta empresa</span>
+                        <h4>Módulos por licencia</h4>
+                        <span>Listado de módulos habilitados o deshabilitados según cada licencia registrada</span>
                     </div>
 
-                    <button mat-stroked-button color="primary" *ngIf="editar_modulos_"
-                        (click)="VerModulosEdicion(false); AbrirVentanaEditarModulos(modulosEmpresa)">
-                        <mat-icon>edit</mat-icon>
-                        Editar Módulos
+                    <button mat-raised-button color="primary" type="button"
+                        *ngIf="editar_modulos_ && ObtenerLicenciaActivaId()"
+                        (click)="AbrirConfiguracionModulosLicenciaActiva()">
+                        <mat-icon>settings</mat-icon>
+                        Configurar módulos
                     </button>
                 </div>
 
                 <mat-card-content>
-                    <div class="modulos-grid">
 
-                        <div class="modulo-item"
-                            [ngClass]="empresaModuloPermisos ? 'modulo-activo' : 'modulo-inactivo'">
-                            <mat-icon>assignment</mat-icon>
-                            <span>Permisos</span>
-                            <strong>{{ empresaModuloPermisos ? 'Activo' : 'Inactivo' }}</strong>
-                        </div>
+                    <div *ngIf="cargando_modulos_" class="sin-registros">
+                        <mat-icon>sync</mat-icon>
+                        <strong>Cargando módulos...</strong>
+                        <span>Espere un momento mientras se consulta la información.</span>
+                    </div>
 
-                        <div class="modulo-item"
-                            [ngClass]="empresaModuloVacaciones ? 'modulo-activo' : 'modulo-inactivo'">
-                            <mat-icon>beach_access</mat-icon>
-                            <span>Vacaciones</span>
-                            <strong>{{ empresaModuloVacaciones ? 'Activo' : 'Inactivo' }}</strong>
-                        </div>
+                    <div *ngIf="!cargando_modulos_ && modulosLicenciaAgrupados.length === 0" class="sin-registros">
+                        <mat-icon>apps</mat-icon>
+                        <strong>No existen módulos configurados.</strong>
 
-                        <div class="modulo-item"
-                            [ngClass]="empresaModuloHoraExtra ? 'modulo-activo' : 'modulo-inactivo'">
-                            <mat-icon>schedule</mat-icon>
-                            <span>Horas Extras</span>
-                            <strong>{{ empresaModuloHoraExtra ? 'Activo' : 'Inactivo' }}</strong>
-                        </div>
+                        <span *ngIf="ObtenerLicenciaActivaId()">
+                            Puede configurar los módulos para la licencia activa de esta empresa.
+                        </span>
 
-                        <div class="modulo-item"
-                            [ngClass]="empresaModuloGeolocalizacion ? 'modulo-activo' : 'modulo-inactivo'">
-                            <mat-icon>location_on</mat-icon>
-                            <span>Geolocalización</span>
-                            <strong>{{ empresaModuloGeolocalizacion ? 'Activo' : 'Inactivo' }}</strong>
-                        </div>
+                        <span *ngIf="!ObtenerLicenciaActivaId()">
+                            Primero debe existir una licencia activa para poder configurar módulos.
+                        </span>
 
-                        <div class="modulo-item"
-                            [ngClass]="empresaModuloTimbreWeb ? 'modulo-activo' : 'modulo-inactivo'">
-                            <mat-icon>computer</mat-icon>
-                            <span>Timbre Virtual</span>
-                            <strong>{{ empresaModuloTimbreWeb ? 'Activo' : 'Inactivo' }}</strong>
-                        </div>
+                        <button mat-raised-button color="primary" type="button"
+                            *ngIf="editar_modulos_ && ObtenerLicenciaActivaId()"
+                            (click)="AbrirConfiguracionModulosLicenciaActiva()">
+                            <mat-icon>settings</mat-icon>
+                            Configurar módulos
+                        </button>
+                    </div>
 
-                        <div class="modulo-item"
-                            [ngClass]="empresaModuloAppMovil ? 'modulo-activo' : 'modulo-inactivo'">
-                            <mat-icon>smartphone</mat-icon>
-                            <span>Aplicación Móvil</span>
-                            <strong>{{ empresaModuloAppMovil ? 'Activo' : 'Inactivo' }}</strong>
-                        </div>
+                    <div class="modulos-licencia-list"
+                        *ngIf="!cargando_modulos_ && modulosLicenciaAgrupados.length > 0">
 
-                        <div class="modulo-item"
-                            [ngClass]="empresaModuloAccionPersonal ? 'modulo-activo' : 'modulo-inactivo'">
-                            <mat-icon>manage_accounts</mat-icon>
-                            <span>Acciones de Personal</span>
-                            <strong>{{ empresaModuloAccionPersonal ? 'Activo' : 'Inactivo' }}</strong>
-                        </div>
+                        <div class="modulos-licencia-card"
+                            *ngFor="let grupo of modulosLicenciaPaginados; trackBy: TrackByGrupoLicencia">
 
-                        <div class="modulo-item"
-                            [ngClass]="empresaModuloAlimentacion ? 'modulo-activo' : 'modulo-inactivo'">
-                            <mat-icon>restaurant</mat-icon>
-                            <span>Alimentación</span>
-                            <strong>{{ empresaModuloAlimentacion ? 'Activo' : 'Inactivo' }}</strong>
+                            <div class="modulos-licencia-header">
+                                <div class="modulos-licencia-title">
+                                    <mat-icon>
+                                        {{ grupo.estado === 'ACTIVA' ? 'workspace_premium' : 'history' }}
+                                    </mat-icon>
+
+                                    <div>
+                                        <strong>Licencia ID: {{ grupo.id_licencia }}</strong>
+                                        <span>Módulos asignados a esta licencia</span>
+                                    </div>
+                                </div>
+
+                                <div class="modulos-licencia-actions">
+                                    <span class="badge"
+                                        [ngClass]="grupo.estado === 'ACTIVA' ? 'badge-activo' : 'badge-inactivo'">
+                                        {{ grupo.estado }}
+                                    </span>
+
+                                    <button mat-stroked-button color="primary"
+                                        *ngIf="editar_modulos_ && grupo.estado === 'ACTIVA'"
+                                        (click)="VerModulosEdicion(false); AbrirVentanaEditarModulos(idEmpresa, grupo.id_licencia)">
+                                        <mat-icon>edit</mat-icon>
+                                        Editar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="modulos-grid">
+                                <div class="modulo-item"
+                                    *ngFor="let modulo of grupo.modulos; trackBy: TrackByModuloLicencia"
+                                    [ngClass]="modulo.activo ? 'modulo-activo' : 'modulo-inactivo'">
+
+                                    <mat-icon>
+                                        {{ ObtenerIconoModulo(modulo.codigo) }}
+                                    </mat-icon>
+
+                                    <span>{{ modulo.nombre }}</span>
+
+                                    <strong>
+                                        {{ modulo.activo ? 'Activo' : 'Inactivo' }}
+                                    </strong>
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
+
+                    <mat-paginator *ngIf="modulosLicenciaAgrupados.length > modulosPageSize"
+                        [length]="modulosLicenciaAgrupados.length" [pageSize]="modulosPageSize"
+                        [pageSizeOptions]="modulosPageSizeOptions" [pageIndex]="modulosPageIndex"
+                        (page)="ManejarPaginaModulos($event)" showFirstLastButtons>
+                    </mat-paginator>
+
                 </mat-card-content>
             </mat-card>
 

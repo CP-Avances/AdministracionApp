@@ -47,6 +47,12 @@ export class MainNavComponent implements OnInit {
       icono: 'business',
       url: '/empresas',
       activo: true
+    },
+    {
+      name: 'Historial',
+      icono: 'manage_history',
+      url: '/historial',
+      activo: true
     }
   ];
 

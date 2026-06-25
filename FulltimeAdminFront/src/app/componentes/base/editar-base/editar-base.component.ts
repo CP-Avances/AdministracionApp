@@ -33,7 +33,7 @@ export class EditarBaseComponent implements OnInit {
   baseHostForm = new FormControl('', Validators.required);
   basePuertoForm = new FormControl('', Validators.required);
   baseUsuarioForm = new FormControl('', Validators.required);
-  baseContrasenaForm = new FormControl('', Validators.required);
+  baseContrasenaForm = new FormControl('');
 
   constructor(
     public componentev: VerEmpresaComponent,

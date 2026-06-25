@@ -5,158 +5,315 @@ import { FUNCIONES_LLAVES } from '../llaves/rsa-keys.service';
 
 class LicenciaControlador {
 
-    public async RegistrarLicencia(req: Request, res: Response) {
-        let id_empresa_bdd_ = req.body.id_empresa_bdd;
-        let empresa_licencia_fecha_activacion_ = req.body.fecha_activacion;
-        let empresa_licencia_fecha_desactivacion_ = req.body.fecha_desactivacion;
-
-        const licencia_datos = {
-            id_empresa_bdd: id_empresa_bdd_,
-            fecha_activacion: empresa_licencia_fecha_activacion_,
-            fecha_desactivacion: empresa_licencia_fecha_desactivacion_
+    private async RegistrarMovimientoLicencia(
+        client: any,
+        datos: {
+            id_licencia: number;
+            tipo_movimiento: string;
+            entidad_afectada: string;
+            campo_modificado?: string | null;
+            valor_anterior?: string | null;
+            valor_nuevo?: string | null;
+            usuario_registra?: string | null;
+            observacion?: string | null;
         }
+    ) {
+        await client.query(
+            `
+            INSERT INTO public.licencia_movimiento (
+                id_licencia,
+                tipo_movimiento,
+                entidad_afectada,
+                campo_modificado,
+                valor_anterior,
+                valor_nuevo,
+                fecha_movimiento,
+                usuario_registra,
+                observacion
+            )
+            VALUES (
+                $1,
+                $2,
+                $3,
+                $4,
+                $5,
+                $6,
+                now(),
+                $7,
+                $8
+            );
+            `,
+            [
+                datos.id_licencia,
+                datos.tipo_movimiento,
+                datos.entidad_afectada,
+                datos.campo_modificado ?? null,
+                datos.valor_anterior ?? null,
+                datos.valor_nuevo ?? null,
+                datos.usuario_registra ?? null,
+                datos.observacion ?? null
+            ]
+        );
+    }
+
+    public async RegistrarLicencia(req: Request, res: Response) {
+        const id_empresa_ = req.body.id_empresa;
+        const empresa_licencia_fecha_activacion_ = req.body.fecha_activacion;
+        const empresa_licencia_fecha_desactivacion_ = req.body.fecha_desactivacion;
+        const observacion_ = req.body.observacion ?? null;
+        const usuario_registra_ = req.body.usuario_registra ?? 'SISTEMA';
+
+        const client = await pool.connect();
 
         try {
-            const jsonEncriptado = FUNCIONES_LLAVES.encriptarDatos(JSON.stringify(licencia_datos).toString());
+            if (!id_empresa_) {
+                return res.status(400).jsonp({
+                    message: 'Debe enviar la empresa.'
+                });
+            }
+
+            const licencia_datos = {
+                id_empresa: id_empresa_,
+                fecha_activacion: empresa_licencia_fecha_activacion_,
+                fecha_desactivacion: empresa_licencia_fecha_desactivacion_
+            };
+
+            const jsonEncriptado = FUNCIONES_LLAVES.encriptarDatos(
+                JSON.stringify(licencia_datos)
+            );
 
             if (jsonEncriptado === null) {
                 return res.status(500).jsonp({ message: 'error' });
             }
 
-            const response: QueryResult = await pool.query(
+            await client.query('BEGIN');
+
+            const response: QueryResult = await client.query(
                 `
-                INSERT INTO empresa_licencia (id_empresa_bdd, llave_publica, fecha_activacion, fecha_desactivacion)
-                    VALUES ($1, $2, $3, $4) RETURNING *
+                INSERT INTO public.licencia (
+                    id_empresa,
+                    llave_publica,
+                    fecha_activacion,
+                    fecha_desactivacion,
+                    observacion
+                )
+                VALUES ($1, $2, $3, $4, $5)
+                RETURNING *;
                 `,
-                [licencia_datos.id_empresa_bdd, jsonEncriptado, licencia_datos.fecha_activacion,
-                licencia_datos.fecha_desactivacion]
+                [
+                    licencia_datos.id_empresa,
+                    jsonEncriptado,
+                    licencia_datos.fecha_activacion,
+                    licencia_datos.fecha_desactivacion,
+                    observacion_
+                ]
             );
 
             const [registro_licencia] = response.rows;
 
-            if (registro_licencia) {
-                return res.status(200).jsonp({ message: 'ok' });
-            } else {
+            if (!registro_licencia) {
+                await client.query('ROLLBACK');
                 return res.status(404).jsonp({ message: 'error' });
             }
 
-        } catch (error) {
-            return res.status(500).jsonp({ message: error });
-        }
-    }
+            await this.RegistrarMovimientoLicencia(client, {
+                id_licencia: registro_licencia.id_licencia,
+                tipo_movimiento: 'REGISTRO_LICENCIA',
+                entidad_afectada: 'licencia',
+                campo_modificado: null,
+                valor_anterior: null,
+                valor_nuevo: JSON.stringify({
+                    estado: registro_licencia.estado,
+                    fecha_activacion: registro_licencia.fecha_activacion,
+                    fecha_desactivacion: registro_licencia.fecha_desactivacion,
+                    observacion: registro_licencia.observacion
+                }),
+                usuario_registra: usuario_registra_,
+                observacion: 'Registro inicial de licencia.'
+            });
 
-    public async ObtenerLicencias(req: Request, res: Response) {
-        try {
-            const LICENCIAS = await pool.query(
-                `
-                SELECT 
-                    empresa_licencia.id_empresa_licencia, 
-                    empresa_licencia.id_empresa_bdd, 
-                    empresa_licencia.llave_publica, 
-                    empresa_licencia.fecha_activacion, 
-                    empresa_licencia.fecha_desactivacion
-                FROM empresa_licencia empresa_licencia 
-                ORDER BY 1 
-                `
-            );
+            await client.query('COMMIT');
 
-            if (LICENCIAS.rowCount !== null) {
-                if (LICENCIAS.rowCount > 0) {
-                    return res.jsonp(LICENCIAS.rows);
-                } else {
-                    res.status(404).jsonp({ message: 'vacio' });
-                }
-            } else {
-                res.status(500).jsonp({ message: 'error' });
+            return res.status(200).jsonp({
+                message: 'ok',
+                data: registro_licencia
+            });
+
+        } catch (error: any) {
+            await client.query('ROLLBACK');
+
+            console.log('ver error ', error);
+
+            if (error.code === '23505') {
+                return res.status(409).jsonp({
+                    message: 'Ya existe una licencia activa para esta empresa.'
+                });
             }
-        }
-        catch (error) {
-            res.status(500).jsonp({ message: 'error' });
-        }
-    }
 
-    public async ObtenerLicenciasEmpresas(req: Request, res: Response) {
-        try {
-            const LICENCIAS = await pool.query(
-                `
-                SELECT 
-                    empresa_licencia.id_empresa_licencia,
-                    empresa_licencia.id_empresa_bdd,
-                    empresa_bdd.empresa_bdd_nombre,
-                    empresa.empresa_descripcion,
-                    empresa_licencia.llave_publica,
-                    empresa_licencia.fecha_activacion,
-                    empresa_licencia.fecha_desactivacion 
-                FROM empresa_licencia empresa_licencia 
-                INNER JOIN empresa_bdd empresa_bdd 
-                ON empresa_bdd.id_empresa_bdd = empresa_licencia.id_empresa_bdd
-                INNER JOIN empresa empresa ON empresa.empresa_id = empresa_bdd.id_empresa
-                ORDER BY empresa_bdd.id_empresa;
-                `
-            );
-
-            if (LICENCIAS.rowCount !== null) {
-                if (LICENCIAS.rowCount > 0) {
-                    return res.jsonp(LICENCIAS.rows);
-                } else {
-                    res.status(404).jsonp({ message: 'vacio' });
-                }
-            } else {
-                res.status(500).jsonp({ message: 'error' });
-            }
-        }
-        catch (error) {
-            res.status(500).jsonp({ message: 'error' });
+            return res.status(500).jsonp({ message: 'error' });
+        } finally {
+            client.release();
         }
     }
 
     public async ActualizarLicencia(req: Request, res: Response) {
-        let id_empresa_licencia_ = req.body.id_empresa_licencia;
-        let id_empresa_bdd_ = req.body.id_empresa_bdd;
-        let empresa_licencia_fecha_activacion_ = req.body.fecha_activacion;
-        let empresa_licencia_fecha_desactivacion_ = req.body.fecha_desactivacion;
+        const id_licencia_ = req.body.id_empresa_licencia;
+        const estado_ = req.body.estado;
+        const empresa_licencia_fecha_activacion_ = req.body.fecha_activacion;
+        const empresa_licencia_fecha_desactivacion_ = req.body.fecha_desactivacion;
+        const observacion_ = req.body.observacion ?? null;
+        const usuario_registra_ = req.body.usuario_registra ?? 'SISTEMA';
+
+        const client = await pool.connect();
 
         try {
-
-            const licencia_datos = {
-                id_empresa_bdd: id_empresa_bdd_,
-                fecha_activacion: empresa_licencia_fecha_activacion_,
-                fecha_desactivacion: empresa_licencia_fecha_desactivacion_
+            if (!id_licencia_) {
+                return res.status(400).jsonp({
+                    message: 'Debe enviar la licencia.'
+                });
             }
 
-            const jsonEncriptado = FUNCIONES_LLAVES.encriptarDatos(JSON.stringify(licencia_datos).toString());
+            await client.query('BEGIN');
 
-            await pool.query(
+            const licenciaAnterior = await client.query(
                 `
-                UPDATE empresa_licencia SET id_empresa_bdd = $2, llave_publica = $3, fecha_activacion = $4,
-                 fecha_desactivacion = $5 
-                WHERE id_empresa_licencia = $1 
+                SELECT *
+                FROM public.licencia
+                WHERE id_licencia = $1;
                 `,
-                [id_empresa_licencia_, id_empresa_bdd_, jsonEncriptado, empresa_licencia_fecha_activacion_,
-                    empresa_licencia_fecha_desactivacion_]
+                [id_licencia_]
             );
 
-            res.jsonp({ message: 'Registro actualizado.' });
-        }
-        catch (error) {
-            return res.jsonp({ message: error });
+            if (licenciaAnterior.rowCount === 0) {
+                await client.query('ROLLBACK');
+                return res.status(404).jsonp({
+                    message: 'No se encontró la licencia.'
+                });
+            }
+
+            const datosAnteriores = licenciaAnterior.rows[0];
+
+            const licencia_datos = {
+                id_empresa: datosAnteriores.id_empresa,
+                fecha_activacion: empresa_licencia_fecha_activacion_,
+                fecha_desactivacion: empresa_licencia_fecha_desactivacion_
+            };
+
+            const jsonEncriptado = FUNCIONES_LLAVES.encriptarDatos(
+                JSON.stringify(licencia_datos)
+            );
+
+            if (jsonEncriptado === null) {
+                await client.query('ROLLBACK');
+                return res.status(500).jsonp({ message: 'error' });
+            }
+
+            const response = await client.query(
+                `
+                UPDATE public.licencia
+                SET
+                    estado = $2,
+                    llave_publica = $3,
+                    fecha_activacion = $4,
+                    fecha_desactivacion = $5,
+                    observacion = $6,
+                    fecha_actualizacion = now()
+                WHERE id_licencia = $1
+                RETURNING *;
+                `,
+                [
+                    id_licencia_,
+                    estado_,
+                    jsonEncriptado,
+                    empresa_licencia_fecha_activacion_,
+                    empresa_licencia_fecha_desactivacion_,
+                    observacion_
+                ]
+            );
+
+            const datosActualizados = response.rows[0];
+
+            await this.RegistrarMovimientosActualizacionLicencia(
+                client,
+                datosAnteriores,
+                datosActualizados,
+                usuario_registra_
+            );
+
+            await client.query('COMMIT');
+
+            return res.jsonp({
+                message: 'Registro actualizado.',
+                data: datosActualizados
+            });
+
+        } catch (error: any) {
+            await client.query('ROLLBACK');
+
+            console.log(error);
+
+            if (error.code === '23505') {
+                return res.status(409).jsonp({
+                    message: 'Ya existe una licencia activa para esta empresa.'
+                });
+            }
+
+            return res.status(500).jsonp({ message: 'error' });
+        } finally {
+            client.release();
         }
     }
 
-    public async EliminarLicencia(req: Request, res: Response) {
-        try {
-            let id_empresa_licencia_ = req.body.id_empresa_licencia;
+    private async RegistrarMovimientosActualizacionLicencia(
+        client: any,
+        anterior: any,
+        actual: any,
+        usuario_registra: string
+    ) {
+        const movimientos = [
+            {
+                campo: 'estado',
+                valorAnterior: anterior.estado,
+                valorNuevo: actual.estado
+            },
+            {
+                campo: 'fecha_activacion',
+                valorAnterior: anterior.fecha_activacion,
+                valorNuevo: actual.fecha_activacion
+            },
+            {
+                campo: 'fecha_desactivacion',
+                valorAnterior: anterior.fecha_desactivacion,
+                valorNuevo: actual.fecha_desactivacion
+            },
+            {
+                campo: 'observacion',
+                valorAnterior: anterior.observacion,
+                valorNuevo: actual.observacion
+            }
+        ];
 
-            await pool.query(
-                `
-                DELETE FROM empresa_licencia WHERE id_empresa_licencia = $1
-                `
-                , [id_empresa_licencia_]
-            );
+        for (const movimiento of movimientos) {
+            const valorAnterior = movimiento.valorAnterior === null || movimiento.valorAnterior === undefined
+                ? null
+                : String(movimiento.valorAnterior);
 
-            res.jsonp({ message: 'Registro eliminado.' });
-        } catch (error) {
-            return res.jsonp({ message: 'error' });
+            const valorNuevo = movimiento.valorNuevo === null || movimiento.valorNuevo === undefined
+                ? null
+                : String(movimiento.valorNuevo);
+
+            if (valorAnterior !== valorNuevo) {
+                await this.RegistrarMovimientoLicencia(client, {
+                    id_licencia: actual.id_licencia,
+                    tipo_movimiento: 'ACTUALIZACION_LICENCIA',
+                    entidad_afectada: 'licencia',
+                    campo_modificado: movimiento.campo,
+                    valor_anterior: valorAnterior,
+                    valor_nuevo: valorNuevo,
+                    usuario_registra,
+                    observacion: 'Actualización manual de datos de licencia.'
+                });
+            }
         }
     }
 
@@ -166,39 +323,32 @@ class LicenciaControlador {
 
             const LICENCIAS = await pool.query(
                 `
-                SELECT 
-                    empresa_licencia.id_empresa_licencia,
-                    empresa_licencia.id_empresa_bdd,
-                    empresa_licencia.llave_publica,
-                    empresa_licencia.fecha_activacion,
-                    empresa_licencia.fecha_desactivacion
-                FROM empresa_licencia empresa_licencia
-                INNER JOIN empresa_bdd empresa_bdd 
-                ON empresa_bdd.id_empresa_bdd = empresa_licencia.id_empresa_bdd
-                WHERE 
-                    empresa_bdd.id_empresa = $1
-                ORDER BY 1
+                SELECT *
+                FROM public.licencia empresa_licencia
+                WHERE empresa_licencia.id_empresa = $1
+                ORDER BY 
+                    CASE 
+                        WHEN empresa_licencia.estado = 'ACTIVA' THEN 1
+                        WHEN empresa_licencia.estado = 'PENDIENTE' THEN 2
+                        WHEN empresa_licencia.estado = 'SUSPENDIDA' THEN 3
+                        WHEN empresa_licencia.estado = 'VENCIDA' THEN 4
+                        WHEN empresa_licencia.estado = 'CANCELADA' THEN 5
+                        ELSE 6
+                    END,
+                    empresa_licencia.fecha_creacion DESC;
                 `,
                 [id]
             );
 
-            if (LICENCIAS.rowCount !== null) {
-                if (LICENCIAS.rowCount > 0) {
-                    res.jsonp(LICENCIAS.rows);
-                } else {
-                    res.status(404).jsonp({ message: 'vacio' });
-                }
-            } else {
-                res.status(500).jsonp({ message: 'error' });
-            }
+            return res.jsonp(LICENCIAS.rows);
 
-        }
-        catch (error) {
-            res.status(500).jsonp({ message: 'error' });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).jsonp({ message: 'error' });
         }
     }
 
 }
 
-export const licenciaControlador = new LicenciaControlador;
+export const licenciaControlador = new LicenciaControlador();
 export default licenciaControlador;

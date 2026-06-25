@@ -32,11 +32,6 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { LoginComponent } from './componentes/login/login.component';
 import { HomeComponent } from './componentes/home/home.component';
 import { MainNavComponent } from './componentes/main-nav/main-nav.component';
-
-//SERVICIOS
-import { LoginService } from './servicios/login/login.service';
-import { TokenInterceptorService } from './servicios/login/token-interceptor.service';
-import { AuthGuard } from './servicios/guards/auth.guard';
 import { RegistroEmpresaComponent } from './componentes/empresa/registro-empresa/registro-empresa.component';
 import { ListaEmpresasComponent } from './componentes/empresa/lista-empresas/lista-empresas.component';
 import { MetodosComponent } from './componentes/metodoEliminar/metodos.component';
@@ -47,6 +42,17 @@ import { RegistroBaseComponent } from './componentes/base/registro-base/registro
 import { EditarLicenciaComponent } from './componentes/licencia/editar-licencia/editar-licencia.component';
 import { EditarModulosComponent } from './componentes/empresa/editar-modulos/editar-modulos.component';
 import { RegistroLicenciaComponent } from './componentes/licencia/registro-licencia/registro-licencia.component';
+import { RegistrarLimiteUsuariosComponent } from './componentes/limites-usuarios/registrar-limite-usuarios/registrar-limite-usuarios.component';
+import { EditarLimiteUsuariosComponent } from './componentes/limites-usuarios/editar-limite-usuarios/editar-limite-usuarios.component';
+
+//SERVICIOS
+import { LoginService } from './servicios/login/login.service';
+import { TokenInterceptorService } from './servicios/login/token-interceptor.service';
+import { AuthGuard } from './servicios/guards/auth.guard';
+import { RegistrarStorageUsoComponent } from './componentes/limites-usuarios/registrar-storage-uso/registrar-storage-uso.component';
+import { HistorialComponent } from './componentes/historial/historial.component';
+import { InicializarBaseComponent } from './componentes/base/inicializar-base/inicializar-base.component';
+
 
 @NgModule({
   declarations: [
@@ -64,7 +70,12 @@ import { RegistroLicenciaComponent } from './componentes/licencia/registro-licen
     RegistroBaseComponent,
     EditarLicenciaComponent,
     EditarModulosComponent,
-    RegistroLicenciaComponent
+    RegistroLicenciaComponent,
+    RegistrarLimiteUsuariosComponent,
+    EditarLimiteUsuariosComponent,
+    RegistrarStorageUsoComponent,
+    HistorialComponent,
+    InicializarBaseComponent,
   ],
   imports: [
     BrowserModule,

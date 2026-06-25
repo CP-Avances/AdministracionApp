@@ -2,10 +2,10 @@ export const environment = {
   production: true,
 
   //PRODUCCION
-  //url: 'https://administracionfulltime.fulltime.com.ec/server'
+  url: 'https://administracionfulltime.fulltime.com.ec/server'
 
   //NUBE
-  url: 'https://administrar.aqhora.com/server'
+  //url: 'https://administrar.aqhora.com/server'
 };
 
 

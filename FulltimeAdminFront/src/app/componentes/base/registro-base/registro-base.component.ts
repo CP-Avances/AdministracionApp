@@ -35,7 +35,7 @@ export class RegistroBaseComponent implements OnInit {
     private restBase: BaseService,
     private toastr: ToastrService,
     @Inject(MAT_DIALOG_DATA) public datoEmpresa: any
-  ){ }
+  ) { }
 
   ngOnInit(): void {
     this.ip = localStorage.getItem('ip');
@@ -72,12 +72,12 @@ export class RegistroBaseComponent implements OnInit {
   GuardarDatos(datos: any) {
     this.restBase.InsertarBase(datos).subscribe(
       response => {
-        if(response.message === 'ok'){
-          this.toastr.success('Operación exitosa.', 'Registro actualizado.', {
+        if (response.message === 'ok') {
+          this.toastr.success('Operación exitosa.', '', {
             timeOut: 6000,
           });
-          
-        }else{
+
+        } else {
           this.toastr.warning('Intente nuevamente.', 'Ups!!! algo salio mal.', {
             timeOut: 6000,
           });

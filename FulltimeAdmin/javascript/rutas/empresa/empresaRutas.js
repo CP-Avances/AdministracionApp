@@ -12,14 +12,12 @@ class EmpresaRutas {
         this.configuracion();
     }
     configuracion() {
-        this.router.get('/empresas', verificarToken_1.TokenValidation, empresaControlador_1.default.ObtenerEmpresas);
-        this.router.post('/registro-empresa', verificarToken_1.TokenValidation, empresaControlador_1.default.RegistrarEmpresas);
-        this.router.put('/actualizar-empresa', verificarToken_1.TokenValidation, empresaControlador_1.default.ActualizarEmpresa);
-        this.router.put('/actualizar-empresa-form-uno', verificarToken_1.TokenValidation, empresaControlador_1.default.ActualizarEmpresaFormUno);
+        this.router.post('/registro-empresa', verificarToken_1.TokenValidation, empresaControlador_1.default.RegistrarDatosEmpresa);
+        this.router.put('/actualizar-empresa-form-uno', verificarToken_1.TokenValidation, empresaControlador_1.default.ActualizarDatosEmpresa);
         this.router.post('/eliminar-empresa', verificarToken_1.TokenValidation, empresaControlador_1.default.EliminarEmpresa);
-        this.router.get('/verEmpresa/:id', verificarToken_1.TokenValidation, empresaControlador_1.default.ListarEmpresaId);
-        this.router.put('/actualizar-empresa-modulos', verificarToken_1.TokenValidation, empresaControlador_1.default.ActualizarEmpresaModulos);
         this.router.get('/zonas-horarias', verificarToken_1.TokenValidation, empresaControlador_1.default.ObtenerZonasHorarias);
+        this.router.get('/verEmpresa/:id', verificarToken_1.TokenValidation, empresaControlador_1.default.ListarEmpresaId);
+        this.router.get('/empresas', verificarToken_1.TokenValidation, empresaControlador_1.default.ObtenerEmpresas);
     }
 }
 const EMPRESA_RUTAS = new EmpresaRutas();

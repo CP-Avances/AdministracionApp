@@ -20,7 +20,7 @@ export class ListaEmpresasComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   // VARIABLES DE ALMACENAMIENTO DE DATOS
-  empresa: any = [];
+  empresa: any[] = [];
 
   // CAMPOS DEL FORMULARIO
   empresa_id = new FormControl('');
@@ -53,17 +53,19 @@ export class ListaEmpresasComponent implements OnInit {
 
 
   // METODO PARA LISTAR EMPRESAS
-  async GetEmpresas() {
-    this.restListaEmpresa.ObtenerInformacionEmpresasRegistradas().subscribe(
-      {
-        next: (datos) => {
-          this.empresa = datos;
-        },
-        error: () => {
-          this.empresa = null;
-        }
+  GetEmpresas(): void {
+    this.progreso = true;
+
+    this.restListaEmpresa.ObtenerInformacionEmpresasRegistradas().subscribe({
+      next: (datos: any[]) => {
+        this.empresa = Array.isArray(datos) ? datos : [];
+        this.progreso = false;
+      },
+      error: () => {
+        this.empresa = [];
+        this.progreso = false;
       }
-    );
+    });
   }
 
   // METODO PARA LIMPIAR FORMULARIO

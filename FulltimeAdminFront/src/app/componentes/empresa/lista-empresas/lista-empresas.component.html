@@ -56,31 +56,42 @@
                         </td>
                         <td>
                             <mat-form-field class="input-tables codigo">
-                                <input matInput placeholder="Buscar" [formControl]="empresa_codigo" (keypress)="$event">
+                                <input matInput placeholder="Buscar" [formControl]="empresa_codigo">
                             </mat-form-field>
                         </td>
                         <td></td>
                         <td></td>
                         <td>
                             <mat-icon id="i-ayuda" matSuffix matTooltipPosition="right"
-                                matTooltip="Búsqueda de empleado de acuerdo a cada columna de la tabla.">
+                                matTooltip="Búsqueda de empresa de acuerdo a cada columna de la tabla.">
                                 search
                             </mat-icon>
                         </td>
                     </tr>
-                    <tr
-                        *ngFor="let e of empresa | empresaId: empresa_id.value | empresaDescripcion: empresa_descripcion.value | empresaCodigo: empresa_codigo.value | paginate:tamanio_pagina:numero_pagina">
-                        <td scope="row">{{e.empresa_id}}</td>
-                        <td>{{e.empresa_descripcion}}</td>
-                        <td>{{e.empresa_codigo}}</td>
+
+                    <tr *ngIf="empresa.length === 0">
+                        <td colspan="6" class="text-center">
+                            No existen empresas registradas.
+                        </td>
+                    </tr>
+
+                    <tr *ngFor="let e of empresa 
+      | empresaId: empresa_id.value 
+      | empresaDescripcion: empresa_descripcion.value 
+      | empresaCodigo: empresa_codigo.value 
+      | paginate:tamanio_pagina:numero_pagina">
+                        <td scope="row">{{ e.empresa_id }}</td>
+                        <td>{{ e.empresa_descripcion }}</td>
+                        <td>{{ e.empresa_codigo }}</td>
                         <td>{{ e.estado ? 'Activa' : 'Inactiva' }}</td>
-                        <td>{{ e.instalacion}}</td>
+                        <td>{{ e.instalacion }}</td>
                         <td class="justify-content-center">
                             <i matSuffix matTooltipPosition="right" matTooltip="Ver datos generales de este registro."
                                 class="fas fa-eye" style="color: rgb(0, 137, 228);" id="t-ver"
                                 [routerLink]="['/verEmpresa/', e.empresa_id]">
                                 <p>Ver</p>
                             </i>
+
                             <i (click)="ConfirmarDelete(e.empresa_id)" class="far fa-trash-alt" id="t-eliminar"
                                 matSuffix matTooltipPosition="right" matTooltip="Eliminar este registro.">
                                 <p>Eliminar</p>
@@ -91,7 +102,7 @@
             </table>
         </div>
         <mat-paginator id="pagina" [length]="empresa.length" [pageSize]="tamanio_pagina"
-            [pageSizeOptions]="pageSizeOptions" id="pagina" (page)="ManejarPagina($event)" showFirstLastButtons>
+            [pageSizeOptions]="pageSizeOptions" (page)="ManejarPagina($event)" showFirstLastButtons>
         </mat-paginator>
     </div>
 </div>

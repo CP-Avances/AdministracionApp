@@ -10,6 +10,7 @@ import { InactividadSistema } from './servicios/inactividad/inactividad-sistema'
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit {
 
   title = 'FulltimeAdminFront';

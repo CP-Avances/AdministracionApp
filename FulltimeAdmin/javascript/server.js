@@ -13,6 +13,11 @@ const baseEmpresaRutas_1 = __importDefault(require("./rutas/baseEmpresa/baseEmpr
 const empresaRutas_1 = __importDefault(require("./rutas/empresa/empresaRutas"));
 const licenciaRutas_1 = __importDefault(require("./rutas/licencia/licenciaRutas"));
 const accesoRutas_1 = __importDefault(require("./rutas/acceso/accesoRutas"));
+const modulosRutas_1 = __importDefault(require("./rutas/modulos/modulosRutas"));
+const limitesUsuariosRutas_1 = __importDefault(require("./rutas/limites/usuarios/limitesUsuariosRutas"));
+const limiteAlmacenamientoRutas_1 = __importDefault(require("./rutas/limites/almacenamiento/limiteAlmacenamientoRutas"));
+const licenciaMovimientoRutas_1 = __importDefault(require("./rutas/historial/licenciaMovimientoRutas"));
+const inicializacionBaseDatosRutas_1 = __importDefault(require("./rutas/baseDatos/inicializacionBaseDatosRutas"));
 var io;
 class Servidor {
     constructor() {
@@ -41,6 +46,11 @@ class Servidor {
         this.app.use('/empresa', empresaRutas_1.default);
         this.app.use('/licencia', licenciaRutas_1.default);
         this.app.use('/web-access', accesoRutas_1.default);
+        this.app.use('/modulos', modulosRutas_1.default);
+        this.app.use('/limite-usuarios', limitesUsuariosRutas_1.default);
+        this.app.use('/storage-uso', limiteAlmacenamientoRutas_1.default);
+        this.app.use('/licencia-movimientos', licenciaMovimientoRutas_1.default);
+        this.app.use('/inicializacion-bd', inicializacionBaseDatosRutas_1.default);
     }
     start() {
         this.server.listen(this.app.get('puerto'), () => {

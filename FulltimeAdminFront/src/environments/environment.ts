@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  url: 'https://administracionfulltime.fulltime.com.ec/server'
+  url: 'http://localhost:3020'
 };
 
 

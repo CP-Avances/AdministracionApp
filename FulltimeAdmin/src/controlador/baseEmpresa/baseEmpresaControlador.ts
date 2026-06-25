@@ -40,43 +40,8 @@ class BaseEmpresaControlador {
         }
     }
 
-    public async ObtenerBaseEmpresas(req: Request, res: Response) {
-        try {
-            const EMPRESAS = await pool.query(
-                `
-                SELECT 
-                    empresa_bdd.id_empresa_bdd, 
-                    empresa_bdd.id_empresa, 
-                    empresa_bdd.empresa_bdd_nombre, 
-                    empresa_bdd.empresa_bdd_host, 
-                    empresa_bdd.empresa_bdd_puerto, 
-                    empresa_bdd.empresa_bdd_descripcion, 
-                    empresa.empresa_descripcion
-                FROM empresa_bdd empresa_bdd 
-                INNER JOIN empresa empresa ON empresa_bdd.id_empresa = empresa.empresa_id 
-                ORDER BY empresa.empresa_descripcion 
-                `
-            );
-
-            if (EMPRESAS.rowCount !== null) {
-                if (EMPRESAS.rowCount > 0) {
-                    return res.jsonp(EMPRESAS.rows);
-                } else {
-                    res.status(404).jsonp({ message: 'vacio' });
-                }
-            } else {
-                res.status(500).jsonp({ message: 'error' });
-            }
-        }
-        catch (error) {
-            res.status(500).jsonp({ message: 'error' });
-        }
-    }
-
     public async ObtenerBaseEmpresasInformacion(req: Request, res: Response) {
-
         try {
-
             const BDD_ADMINISTRACION = process.env.BDD_ADMINISTRACION || 'administrar_fulltime';
 
             const EMPRESAS = await pool.query(
@@ -84,7 +49,7 @@ class BaseEmpresaControlador {
             SELECT 
                 pg_database.oid AS num_proceso,
 
-                empresas_bdd.empresa_bdd_nombre AS nombre_bdd,
+                eb.empresa_bdd_nombre AS nombre_bdd,
 
                 CASE 
                     WHEN pg_database.datname IS NOT NULL 
@@ -93,14 +58,34 @@ class BaseEmpresaControlador {
                 END AS tamano_bdd,
 
                 empresa.empresa_id,
+                empresa.empresa_codigo,
                 empresa.empresa_descripcion,
-
-                empresas_bdd.id_empresa_bdd,
-                empresas_bdd.empresa_bdd_descripcion,
-                empresas_bdd.empresa_bdd_usuario,
-
-                empresa.numero_relojes,
                 empresa.estado,
+                empresa.instalacion,
+                empresa.zona_horaria,
+
+                eb.id_empresa_bdd,
+                eb.id_empresa,
+                eb.empresa_bdd_descripcion,
+                eb.empresa_bdd_host,
+                eb.empresa_bdd_puerto,
+                eb.empresa_bdd_usuario,
+
+                licencia.id_licencia,
+                licencia.estado AS estado_licencia,
+
+                COALESCE(licencia_limite.usuarios_web_max::text, 'No definido') AS usuarios_web_max,
+                COALESCE(licencia_limite.usuarios_app_max::text, 'No definido') AS usuarios_app_max,
+                COALESCE(licencia_limite.relojes_max::text, 'No definido') AS relojes_max,
+                COALESCE(licencia_limite.storage_mb_max::text, 'No definido') AS storage_mb_max,
+
+                COALESCE(licencia_storage_uso.storage_mb_usado::text, 'No definido') AS storage_mb_usado,
+                licencia_storage_uso.origen_calculo AS storage_origen_calculo,
+                licencia_storage_uso.fecha_registro AS storage_fecha_registro,
+                licencia_storage_uso.fecha_calculo AS storage_fecha_calculo,
+                licencia_storage_uso.calculo_exitoso AS storage_calculo_exitoso,
+                licencia_storage_uso.mensaje_error AS storage_mensaje_error,
+                licencia_storage_uso.observacion AS storage_observacion,
 
                 CASE 
                     WHEN pg_database.datname IS NOT NULL 
@@ -108,15 +93,25 @@ class BaseEmpresaControlador {
                     ELSE 'REMOTA'
                 END AS tipo_base
 
-            FROM empresa_bdd AS empresas_bdd
+            FROM public.empresa_bdd eb
 
-            INNER JOIN empresa AS empresa 
-                ON empresa.empresa_id = empresas_bdd.id_empresa
+            INNER JOIN public.empresa empresa
+                ON empresa.empresa_id = eb.id_empresa
+
+            LEFT JOIN public.licencia licencia
+                ON licencia.id_empresa = empresa.empresa_id
+               AND licencia.estado = 'ACTIVA'
+
+            LEFT JOIN public.licencia_limite licencia_limite
+                ON licencia_limite.id_licencia = licencia.id_licencia
+
+            LEFT JOIN public.licencia_storage_uso licencia_storage_uso
+                ON licencia_storage_uso.id_licencia = licencia.id_licencia
 
             LEFT JOIN pg_database 
-                ON pg_database.datname = empresas_bdd.empresa_bdd_nombre
+                ON pg_database.datname = eb.empresa_bdd_nombre
 
-            WHERE empresas_bdd.empresa_bdd_nombre NOT IN (
+            WHERE eb.empresa_bdd_nombre NOT IN (
                 'postgres', 
                 'template1', 
                 'template0',
@@ -131,89 +126,14 @@ class BaseEmpresaControlador {
                 [BDD_ADMINISTRACION]
             );
 
-            if (EMPRESAS.rowCount && EMPRESAS.rowCount > 0) {
-                return res.jsonp(EMPRESAS.rows);
-            }
-
-            return res.status(404).jsonp({ message: 'vacio' });
+            return res.jsonp(EMPRESAS.rows);
 
         } catch (error) {
-            return res.status(500).jsonp({ message: error });
+            console.log(error);
+            return res.status(500).jsonp({ message: 'error' });
         }
     }
 
-    public async BuscarBaseEmpresas(req: Request, res: Response) {
-        try {
-            const BDD_ADMINISTRACION = process.env.BDD_ADMINISTRACION || 'administrar_fulltime';
-
-            const nombre_bdd_ = `%${req.body.nombre_bdd || ''}%`;
-            const nombre_empresa_ = `%${req.body.nombre_empresa || ''}%`;
-
-            const EMPRESAS = await pool.query(
-                `
-            SELECT 
-                pg_database.oid AS num_proceso,
-
-                empresas_bdd.empresa_bdd_nombre AS nombre_bdd,
-
-                CASE 
-                    WHEN pg_database.datname IS NOT NULL 
-                        THEN pg_size_pretty(pg_database_size(pg_database.datname))
-                    ELSE 'Servidor remoto'
-                END AS tamano_bdd,
-
-                empresa.empresa_id,
-                empresa.empresa_descripcion,
-
-                empresas_bdd.id_empresa_bdd,
-                empresas_bdd.empresa_bdd_descripcion,
-
-                empresa.numero_relojes,
-                empresa.estado,
-
-                CASE 
-                    WHEN pg_database.datname IS NOT NULL 
-                        THEN 'LOCAL'
-                    ELSE 'REMOTA'
-                END AS tipo_base
-
-            FROM empresa_bdd AS empresas_bdd
-
-            INNER JOIN empresa AS empresa 
-                ON empresa.empresa_id = empresas_bdd.id_empresa
-
-            LEFT JOIN pg_database 
-                ON pg_database.datname = empresas_bdd.empresa_bdd_nombre
-
-            WHERE empresas_bdd.empresa_bdd_nombre NOT IN (
-                'postgres', 
-                'template1', 
-                'template0',
-                $1
-            )
-            AND (
-                empresa.empresa_descripcion ILIKE $2 
-                OR empresas_bdd.empresa_bdd_nombre ILIKE $3
-            )
-
-            ORDER BY 
-                empresa.estado DESC,
-                tipo_base ASC,
-                empresa.empresa_descripcion ASC;
-            `,
-                [BDD_ADMINISTRACION, nombre_empresa_, nombre_bdd_]
-            );
-
-            if (EMPRESAS.rowCount && EMPRESAS.rowCount > 0) {
-                return res.jsonp(EMPRESAS.rows);
-            }
-
-            return res.status(404).jsonp({ message: 'vacio' });
-
-        } catch (error) {
-            return res.status(500).jsonp({ message: error });
-        }
-    }
 
     public async BuscarBaseEmpresasPorId(req: Request, res: Response) {
         try {
@@ -255,53 +175,80 @@ class BaseEmpresaControlador {
     }
 
     public async ActualizarBaseEmpresa(req: Request, res: Response) {
-        let id_empresa_bdd_ = req.body.id_empresa_bdd;
-        let id_empresa_ = req.body.id_empresa;
-        let empresa_bdd_nombre_ = req.body.empresa_bdd_nombre;
-        let empresa_bdd_host_ = req.body.empresa_bdd_host;
-        let empresa_bdd_puerto_ = req.body.empresa_bdd_puerto;
-        let empresa_bdd_descripcion_ = req.body.empresa_bdd_descripcion;
-        let empresa_bdd_usuario_ = req.body.empresa_bdd_usuario;
-        let empresa_bdd_contrasena_ = req.body.empresa_bdd_contrasena;
+        const id_empresa_bdd_ = req.body.id_empresa_bdd;
+        const id_empresa_ = req.body.id_empresa;
+        const empresa_bdd_nombre_ = req.body.empresa_bdd_nombre;
+        const empresa_bdd_host_ = req.body.empresa_bdd_host;
+        const empresa_bdd_puerto_ = req.body.empresa_bdd_puerto;
+        const empresa_bdd_descripcion_ = req.body.empresa_bdd_descripcion;
+        const empresa_bdd_usuario_ = req.body.empresa_bdd_usuario;
+        const empresa_bdd_contrasena_ = req.body.empresa_bdd_contrasena;
 
         try {
+            const actualizarContrasena = typeof empresa_bdd_contrasena_ === 'string'
+                && empresa_bdd_contrasena_.trim() !== '';
 
-            var contrasenaEncriptada = RsaKeyService.encriptarDatos(empresa_bdd_contrasena_);
+            if (actualizarContrasena) {
+                const contrasenaEncriptada = RsaKeyService.encriptarDatos(empresa_bdd_contrasena_);
 
-            await pool.query(
-                `
-                UPDATE empresa_bdd SET id_empresa = $1, empresa_bdd_nombre = $2, empresa_bdd_host = $3, 
-                empresa_bdd_puerto = $4, empresa_bdd_descripcion = $5, empresa_bdd_usuario = $6, 
-                empresa_bdd_contrasena = $7  
-                WHERE id_empresa_bdd = $8 
+                await pool.query(
+                    `
+                UPDATE empresa_bdd 
+                SET 
+                    id_empresa = $1, 
+                    empresa_bdd_nombre = $2, 
+                    empresa_bdd_host = $3, 
+                    empresa_bdd_puerto = $4, 
+                    empresa_bdd_descripcion = $5, 
+                    empresa_bdd_usuario = $6, 
+                    empresa_bdd_contrasena = $7, 
+                    fecha_actualizacion = now()
+                WHERE id_empresa_bdd = $8
                 `,
-                [id_empresa_, empresa_bdd_nombre_, empresa_bdd_host_, empresa_bdd_puerto_,
-                    empresa_bdd_descripcion_, empresa_bdd_usuario_, contrasenaEncriptada, id_empresa_bdd_]
-            );
+                    [
+                        id_empresa_,
+                        empresa_bdd_nombre_,
+                        empresa_bdd_host_,
+                        empresa_bdd_puerto_,
+                        empresa_bdd_descripcion_,
+                        empresa_bdd_usuario_,
+                        contrasenaEncriptada,
+                        id_empresa_bdd_
+                    ]
+                );
+            } else {
+                await pool.query(
+                    `
+                UPDATE empresa_bdd 
+                SET 
+                    id_empresa = $1, 
+                    empresa_bdd_nombre = $2, 
+                    empresa_bdd_host = $3, 
+                    empresa_bdd_puerto = $4, 
+                    empresa_bdd_descripcion = $5, 
+                    empresa_bdd_usuario = $6, 
+                    fecha_actualizacion = now()
+                WHERE id_empresa_bdd = $7
+                `,
+                    [
+                        id_empresa_,
+                        empresa_bdd_nombre_,
+                        empresa_bdd_host_,
+                        empresa_bdd_puerto_,
+                        empresa_bdd_descripcion_,
+                        empresa_bdd_usuario_,
+                        id_empresa_bdd_
+                    ]
+                );
+            }
 
-            res.jsonp({ message: 'Registro actualizado.' });
+            return res.jsonp({ message: 'Registro actualizado.' });
         }
         catch (error) {
             return res.jsonp({ message: error });
         }
     }
 
-    public async EliminarEmpresa(req: Request, res: Response) {
-        try {
-            let id_empresa_bdd_ = req.body.id_empresa_bdd;
-
-            await pool.query(
-                `
-                DELETE FROM empresa_bdd WHERE id_empresa_bdd = $1
-                `
-                , [id_empresa_bdd_]
-            );
-
-            res.jsonp({ message: 'Registro eliminado.' });
-        } catch (error) {
-            return res.jsonp({ message: 'error' });
-        }
-    }
 
 }
 

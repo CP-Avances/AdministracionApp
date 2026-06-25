@@ -1,0 +1,74 @@
+<div id="titulo" class="titulo-modal">
+  <div class="titulo-izquierda">
+    <mat-icon id="movilidad">manage_accounts</mat-icon>
+    <span>MODIFICAR LÍMITES</span>
+  </div>
+
+  <button
+    type="button"
+    class="btn-cerrar-modal"
+    (click)="Cancelar(false)"
+    matTooltipPosition="left"
+    matTooltip="Salir">
+    <mat-icon>highlight_off</mat-icon>
+  </button>
+</div>
+
+<div class="limite-contenedor">
+  <mat-card-content>
+    <div class="limite-card">
+
+      <div class="nota">
+        <mat-icon>info</mat-icon>
+        <span>
+          Modifique los límites máximos permitidos para la licencia seleccionada.
+        </span>
+      </div>
+
+      <form [formGroup]="limiteForm" class="limite-form">
+
+        <div class="form-grid">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Usuarios Web</mat-label>
+            <mat-icon matPrefix>desktop_windows</mat-icon>
+            <input matInput type="number" min="0" [formControl]="usuariosWebForm" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Usuarios App</mat-label>
+            <mat-icon matPrefix>smartphone</mat-icon>
+            <input matInput type="number" min="0" [formControl]="usuariosAppForm" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Relojes</mat-label>
+            <mat-icon matPrefix>fingerprint</mat-icon>
+            <input matInput type="number" min="0" [formControl]="relojesForm" required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Storage MB</mat-label>
+            <mat-icon matPrefix>sd_storage</mat-icon>
+            <input matInput type="number" min="0" [formControl]="storageForm" required>
+          </mat-form-field>
+
+        </div>
+
+      </form>
+
+    </div>
+  </mat-card-content>
+
+  <div class="acciones">
+    <button
+      id="btn-raised"
+      class="btn btn-sm"
+      type="button"
+      [disabled]="limiteForm.invalid || guardando"
+      (click)="ValidarDatos()">
+      <mat-icon>save</mat-icon>
+      {{ guardando ? 'Guardando...' : 'Guardar' }}
+    </button>
+  </div>
+</div>

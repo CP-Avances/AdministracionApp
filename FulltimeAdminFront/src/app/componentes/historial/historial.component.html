@@ -1,0 +1,276 @@
+<div class="historial-page">
+
+  <div class="historial-header-card mat-elevation-z6">
+    <div class="historial-header-info">
+      <div class="historial-icono">
+        <mat-icon>manage_history</mat-icon>
+      </div>
+
+      <div>
+        <h3>Historial de movimientos</h3>
+        <p>Consulta de cambios realizados sobre licencias, límites y módulos.</p>
+      </div>
+    </div>
+  </div>
+
+  <mat-card class="card-panel mat-elevation-z6">
+
+    <div class="card-panel-header">
+      <div>
+        <h4>Filtros de búsqueda</h4>
+        <span>Seleccione una empresa y aplique filtros opcionales para consultar el historial.</span>
+      </div>
+    </div>
+
+    <mat-card-content>
+
+      <form [formGroup]="filtroForm" class="filtros-form">
+
+        <div class="filtros-grid">
+
+          <mat-form-field appearance="outline">
+            <mat-label>ID Empresa</mat-label>
+            <mat-icon matPrefix>business</mat-icon>
+            <input
+              matInput
+              type="number"
+              min="1"
+              [formControl]="idEmpresaForm"
+              placeholder="Ej: 3"
+              required>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>ID Licencia</mat-label>
+            <mat-icon matPrefix>workspace_premium</mat-icon>
+            <input
+              matInput
+              type="number"
+              min="1"
+              [formControl]="idLicenciaForm"
+              placeholder="Opcional">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha inicio</mat-label>
+            <mat-icon matPrefix>event_available</mat-icon>
+            <input
+              matInput
+              type="date"
+              [formControl]="fechaInicioForm">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha fin</mat-label>
+            <mat-icon matPrefix>event_busy</mat-icon>
+            <input
+              matInput
+              type="date"
+              [formControl]="fechaFinForm">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Tabla / Sección</mat-label>
+            <mat-icon matPrefix>table_chart</mat-icon>
+            <mat-select [formControl]="entidadAfectadaForm">
+              <mat-option
+                *ngFor="let entidad of entidadesMovimiento"
+                [value]="entidad.valor">
+                {{ entidad.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de movimiento</mat-label>
+            <mat-icon matPrefix>timeline</mat-icon>
+            <mat-select [formControl]="tipoMovimientoForm">
+              <mat-option
+                *ngFor="let tipo of tiposMovimiento"
+                [value]="tipo.valor">
+                {{ tipo.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Usuario registra</mat-label>
+            <mat-icon matPrefix>person</mat-icon>
+            <input
+              matInput
+              type="text"
+              [formControl]="usuarioRegistraForm"
+              placeholder="Opcional">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Campo modificado</mat-label>
+            <mat-icon matPrefix>edit</mat-icon>
+            <input
+              matInput
+              type="text"
+              [formControl]="campoModificadoForm"
+              placeholder="Ej: estado, usuarios_web_max">
+          </mat-form-field>
+
+        </div>
+
+        <div class="acciones-filtros">
+          <button
+            type="button"
+            mat-raised-button
+            color="primary"
+            [disabled]="cargando"
+            (click)="BuscarMovimientos()">
+            <mat-icon>search</mat-icon>
+            Buscar
+          </button>
+
+          <button
+            type="button"
+            mat-stroked-button
+            color="primary"
+            [disabled]="cargando"
+            (click)="LimpiarFiltros()">
+            <mat-icon>cleaning_services</mat-icon>
+            Limpiar
+          </button>
+        </div>
+
+      </form>
+
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card-panel mat-elevation-z6">
+
+    <div class="card-panel-header">
+      <div>
+        <h4>Resultados</h4>
+        <span>Movimientos encontrados según los filtros aplicados.</span>
+      </div>
+
+      <span class="contador-registros" *ngIf="movimientos.length > 0">
+        {{ movimientos.length }} registros
+      </span>
+    </div>
+
+    <mat-card-content>
+
+      <div *ngIf="cargando" class="sin-registros">
+        <mat-icon>sync</mat-icon>
+        <strong>Cargando historial...</strong>
+        <span>Espere un momento mientras se consulta la información.</span>
+      </div>
+
+      <div *ngIf="!cargando && !busquedaRealizada" class="sin-registros">
+        <mat-icon>manage_history</mat-icon>
+        <strong>Realice una búsqueda.</strong>
+        <span>Ingrese el ID de empresa para consultar el historial de movimientos.</span>
+      </div>
+
+      <div *ngIf="!cargando && busquedaRealizada && movimientos.length === 0" class="sin-registros">
+        <mat-icon>search_off</mat-icon>
+        <strong>No existen movimientos registrados.</strong>
+        <span>No se encontraron resultados con los filtros aplicados.</span>
+      </div>
+
+      <div class="historial-lista" *ngIf="!cargando && movimientos.length > 0">
+
+        <div
+          class="movimiento-card"
+          *ngFor="let movimiento of movimientosPaginados; trackBy: TrackByMovimiento"
+          [ngClass]="ObtenerClaseMovimiento(movimiento.tipo_movimiento)">
+
+          <div class="movimiento-header">
+
+            <div class="movimiento-titulo">
+              <mat-icon>
+                {{ ObtenerIconoMovimiento(movimiento.tipo_movimiento) }}
+              </mat-icon>
+
+              <div>
+                <strong>{{ movimiento.tipo_movimiento }}</strong>
+                <span>
+                  {{ ObtenerNombreEntidad(movimiento.entidad_afectada) }}
+                  · Licencia ID: {{ movimiento.id_licencia }}
+                </span>
+              </div>
+            </div>
+
+            <div class="movimiento-fecha">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ movimiento.fecha_movimiento | date:'yyyy-MM-dd HH:mm:ss' }}</span>
+            </div>
+
+          </div>
+
+          <div class="movimiento-info-grid">
+
+            <div class="info-item">
+              <mat-icon>business</mat-icon>
+              <span>Empresa</span>
+              <strong>
+                {{ movimiento.empresa_descripcion }}
+                <small>({{ movimiento.empresa_codigo }})</small>
+              </strong>
+            </div>
+
+            <div class="info-item">
+              <mat-icon>verified</mat-icon>
+              <span>Estado licencia</span>
+              <strong>{{ movimiento.estado_licencia }}</strong>
+            </div>
+
+            <div class="info-item">
+              <mat-icon>edit</mat-icon>
+              <span>Campo modificado</span>
+              <strong>{{ movimiento.campo_modificado || 'Registro general' }}</strong>
+            </div>
+
+            <div class="info-item">
+              <mat-icon>person</mat-icon>
+              <span>Usuario registra</span>
+              <strong>{{ movimiento.usuario_registra || 'SISTEMA' }}</strong>
+            </div>
+
+          </div>
+
+          <div class="valores-grid">
+
+            <div class="valor-box valor-anterior">
+              <span>Valor anterior</span>
+              <strong>{{ FormatearValorHistorial(movimiento.valor_anterior) }}</strong>
+            </div>
+
+            <div class="valor-box valor-nuevo">
+              <span>Valor nuevo</span>
+              <strong>{{ FormatearValorHistorial(movimiento.valor_nuevo) }}</strong>
+            </div>
+
+          </div>
+
+          <div class="observacion" *ngIf="movimiento.observacion">
+            <mat-icon>speaker_notes</mat-icon>
+            <span>{{ movimiento.observacion }}</span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <mat-paginator
+        *ngIf="movimientos.length > pageSize"
+        [length]="movimientos.length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [pageIndex]="pageIndex"
+        (page)="ManejarPagina($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+
+    </mat-card-content>
+
+  </mat-card>
+
+</div>

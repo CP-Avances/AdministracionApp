@@ -7,9 +7,10 @@ import { AuthGuard } from './servicios/guards/auth.guard';
 import { RegistroEmpresaComponent } from './componentes/empresa/registro-empresa/registro-empresa.component';
 import { ListaEmpresasComponent } from './componentes/empresa/lista-empresas/lista-empresas.component';
 import { VerEmpresaComponent } from './componentes/empresa/ver-empresa/ver-empresa.component';
+import { HistorialComponent } from './componentes/historial/historial.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full'},
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard], data: { roles: 'otros' } },
   //ACCESO A RUTAS DE INICIO DE SESION
@@ -18,6 +19,8 @@ const routes: Routes = [
   { path: 'empresas', component: ListaEmpresasComponent, canActivate: [AuthGuard], data: { log: false } },
   { path: 'registroEmpresa', component: RegistroEmpresaComponent, canActivate: [AuthGuard], data: { log: false } },
   { path: 'verEmpresa/:id', component: VerEmpresaComponent, canActivate: [AuthGuard], data: { log: false } },
+  // ACCESO HISTORIAL
+  { path: 'historial', component: HistorialComponent, canActivate: [AuthGuard], data: { log: false } },
 ];
 
 @NgModule({

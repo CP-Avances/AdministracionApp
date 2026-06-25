@@ -1,8 +1,8 @@
 <div class="container bases-container">
+
   <div class="titulo-seccion">
     <div>
       <h5>Bases Disponibles</h5>
-      <br>
       <p>Seleccione una base para ingresar rápidamente</p>
     </div>
   </div>
@@ -10,7 +10,10 @@
   <div class="row">
     <div class="col-md-12 d-flex flex-wrap justify-content-center gap-3">
 
-      <mat-card *ngFor="let card of cardData" class="mat-elevation-z8 card-base">
+      <mat-card
+        *ngFor="let card of cardData"
+        class="mat-elevation-z8 card-base"
+        [ngClass]="card.estado ? 'card-activa' : 'card-inactiva'">
 
         <div class="card-header-base">
           <div class="icono-base">
@@ -19,11 +22,22 @@
 
           <div class="titulo-base">
             <mat-card-title>
-              {{ card.empresa_bdd_descripcion }}
+              {{ card.empresa_bdd_descripcion || 'Base sin descripción' }}
             </mat-card-title>
-            <span class="estado-base" [ngClass]="card.estado ? 'estado-activa' : 'estado-inactiva'">
-              {{ card.estado ? 'Disponible' : 'Inactiva' }}
-            </span>
+
+            <div class="badges-header">
+              <span
+                class="estado-base"
+                [ngClass]="card.estado ? 'estado-activa' : 'estado-inactiva'">
+                {{ card.estado ? 'Disponible' : 'Inactiva' }}
+              </span>
+
+              <span
+                class="tipo-base"
+                [ngClass]="card.tipo_base === 'LOCAL' ? 'tipo-local' : 'tipo-remota'">
+                {{ card.tipo_base || 'No definido' }}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -31,6 +45,7 @@
 
           <div class="empresa-info">
             <h6>{{ card.empresa_descripcion }}</h6>
+            <span>{{ card.empresa_codigo || 'Sin código' }}</span>
           </div>
 
           <div class="info-item">
@@ -40,18 +55,71 @@
 
           <div class="info-item">
             <mat-icon>sd_storage</mat-icon>
-            <span>Tamaño: <b>{{ card.tamano_bdd }}</b></span>
+            <span>Base: <b>{{ card.tamano_bdd || 'No definido' }}</b></span>
           </div>
 
           <div class="info-item">
-            <mat-icon>schedule</mat-icon>
-            <span>N° Relojes: <b>{{ card.numero_relojes }}</b></span>
+            <mat-icon>workspace_premium</mat-icon>
+            <span>Licencia: <b>{{ card.estado_licencia || 'No definida' }}</b></span>
+          </div>
+
+          <div class="metricas-grid">
+
+            <div class="metrica-item">
+              <mat-icon>desktop_windows</mat-icon>
+              <span>Web</span>
+              <strong>{{ MostrarValor(card.usuarios_web_max) }}</strong>
+            </div>
+
+            <div class="metrica-item">
+              <mat-icon>smartphone</mat-icon>
+              <span>App</span>
+              <strong>{{ MostrarValor(card.usuarios_app_max) }}</strong>
+            </div>
+
+            <div class="metrica-item">
+              <mat-icon>fingerprint</mat-icon>
+              <span>Relojes</span>
+              <strong>{{ MostrarValor(card.relojes_max) }}</strong>
+            </div>
+
+          </div>
+
+          <div class="storage-compacto">
+            <div class="storage-compacto-header">
+              <mat-icon>analytics</mat-icon>
+              <span>Storage</span>
+              <strong>{{ CalcularPorcentajeStorage(card) }}%</strong>
+            </div>
+
+            <div class="barra-storage">
+              <div
+                class="barra-storage-progreso"
+                [style.width.%]="CalcularPorcentajeStorage(card)">
+              </div>
+            </div>
+
+            <div class="storage-compacto-valores">
+              <span>
+                Usado:
+                <b>{{ MostrarValor(card.storage_mb_usado) }} MB</b>
+              </span>
+
+              <span>
+                Contratado:
+                <b>{{ MostrarValor(card.storage_mb_max) }} MB</b>
+              </span>
+            </div>
           </div>
 
         </mat-card-content>
 
         <mat-card-actions class="card-actions-base">
-          <button type="button" class="btn-abrir-base" (click)="MenuRapido(card.empresa_id)">
+          <button
+            type="button"
+            class="btn-abrir-base"
+            [disabled]="!card.estado"
+            (click)="MenuRapido(card.empresa_id)">
             <mat-icon>open_in_new</mat-icon>
             Abrir
           </button>
@@ -61,4 +129,5 @@
 
     </div>
   </div>
+
 </div>

@@ -1,0 +1,111 @@
+<div id="titulo" class="titulo-modal">
+    <div class="titulo-izquierda">
+        <mat-icon id="movilidad">sd_storage</mat-icon>
+        <span>{{ storage ? 'MODIFICAR STORAGE' : 'REGISTRAR STORAGE' }}</span>
+    </div>
+
+    <button type="button" class="btn-cerrar-modal" (click)="Cancelar(false)" matTooltipPosition="left"
+        matTooltip="Salir">
+        <mat-icon>highlight_off</mat-icon>
+    </button>
+</div>
+
+<div class="storage-contenedor">
+    <mat-card-content>
+        <div class="storage-card">
+
+            <div class="nota">
+                <mat-icon>info</mat-icon>
+                <span>
+                    Registre o actualice el uso de almacenamiento correspondiente a la licencia activa.
+                </span>
+            </div>
+
+            <form [formGroup]="storageForm" class="storage-form">
+
+                <div class="form-grid">
+
+                    <div class="storage-calculo">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Storage usado MB</mat-label>
+                            <mat-icon matPrefix>database</mat-icon>
+                            <input matInput type="number" min="0" step="0.01" [formControl]="storageMbUsadoForm"
+                                required>
+                        </mat-form-field>
+
+                        <button type="button" class="btn-calcular-storage" [disabled]="calculandoStorage || guardando"
+                            (click)="CalcularStorageEmpresa()" matTooltip="Calcular almacenamiento usado">
+                            <mat-icon>{{ calculandoStorage ? 'hourglass_top' : 'calculate' }}</mat-icon>
+                            {{ calculandoStorage ? 'Calculando...' : 'Calcular' }}
+                        </button>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Origen cálculo</mat-label>
+                        <mat-icon matPrefix>settings_suggest</mat-icon>
+
+                        <mat-select [formControl]="origenCalculoForm" required>
+                            <mat-option *ngFor="let origen of origenesCalculo" [value]="origen.valor">
+                                {{ origen.nombre }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Fecha registro</mat-label>
+                        <mat-icon matPrefix>event</mat-icon>
+                        <input matInput type="date" [formControl]="fechaRegistroForm" required>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Resultado cálculo</mat-label>
+                        <mat-icon matPrefix>task_alt</mat-icon>
+
+                        <mat-select [formControl]="calculoExitosoForm" required>
+                            <mat-option [value]="true">Exitoso</mat-option>
+                            <mat-option [value]="false">Con error</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </div>
+
+                <mat-form-field appearance="outline" class="campo-completo">
+                    <mat-label>Mensaje de error</mat-label>
+                    <mat-icon matPrefix>report_problem</mat-icon>
+
+                    <textarea matInput rows="3" maxlength="300"
+                        placeholder="Ingrese el mensaje de error si el cálculo no fue exitoso."
+                        [formControl]="mensajeErrorForm">
+          </textarea>
+
+                    <mat-hint align="end">
+                        {{ mensajeErrorForm.value?.length || 0 }}/300
+                    </mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="campo-completo">
+                    <mat-label>Observación</mat-label>
+                    <mat-icon matPrefix>speaker_notes</mat-icon>
+
+                    <textarea matInput rows="3" maxlength="300" placeholder="Ingrese una observación adicional."
+                        [formControl]="observacionForm">
+          </textarea>
+
+                    <mat-hint align="end">
+                        {{ observacionForm.value?.length || 0 }}/300
+                    </mat-hint>
+                </mat-form-field>
+
+            </form>
+
+        </div>
+    </mat-card-content>
+
+    <div class="acciones">
+        <button id="btn-raised" class="btn btn-sm" type="button" [disabled]="storageForm.invalid || guardando"
+            (click)="ValidarDatos()">
+            <mat-icon>save</mat-icon>
+            {{ guardando ? 'Guardando...' : 'Guardar' }}
+        </button>
+    </div>
+</div>

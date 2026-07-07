@@ -904,7 +904,7 @@ AbrirConfiguracionModulosLicenciaActiva(): void {
       pageMargins: [25, 55, 25, 45],
 
       watermark: {
-        text: 'Administración Fulltime',
+        text: 'Administración AQHora',
         color: 'blue',
         opacity: 0.06,
         bold: true,
